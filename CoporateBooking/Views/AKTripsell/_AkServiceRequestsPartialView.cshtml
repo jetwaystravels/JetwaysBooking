@@ -1,0 +1,999 @@
+﻿@model DomainLayer.ViewModel.ViewModel
+@using System.Collections;
+@{
+	Layout = null;
+	var paasenger = Model;
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="~/js/custom.js/SGCustom.js"></script>
+<script src="~/js/custom.js/customnew.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+
+	$(document).ready(function () {
+	$('.servc-bordr').change(function () {
+	debugger;
+	var selectedMeals = [];
+	var totalPrice = 0;
+
+	$('.servc-bordr').each(function () {
+	debugger;
+	var selectedValue = $(this).val();
+	if (selectedValue) {
+	debugger;
+	var price_value = selectedValue.split('_');
+	var mealPrice = parseFloat(price_value[1]);
+
+	selectedMeals.push(selectedValue);
+	totalPrice += mealPrice;
+
+	}
+
+	});
+	localStorage.setItem("selectedMeals", JSON.stringify(selectedMeals));
+	$('#AddMeal').text(totalPrice.toFixed(2));
+	updateCombinedTotal();
+
+
+	});
+	$('.select-option2 .servc-bordrCon').change((e) => {
+	debugger;
+	var selectedMealsCon = [];
+	var totalPrice = 0;
+
+	$('.servc-bordrCon').each(function () {
+	debugger;
+	var selectedValue = $(this).val();
+	if (selectedValue) {
+	debugger;
+	var price_value = selectedValue.split('_');
+	var mealPrice = parseFloat(price_value[1]);
+
+	selectedMealsCon.push(selectedValue);
+	totalPrice += mealPrice;
+	}
+	localStorage.setItem("selectedMealsCon", JSON.stringify(selectedMealsCon));
+
+	});
+
+	$('#AddMeal2').text(totalPrice.toFixed(2));
+	updateCombinedTotal();
+
+	});
+
+	//End :MealKey post
+	$('.select-baggage .servc-bordrbaggage').change((e) => {
+	debugger;
+	var selectedBaggage = [];
+	var baggagePrice = 0;
+
+	$('.servc-bordrbaggage').each(function () {
+	debugger;
+	var selectedValueBaggage = $(this).val();
+	if (selectedValueBaggage) {
+	debugger;
+	var price_value = selectedValueBaggage.split('_');
+	var BagPrice = parseFloat(price_value[1]);
+
+	selectedBaggage.push(selectedValueBaggage);
+	baggagePrice += BagPrice;
+	}
+	localStorage.setItem("BagssrKeyCount", JSON.stringify(selectedBaggage));
+
+	});
+
+	$('#AddBaggage').text(baggagePrice.toFixed(2));
+	updateCombinedTotal();
+
+	});
+
+	$("#AkContinuebtn").click(function () {
+	debugger;
+	var seatdata = JSON.parse(localStorage.getItem("selectedIds"));
+	var unitKey1 = JSON.parse(localStorage.getItem("selectedIds1"));
+	var unitKey2 = JSON.parse(localStorage.getItem("selectedIds2"));
+	var unitKey;
+	if (unitKey2 && unitKey2.length > 0) {
+	unitKey = unitKey1.concat(unitKey2);
+	} else {
+	unitKey = unitKey1;
+	}
+
+	let BaggageSSrkey = JSON.parse(localStorage.getItem("BagssrKeyCount"));
+	let mealcode1 = JSON.parse(localStorage.getItem("selectedMeals"));
+	let mealcode2 = JSON.parse(localStorage.getItem("selectedMealsCon"));
+	var mealssrKey;
+	if (mealcode2 && mealcode2.length > 0) {
+	mealssrKey = mealcode1.concat(mealcode2);
+	} else {
+	mealssrKey = mealcode1;
+	}
+
+
+	$.ajax({
+	url: "/AKTripsell/PostSeatmapMealdata?GUID=" + GetParameterValues("Guid"),
+	type: "POST",
+	contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+	data: { unitKey: unitKey, mealssrKey: mealssrKey, BaggageSSrkey: BaggageSSrkey },
+	success: function (data) {
+	window.location.href = '/AkasaAirPayment/AkasaAirPaymentView?GUID=' + GetParameterValues("Guid");
+	},
+	error: function (err) {
+	console.error(err);
+	}
+	});
+	});
+
+	$(".exampleModalSeatdata").click(function (e) {
+
+	e.preventDefault();
+	$.ajax({
+	url: "/AKTripsell/AkPostSeatMapdataView?GUID=" + GetParameterValues("Guid"),
+	type: "GET",
+	success: function (data) {
+	//console.log('POST request successful');
+	$('#AKtexampleModal .modal-bodyy').html(data);
+	$('#AKtexampleModal').modal('show');
+
+	},
+	error: function (error) {
+	console.log("Error fetching data:", error);
+	}
+	});
+	});
+	// $("#seattab1").addClass('active');
+	$("#tabshow2").hide();
+	$("#tabnew2").hide();
+	$("#popbtnB").hide();
+	$("#popbtnA").show();
+	$("#seatTab1").click(function () {
+	$("#tabshow1").show();
+	$("#tabnew1").show();
+	$("#tabnew2").hide();
+	$("#popbtnB").hide();
+	$("#popbtnA").show();
+	$("#tabshow2").hide();
+	$("#seatTab1").addClass('active');
+	$("#seatTab2").removeClass('active');
+
+	});
+
+	$("#seatTab2").click(function () {
+	$("#tabshow2").css("display", "block");
+	$("#seatTab2").addClass('active');
+	$("#seatTab1").removeClass('active');
+	$("#popbtnA").hide();
+	$("#tabshow1").hide();
+	$("#tabnew1").hide();
+	$("#tabnew2").show();
+	$("#popbtnB").show();
+
+	});
+
+	// $("#btnfocus").click(function () {
+	//     alert("Do you want select connect seat");
+	//     $("#seattab2").click();
+	// });
+
+	$("#btnfocus").click(function () {
+	var confirmation = confirm("would you like to select for you next sector?");
+	if (confirmation == true) {
+	if ($("#seattab2").is(":visible")) {
+	$("#seattab2").click();
+	}
+	}
+	else {
+
+	return false;
+	}
+	});
+
+
+	});
+
+		window.addEventListener("beforeunload", function () {
+		  localStorage.removeItem("BagssrKeyCount");
+		  localStorage.removeItem("selectedMeals");
+		  localStorage.removeItem("selectedMealsCon");
+	});
+
+</script>
+
+<style>
+	.chkbox {
+		background: #b1abab;
+		text-align: center;
+		cursor: not-allowed;
+		padding: 3px 0;
+	}
+
+	.border-service {
+		border: 1px solid #a5a2a2;
+		border-radius: 2px;
+	}
+
+	.bg-servc {
+		background-color: #f4f5f7;
+	}
+
+	.servc-bordr {
+		min-width: 131px;
+		max-width: 189px;
+		border-bottom: 1px solid #000;
+		border-top: none;
+		border-left: none;
+		border-right: none;
+	}
+
+	.servc-bordr, input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+		/*  -webkit-appearance: none; */
+		margin: 0;
+	}
+
+	.servc-bordr, textarea:focus, input:focus {
+		outline: none;
+	}
+	/*baggage*/
+	.servc-bordrbaggage {
+		min-width: 131px;
+		max-width: 189px;
+		border-bottom: 1px solid #000;
+		border-top: none;
+		border-left: none;
+		border-right: none;
+	}
+
+	.servc-bordrbaggage, input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+		margin: 0;
+	}
+
+	.servc-bordrbaggage, textarea:focus, input:focus {
+		outline: none;
+	}
+	/*  end; */
+	/*otherService*/
+	.servc-bordrwheel {
+		min-width: 131px;
+		max-width: 189px;
+		border-bottom: 1px solid #000;
+		border-top: none;
+		border-left: none;
+		border-right: none;
+	}
+
+	.servc-bordrwheel, input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+		margin: 0;
+	}
+
+	.servc-bordrwheel, textarea:focus, input:focus {
+		outline: none;
+	}
+	/*End other service*/
+	/*Connected Meal*/
+	.servc-bordrCon {
+		min-width: 131px;
+		max-width: 189px;
+		border-bottom: 1px solid #000;
+		border-top: none;
+		border-left: none;
+		border-right: none;
+	}
+
+	.servc-bordrCon, input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+		margin: 0;
+	}
+
+	.servc-bordrCon, textarea:focus, input:focus {
+		outline: none;
+	}
+	/*End connected Meal*/
+	/*wheel Connected*/
+	.servc-bordrwheelCon {
+		min-width: 131px;
+		max-width: 189px;
+		border-bottom: 1px solid #000;
+		border-top: none;
+		border-left: none;
+		border-right: none;
+	}
+
+	.servc-bordrwheelCon, input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+		margin: 0;
+	}
+
+	.servc-bordrwheelCon, textarea:focus, input:focus {
+		outline: none;
+	}
+	/*wheelconnected End*/
+
+	.seatmap-btn {
+		border: none;
+		padding: 4px 7px;
+		border-radius: 4px;
+		background: #b5cbe7;
+	}
+
+	.MWidth {
+		width: 1024px !important;
+		margin-left: -50%;
+	}
+
+	.btngry {
+		background-color: #808080 !important;
+	}
+
+	.select-width {
+		max-width: 120px;
+	}
+
+
+	.select-option {
+		max-width: 120px;
+	}
+
+	.select-option .servc-bordr {
+		max-width: 150px;
+	}
+
+	.width-90 {
+		width: 60px;
+	}
+
+	.select-option2 {
+		/*max-width: 120px;*/
+	}
+
+	.select-option2 .servc-bordr {
+		max-width: 150px;
+	}
+
+	.checkout .bg-white.service-section input {
+		max-width: 150px !important;
+		font-size: 0.9rem;
+		padding: 3px;
+	}
+
+	.checkout .bg-white.service-section {
+		font-size: 0.9rem;
+	}
+
+	.checkout .bg-white.service-section .seat {
+		display: inline-flex;
+		padding-left: 50px;
+	}
+
+	.checkout .bg-white.service-section .output-div-input {
+		margin: 3px;
+		font-weight: 600;
+		color: #085AC0;
+		width: 26px;
+	}
+
+	.checkout .bg-white.service-section .servc-content span {
+		font-weight: 600;
+		text-transform: capitalize;
+	}
+
+	.servc-bordrm1 option {
+		font-size: 12px;
+	}
+
+	.dropdown-options {
+		display: none;
+		position: absolute;
+		top: 10%;
+		left: 0;
+		background-color: white;
+		border: 1px solid #ccc;
+		width: 328px;
+		z-index: 10;
+		height: 240px;
+		overflow: auto;
+		text-align: left;
+	}
+
+
+	.dropdown-option {
+		padding: 7px;
+		cursor: pointer;
+		border-bottom: #eee 1px solid;
+	}
+
+	.dropdown-option:hover {
+		background-color: #f1f1f1;
+	}
+
+	.custom-dropdown {
+		position: relative;
+		display: inline-block;
+	}
+
+	.dropdown-btn {
+		display: inline-block;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		width: 158px;
+	}
+
+
+	.mealImagePreview {
+		position: absolute;
+		width: 100px;
+		height: 100px;
+		margin-left: 100px;
+		display: none;
+		z-index: 1;
+		/*  background: #fff;
+			border: 1px solid #ebd8d8; */
+	}
+
+
+
+	.service-table {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		border-radius: 8px;
+	}
+
+	.table-row {
+		display: flex;
+		border-bottom: 1px solid #ddd;
+		align-items: center;
+	}
+
+	.table-row.header {
+		background: #f4f4f4;
+		font-weight: bold;
+		position: inherit;
+		height: auto;
+	}
+
+	.cell {
+		flex: 1;
+		padding: 10px 0;
+		text-align: center;
+		border-right: 1px solid #eee;
+		display: inline-block;
+		align-items: center;
+	}
+
+
+
+	.cell .lft-spc {
+		padding: 0 3px;
+		display: inline-flex;
+	}
+
+	.cell:last-child {
+		border-right: none;
+	}
+
+	.icon {
+		width: 20px;
+		height: 20px;
+		margin-right: 5px;
+		vertical-align: middle;
+	}
+
+	.service-select, .service-input {
+		width: 100%;
+		padding: 6px 8px;
+		font-size: 14px;
+	}
+
+	.traveller-cell {
+		width: 100px;
+		flex: 0 0 auto;
+		text-align: center;
+		padding-left: 16px;
+		font-weight: bold;
+	}
+
+</style>
+<section id="myContainer1">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div class="modal fade" id="AKtexampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog rtwidth-modal" role="document">
+						<div class="modal-content MWidth">
+							<div class="modal-mfareheader d-flex justify-between">
+								<h2 class="text-22 fw-600">Seat Map</h2>
+							</div>
+							<div class="modal-bodyy mbody-padding">
+							</div>
+							<div class="modal-footer fbody-padding">
+								<div class="row legendHolder-box">
+									<div class="col-lg-8">
+										<ul>
+
+											<li style="padding:0;"><strong>Legend:</strong></li>
+											<li><span class="free"></span>Free Seats</li>
+											<li><span class="midcomfort"></span>&#8377; 120 - &#8377; 350</li>
+											<li><span class="comfort"></span>&#8377; 49 - 120, &#8377; 351 - 2000</li>
+											<li><span class="booked"></span>Occupied</li>
+
+										</ul>
+
+
+									</div>
+
+									<div class="col-lg-4">
+										@{
+											int segmentcount = Model.AkPassenger.journeys[0].segments.Count;
+											@if (segmentcount == 1)
+											{
+												<div class="d-flex">
+													<div>
+														<button type="submit" id="cancelButton1" data-dismiss="modal" class="btn btngry btnclose">Cancel</button>
+													</div>
+													<div>
+
+														<button type="submit" id="flighticon" data-dismiss="modal" class="btn btnclose btn-primary">Continue</button>
+													</div>
+												</div>
+											}
+											else
+											{
+
+												@for (int i = 0; i < segmentcount; i++)
+												{
+													@if (i == 1)
+													{
+														<div class="d-flex">
+
+															<div id="popbtnA">
+
+																<button type="submit" id="cancelButton2" data-dismiss="modal" class="btn btngry btnclose">Cancel</button>
+																<button type="submit" id="btnfocus" class="btn  btn-primary">Continue</button>
+
+															</div>
+															<div id="popbtnB" style="display:none;">
+																<button type="submit" id="cancelButton3" data-dismiss="modal" class="btn btngry btnclose">Cancel</button>
+																<button type="submit" id="flighticon" data-dismiss="modal" class="btn btnclose btn-primary">Continue</button>
+
+															</div>
+														</div>
+													}
+
+												}
+											}
+										}
+
+									</div>
+									<p><strong>Disclaimer:</strong> Seat allotment is the sole prerogative of the airline and can't be guaranteed by jetwaystravel.com</p>
+
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+</section>
+<div class="flight-box-content p-0 rounded-4">
+	<div class="tabs -pills-3 js-tabs">
+
+		<div class="tabs__content pt-0 js-tabs-content">
+			<div class="tabs__pane -tab-item-1 is-tab-el-active">
+				<div class="journey-box">
+					<ul class="nav nav-pills mb-1">
+						@{
+
+							<input type="hidden" value="@Model.AkPassenger.passengerscount" id="passengercountid">
+							var seatmaap2 = @Model.AkPassenger.journeys[0].segments.Count;
+							if (seatmaap2 == 1)
+							{
+								<li class="nav-item">
+									<button class="nav-link active ">@Model.AkPassenger.journeys[0].segments[0].designator.origin-@Model.AkPassenger.journeys[0].segments[0].designator.destination</button>
+
+								</li>
+							}
+							else
+							{
+								@for (int i = 0; i < seatmaap2; i++)
+								{
+									<li class="nav-item d-flex">
+										@if (i == 0)
+										{
+											<div id="seatTab1" class="nav-link  active">@Model.AkPassenger.journeys[0].segments[i].designator.origin-@Model.AkPassenger.journeys[0].segments[i].designator.destination</div>
+
+										}
+										else
+										{
+											<div id="seatTab2" class="nav-link ">@Model.AkPassenger.journeys[0].segments[i].designator.origin-@Model.AkPassenger.journeys[0].segments[i].designator.destination</div>
+										}
+									</li>
+
+
+								}
+							}
+						}
+
+
+					</ul>
+				</div>
+
+				<div class="service-table" id="tabnew1">
+					<div class="border-service">
+								@* <div class="d-flex justify-content-between bg-servc py-2">
+									<div class="serv-header">
+										Traveller
+									</div>
+									<div class="serv-header">
+										<img src="~/img/pmeal.png" style="width:20px;height:20px;margin-right:10px;" />  Meal
+									</div>
+									<div class="serv-header">
+										<img src="~/img/pseat.png" style="width:20px;height:20px;margin-right:10px;" />Seat
+									</div>
+									<div class="serv-header">
+										<img src="~/img/pbaggage.png" style="width:20px;height:20px;margin-right:10px;" /> Baggage
+									</div>
+									<div class="serv-header">
+										Special Request
+									</div>
+								</div> *@
+								<div class="table-row header">
+									<div class="cell traveller-cell"><span class="lft-spc">Traveller</span></div>
+									<div class="cell"><span class="lft-spc"><img src="~/img/pmeal.png" class="icon"> Meal</span></div>
+									<div class="cell"><span class="lft-spc"><img src="~/img/pseat.png" class="icon"> Seat</span></div>
+									<div class="cell"><span class="lft-spc"><img src="~/img/pbaggage.png" class="icon"> Baggage</span></div>
+									<div class="cell"><span class="lft-spc">Special Request</span></div>
+								</div>
+
+								@{
+									int passengerdata = Model.AkPassenger.passengerscount;
+									int passengerDataValue = 0;
+									for (int i = 0; i < Model.AkPassenger.passengerscount; i++)
+									{
+										if (Model.AkPassenger.passengers[i].passengerTypeCode == "ADT" || Model.AkPassenger.passengers[i].passengerTypeCode == "CHD")
+										{
+											if (Model.passkeytype != null)
+											{
+												Model.AkPassenger.passengers[i].name = Model.passkeytype[i].first;
+
+											}
+											passengerDataValue = passengerDataValue + 1;
+
+										}
+									}
+									passengerdata = passengerDataValue;
+
+								}
+								@for (int pa = 0; pa < passengerdata; pa++)
+								{
+
+									string ssrkey = string.Empty;
+									int ssrType = 0;
+									string bagkey = string.Empty;
+									string otherbagkey = string.Empty;
+									string ssrAvailable = string.Empty;
+									<div class="table-row">
+										<div class="cell traveller-cell">
+											<div class="lft-spc">
+											@Model.passkeytype[pa].first
+											</div>
+										</div>
+
+
+										@{
+											if (Model.AkMealslist != null)
+											{
+												var legSSrcount = Model.AkMealslist.legSsrs.Count;
+
+										<div class="cell">
+											<div class="lft-spc">
+
+													@{
+
+														List<SelectListItem> mealOptions = new List<SelectListItem>();
+														string Mealname = string.Empty;
+														string MealDisplay = string.Empty;
+														if (Model.AkMealslist.legSsrs.Count > 0)
+														{
+															for (int s = 0; s < Model.AkMealslist.legSsrs[0].legssrs.Count; s++)
+															{
+																MealDisplay = Model.AkMealslist.legSsrs[0].legssrs[s].name;
+																string ssrprice = Model.AkMealslist.legSsrs[0].legssrs[s].legpassengers[0].price;
+																string Mealcode = Model.AkMealslist.legSsrs[0].legssrs[s].ssrCode;
+																Mealname = Mealcode + "-" + Model.AkMealslist.legSsrs[0].legssrs[s].name + " ₹" + @Model.AkMealslist.legSsrs[0].legssrs[s].legpassengers[0].price;// + "_" + Model.AkMealslist.legSsrs[0].legssrs[s].ssrCode;
+																ssrkey = Model.AkMealslist.legSsrs[0].legssrs[s].legpassengers[pa].ssrKey + "_" + @Model.AkMealslist.legSsrs[0].legssrs[s].legpassengers[0].price;
+																string passengerKey = Model.AkMealslist.legSsrs[0].legssrs[s].legpassengers[pa].passengerKey;
+
+																//ssrAvailable = Model.AkMealslist.legSsrs[0].legssrs[s].available.ToString();
+																ssrType = Model.AkMealslist.legSsrs[0].legssrs[s].ssrType;
+																if (MealDisplay != null)
+																{
+																	mealOptions.Add(new SelectListItem { Text = Mealname, Value = ssrkey });
+																}
+
+															}
+														}
+														<div>
+														@if (mealOptions.Count == 0)
+														{
+																<select style="background:#f0f0f0;" id="" class="servc-bordr servc-bordrm1" disabled>
+																	<option selected="selected" value="">Meal Unavailable</option>
+																</select>
+														}
+														else
+														{
+																<select id="ddlMealOptions" class="servc-bordr">
+																	<option value=""><b>Please select Meal</b></option>
+																	@foreach (var option in mealOptions)
+																	{
+																		<option value="@option.Value">
+																			@option.Text
+																		</option>
+																	}
+																</select>
+														}
+							
+
+															
+
+															<input type="hidden" id="hiddenSsrKey" name="ssrKey" value="" />
+
+														</div>
+
+													}
+													</div>
+												</div>
+											}
+											else
+											{
+												<select style="background:#f0f0f0" id="ddlMealOptions" class="servc-bordr servc-bordrm1" disabled>
+													<option selected="selected" value="">Meal Unavailable</option>
+												</select>
+											}
+
+										}
+									<div class="cell">
+										<div class="lft-spc">
+											<input type="button" id="exampleModalSeat" value="Seat Map" class="button small-btn rtbtn exampleModalSeatdata" data-toggle="modal" data-target="#AKtexampleModal">
+
+											<div class="output-div-input" id="outputDiv_@pa"></div>
+										</div>
+									</div>
+										<!-- Output div for each passenger -->
+									<div class="cell select-baggage">
+										<div class="lft-spc">
+											@{
+												if (Model.AkBaggageDetails != null)
+												{
+
+												// List<SelectListItem> BaggageOptions = new List<SelectListItem>();
+													var baggageOptions = new List<SelectListItem>();
+
+
+													for (int s = 0; s < Model.AkBaggageDetails.journeySsrsBaggage[0].baggageSsr.Count; s++)
+													{
+														string priceBaggage = Model.AkBaggageDetails.journeySsrsBaggage[0].baggageSsr[s].passengersAvailabilityBaggage[0].price;
+														string Sssrcode = Model.AkBaggageDetails.journeySsrsBaggage[0].baggageSsr[s].ssrCode;
+														string bagcode = Sssrcode.StartsWith("X", StringComparison.OrdinalIgnoreCase).ToString();
+														var bagname = Model.AkBaggageDetails.journeySsrsBaggage[0].baggageSsr[s].name + "@" + Model.AkBaggageDetails.journeySsrsBaggage[0].baggageSsr[s].passengersAvailabilityBaggage[0].price;// + " " + Model.AkBaggageDetails.journeySsrsBaggage[0].baggageSsr[s].ssrCode;
+														bagkey = Model.AkBaggageDetails.journeySsrsBaggage[0].baggageSsr[s].passengersAvailabilityBaggage[pa].ssrKey + "_" + Model.AkBaggageDetails.journeySsrsBaggage[0].baggageSsr[s].passengersAvailabilityBaggage[0].price;
+														if (bagcode != "False")
+														{
+															baggageOptions.Add(new SelectListItem { Text = bagname, Value = bagkey });
+
+														}
+
+													}
+													<div class="d-flex">
+														<select id="ddlbagOptions" class="servc-bordrbaggage">
+															<option value=""><b>Please select Baggage</b></option>
+															@{
+																var sortedBaggageOptions = baggageOptions
+														.OrderBy(o => int.Parse(new string(o.Text.Where(char.IsDigit).ToArray())))
+														.ToList();
+															}
+
+															@foreach (var option in sortedBaggageOptions)
+															{
+																<option value="@option.Value">
+																	@option.Text
+																</option>
+															}
+														</select>
+														<input type="hidden" id="hiddenbagKey" name="bagkey" value="" />
+													</div>
+												}
+												else
+												{
+													<select style="background:#f0f0f0" id="ddlbagOptions" class="servc-bordr servc-bordrm1" disabled>
+														<option selected="selected" value="">Baggage Unavailable</option>
+													</select>
+												}
+											}
+										</div>
+										</div>
+										<div class="cell">
+											<div class="lft-spc">
+											<select class="servc-bordr">
+											<option value="" disabled selected hidden></option>
+												<option>Meal1</option>
+												<option>Meal2</option>
+												<option>Meal3</option>
+												<option>Meal4</option>
+											</select>
+											</div>
+										</div>
+									</div>
+
+								}
+					</div>
+				</div>
+
+
+				<div class="service-table" id="tabnew2">
+					<div class="border-service">
+								@* <div class="d-flex justify-content-between bg-servc py-2">
+									<div class="serv-header">
+										Traveller
+									</div>
+									<div class="serv-header">
+										<img src="~/img/pmeal.png" style="width:20px;height:20px;margin-right:10px;" /> Meal
+									</div>
+									<div class="serv-header">
+										<img src="~/img/pseat.png" style="width:20px;height:20px;margin-right:10px;" /> Seat
+									</div>
+
+									<div class="serv-header">
+										Special Request
+									</div>
+								</div> *@
+
+								<div class="table-row header">
+									<div class="cell traveller-cell"><span class="lft-spc">Traveller</span></div>
+									<div class="cell"><span class="lft-spc"><img src="~/img/pmeal.png" class="icon"> Meal</span></div>
+									<div class="cell"><span class="lft-spc"><img src="~/img/pseat.png" class="icon"> Seat</span></div>
+									<div class="cell"><span class="lft-spc"><img src="~/img/pbaggage.png" class="icon"> Baggage</span></div>
+									<div class="cell"><span class="lft-spc">Special Request</span></div>
+								</div>
+
+
+								@{
+									int passengerdataConnect = Model.passkeytype.Count;
+									int passengerDataValue1 = 0;
+									for (int i = 0; i < Model.AkPassenger.passengerscount; i++)
+									{
+										if (Model.AkPassenger.passengers[i].passengerTypeCode == "ADT" || Model.AkPassenger.passengers[i].passengerTypeCode == "CHD")
+										{
+											if (Model.passkeytype != null)
+											{
+												Model.AkPassenger.passengers[i].name = Model.passkeytype[i].first;
+
+											}
+											passengerDataValue1 = passengerDataValue1 + 1;
+
+										}
+									}
+									passengerdataConnect = passengerDataValue1;
+								}
+
+								@{
+									for (int pas = 0; pas < passengerdataConnect; pas++)
+									{
+
+										string ssrkey = string.Empty;
+										int ssrType = 0;
+										string bagkey = string.Empty;
+										string otherbagkey = string.Empty;
+										string ssrAvailable = string.Empty;
+										<div class="table-row">
+										<div class="cell traveller-cell">
+												@Model.passkeytype[pas].first 
+										</div>
+									<div class="cell select-option2">
+										<div class="lft-spc">
+												@{
+													if (Model.AkMealslist != null)
+													{
+														if (Model.AkMealslist.legSsrs.Count >= 2)
+														{
+															List<SelectListItem> mealOptions = new List<SelectListItem>();
+															string Mealname = string.Empty;
+															string MealDisplay = string.Empty;
+
+															for (int s = 0; s < Model.AkMealslist.legSsrs[1].legssrs.Count; s++)
+															{
+																
+																	MealDisplay = Model.AkMealslist.legSsrs[1].legssrs[s].name;
+																	string ssrprice = Model.AkMealslist.legSsrs[1].legssrs[s].legpassengers[0].price;
+																	string Mealcode = Model.AkMealslist.legSsrs[1].legssrs[s].ssrCode;
+																	Mealname = Mealcode + "-" + Model.AkMealslist.legSsrs[1].legssrs[s].name + " @" + @Model.AkMealslist.legSsrs[1].legssrs[s].legpassengers[0].price;
+																	ssrkey = Model.AkMealslist.legSsrs[1].legssrs[s].legpassengers[pas].ssrKey + "_" + @Model.AkMealslist.legSsrs[1].legssrs[s].legpassengers[0].price;
+																	string passengerKey = Model.AkMealslist.legSsrs[1].legssrs[s].legpassengers[pas].passengerKey;
+																	ssrAvailable = Model.AkMealslist.legSsrs[1].legssrs[s].available.ToString();
+																	ssrType = Model.AkMealslist.legSsrs[1].legssrs[s].ssrType;
+																 if (MealDisplay != null)
+																	{
+																		mealOptions.Add(new SelectListItem { Text = Mealname, Value = ssrkey });
+																	}
+																
+
+
+															}
+															<div>
+															@if (mealOptions.Count == 0)
+															{
+																	<select style="background:#f0f0f0;" id="" class="servc-bordr servc-bordrm1" disabled>
+																		<option selected="selected" value="">Meal Unavailable</option>
+																	</select>
+
+															}
+															else
+															{
+																	<select id="ddlMealOptions" class="servc-bordrCon">
+																		<option value=""><b>Please select Meal</b></option>
+																		@foreach (var option in mealOptions)
+																		{
+																			<option value="@option.Value">
+																				@option.Text
+																			</option>
+																		}
+																	</select>
+															}
+														
+																
+
+																<input type="hidden" id="hiddenSsrKey2" name="ssrKey" value="" />
+															</div>
+														}
+														else
+														{
+															<select style="background:#f0f0f0" id="ddlMealOptions" class="servc-bordr servc-bordrm1" disabled>
+																<option selected="selected" value="">Meal Unavailable</option>
+															</select>
+														}
+													}
+													else
+													{
+														<select style="background:#f0f0f0" id="ddlMealOptions" class="servc-bordr servc-bordrm1" disabled>
+															<option selected="selected" value="">Meal Unavailable</option>
+														</select>
+													}
+												}
+												</div>
+											</div>
+											<div class="cell">
+												<div class="lft-spc">
+													<input type="button" id="exampleModalSeat" value="Seat Map" class="button small-btn rtbtn exampleModalSeatdata" data-toggle="modal" data-target="#AKtexampleModal">
+													<div class="output-div-input" id="outputDivConnect_@pas"></div>
+												</div>
+											</div>
+												<div class="cell">
+													<div class="lft-spc">&nbsp;</div>
+												</div>
+												<div class="cell">
+													<div class="lft-spc">
+														<select class="servc-bordr">
+															<option value="" disabled selected hidden></option>
+															<option>Meal1</option>
+															<option>Meal2</option>
+															<option>Meal3</option>
+															<option>Meal4</option>
+														</select>
+													</div>
+											</div>
+										</div>
+
+									}
+
+								}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,1564 @@
+﻿@using System.Security.Claims;
+@using CoporateBooking.Models;
+   @using Newtonsoft.Json;
+@* @model DomainLayer.Model.GetfligthModel *@
+@model DomainLayer.Model.SimpleAvailabilityRequestModel
+
+@{
+    var data = Model;
+
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+
+    .Radiohide input {
+        display: none;
+    }
+
+    .endselect {
+        cursor: pointer;
+    }
+
+
+    .custom-tooltip {
+        position: absolute;
+        display: none;
+        background: #fff; /* White background */
+        color: #666; /* Gray text */
+        border: 1px solid #ccc;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+        white-space: nowrap;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+        pointer-events: none;
+    }
+
+</style>
+
+
+@* <script>
+	$(document).ready(function () {
+		document.getElementById('corporateLogin').addEventListener('click', function (event) {
+			event.preventDefault(); // Prevent default behavior
+			window.location.href = "http://localhost:5202"; // Redirect to the desired URL
+		});
+	});
+</script> *@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    function preventBack() {
+    window.history.forward();
+    }
+    preventBack();
+    window.onunload = function () {
+    preventDefault();
+    };
+    });
+
+
+    // function toggleRadio(event, radioId) {
+    //     event.preventDefault(); // Prevent the default anchor behavior
+    //     var radioButton = document.getElementById(radioId);
+    //     radioButton.checked = true; // Check the radio button
+    // }
+
+    function toggleRadio(event, radioId) {
+    event.preventDefault(); // Prevent the default anchor behavior
+
+    // Uncheck all radio buttons
+    document.querySelectorAll('.form-radio-input').forEach(radio => {
+    radio.checked = false;
+    });
+
+    // Check the selected radio button
+    var radioButton = document.getElementById(radioId);
+    radioButton.checked = true;
+    }
+</script>
+
+
+
+
+
+
+<body>
+    @{
+        SimpleAvailabilityRequestModel model = null;
+        string origin = "";
+        string startdate = "";
+    }
+    <!--====== Scroll To Top Area Start ======-->
+    <div id="scrollUp" title="Scroll To Top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    <div class="main" id="loaderbg">
+
+        <div class="cs-loader-main" id="loader" style="display:none;">
+            <div class="cs-loader">
+                <div class="cs-loader-inner">
+                    <div><img src="~/img/cloude-1.png"></div>
+                    <label><img src="~/img/airo-f.png"></label>
+                    <div class="load-text">Search for cheap Flight...</div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- ***** Header Start ***** -->
+        <header class="navbar navbar-sticky navbar-expand-lg navbar-dark">
+            <div class="container position-relative">
+                <a class="navbar-brand" asp-controller="FlightSearchIndex" asp-action="Index">
+                    <img class="navbar-brand-regular" src="~/img/logo/logo-white.png" alt="brand-logo">
+                    <img class="navbar-brand-sticky" src="~/img/logo/logo.png" alt="sticky brand-logo">
+                </a>
+                <button class="navbar-toggler d-lg-none" type="button" data-toggle="navbarToggler" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-inner">
+                    <!--  Mobile Menu Toggler -->
+                    <button class="navbar-toggler d-lg-none" type="button" data-toggle="navbarToggler" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+
+                    <nav>
+                        <ul class="navbar-nav" id="top-navbar-nav">
+                            <li class="nav-item">
+                            <li class="nav-item">
+                                <small>Language</small>
+                                <select aria-label="Default">
+                                    <option>English</option>
+                                    <option value="1">French</option>
+                                    <option value="2">Russian </option>
+                                    <option value="3">Spanish</option>
+                                    <option value="3">Arabic</option>
+                                </select>
+                            </li>
+                            </li>
+                            <li class="nav-item">
+                                <small>Country</small>
+                                <select aria-label="Default">
+                                    <option>India</option>
+                                    <option value="1">UAE</option>
+                                    <option value="2">USA</option>
+                                </select>
+                            </li>
+                            <li>
+
+
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+
+                                    var identity = (ClaimsIdentity)User.Identity;
+                                    IEnumerable<Claim> claims = identity.Claims;
+
+                                    var userName = claims.Where(c => c.Type == ClaimTypes.Name).ToList()[0].Value;
+                                    var userEmail = claims.Where(c => c.Type == ClaimTypes.Email).ToList()[0].Value;
+                                    
+                                    var initials = "";
+                                    var parts = userName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                                    if (parts.Length >= 2)
+                                    {
+                                        initials = parts[0][0].ToString().ToUpper() + parts[1][0].ToString().ToUpper();
+                                    }
+                                    else if (parts.Length == 1)
+                                    {
+                                        initials = parts[0][0].ToString().ToUpper();
+                                    }
+
+                                <div class="profile-initials">@initials</div>
+
+
+
+                                   @*  <div class="profile-initials">@(userName.Split(' ')[0][0].ToString().ToUpper() + userName.Split(' ')[1][0].ToString().ToUpper())</div> *@
+
+
+                                    <div class="profile-popup" style="display:none;">
+                                        <p class="greeting">Hi,@userName</p>
+                                        @* <span>@userEmail</span> *@
+                                        @*  <div class="circle-initials">@(userName.Split(' ')[0][0].ToString().ToUpper() + userName.Split(' ')[1][0].ToString().ToUpper())</div> *@
+                                        <a asp-controller="Booking" asp-action="MyBooking" class="d-flex">
+                                            <span><i class="fa fa-suitcase" aria-hidden="true"></i></span>
+                                            <div class="inner-list-bx">
+                                                My Trips
+                                                <span>See booking details, Print e-ticket, Cancel Booking, Modify Booking, Check Refund Status & more.</span>
+                                            </div>
+                                        </a>
+                                        <a class="nav-link dropbtn signOutBtn" href="@Url.Action("Logout", "Login")">Logout</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="dropdown">
+                                        <div style="padding-bottom:15px;"><a class="nav-link dropbtn" href="#">Login or Signup</a></div>
+                                        <div class="dropdown-content">
+                                            <a href="#" data-toggle="modal" data-target="#signUp-pop">
+                                                Customer Login
+                                                <span>Login &amp; check bookings</span>
+                                            </a>
+                                            <a asp-controller="Login" asp-action="UserLogin">
+                                                Corporate Travel
+                                                <span>Login corporate account</span>
+                                            </a>
+                                            <a href="#">
+                                                Agent Login
+                                                <span>Login your agent account</span>
+                                            </a>
+                                            <a asp-controller="FlightSearchIndex" asp-action="MyBooking">
+                                                My Booking
+                                                <span>Manage your bookings here</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+
+
+                                @* <div class="dropdown-content">
+                                    <a href="#" data-toggle="modal" data-target="#signUp-pop">
+                                        Customer Login
+                                        <span>Login &amp; check bookings</span>
+                                    </a>
+                                    <a asp-controller="Login" asp-action="UserLogin">
+                                        Corporate Travel
+                                        <span>Login corporate account</span>
+                                    </a>
+                                    <a href="#">
+                                        Agent Login
+                                        <span>Login your agent account</span>
+                                    </a>
+                                    <a asp-controller="FlightSearchIndex" asp-action="MyBooking">
+                                        My Booking
+                                        <span>Manage your bookings here</span>
+                                    </a>
+                                </div> *@
+                            </li>
+                        </ul>
+                    </nav>
+                    <nav id="mobile-nav">
+                        <ul class="navbar-nav" id="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#">
+                                    Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link scroll" href="features">Features</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#">
+                                    Pages
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link scroll" href="#">Screenshots</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link scroll" href="#">Pricing</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link scroll" href="#">Contact</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <!-- ***** Header End ***** -->
+        <!-- start sign-up -->
+        <div class="modal fade" id="signUp-pop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="border:none;">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="white-text">&times;</span>
+                        </button>
+                        <div class="modal-body">
+                            <div class="sign-up-container">
+                                <div class="form-container sign-in-container">
+
+                                    <!-- start sign-in -->
+                                    <div class="sign-up-inner" id="mobileID">
+                                        <h1>Login or Create an account</h1>
+                                        <input type="email or mobile" placeholder="Email ID or Mobile Number" />
+                                        <button type="button" id="btnLogin">Continue</button>
+                                        <p class="text-center">Or Login/Signup With</p>
+                                        <div class="social-container">
+                                            <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                                            <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                                            <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                                        </div>
+                                        <p>By proceeding, you agree to Jetwaystravel <a href="#">Privacy Policy</a>, <a href="#">User Agreement</a> and <a href="#">T&amp;Cs</a> </p>
+                                    </div>
+                                    <!-- End sign-in -->
+                                    <!-- start otp -->
+                                    <div class="sign-up-inner" id="otpID" style="display:none;">
+                                        <h1>Otp Authentication</h1>
+                                        <div class="otp-input-wrapper">
+                                            <input type="text" maxlength="6" pattern="[0-9]*" autocomplete="off">
+                                            <svg>
+                                                <line x1="0" y1="0" x2="240" y2="0" stroke="#ddd" stroke-width="2" stroke-dasharray="20,22" />
+                                            </svg>
+                                        </div>
+                                        <div class="input-otp">
+                                            <a href="#">Resend OTP</a>
+                                        </div>
+                                        <button>Login</button>
+                                        <a href="#" class="login-otp">Login with Password</a>
+                                    </div>
+                                    <!-- End otp -->
+
+                                </div>
+                                <div class="overlay-container">
+                                    <div class="overlay">
+                                        <div class="overlay-panel overlay-right">
+                                            <h1>Sign up/Login now to</h1>
+                                            <ul>
+                                                <li><i class="fa fa-plane"></i>Lock Flight Prices &amp; Pay Later</li>
+                                                <li><i class="fa fa-building" aria-hidden="true"></i>Book Hotels @@ ₹0</li>
+                                                <li><i class="fa fa-database" aria-hidden="true"></i>Sign up &amp; Earn</li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End sign-up -->
+        <!-- ***** Flight Search Area Start ***** -->
+
+        <section class="section search-area bg-overlay  d-flex align-items-center @(User.Identity.IsAuthenticated ? "logged-in" : "guest")">
+            <div class="container">
+                <div class="row ">
+                    <div class="col-12 col-md-7 col-lg-12">
+                        <div class="row justify-content-center">
+                            <div class="nav-bar col-12 col-md-7 col-lg-9">
+                                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                                    <li class="nav-item">
+
+                                        <a class="nav-link" id="pills-Flight-tab" data-toggle="pill" asp-controller="FlightSearchIndex" asp-action="Index" role="tab" aria-controls="pills-Flight" aria-selected="true"><img class="mr-2" src="~/img/nav-icon-1.png">Flight</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-Hotel-tab" data-toggle="pill" href="#pills-Hotel" role="tab" aria-controls="pills-Hotel" aria-selected="false"><img class="mr-2" src="~/img/nav-icon-2.png">Hotel</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-Visa-tab" data-toggle="pill" href="#pills-Visa" role="tab" aria-controls="pills-Visa" aria-selected="false"><img class="mr-2" src="~/img/nav-icon-3.png">Visa</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-Holidays-tab" data-toggle="pill" href="#pills-Holidays" role="tab" aria-controls="pills-Holidays" aria-selected="false"><img class="mr-2" src="~/img/nav-icon-4.png">Holidays</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-Trains-tab" data-toggle="pill" href="#pills-Trains" role="tab" aria-controls="pills-Trains" aria-selected="false"><img class="mr-2" src="~/img/nav-icon-5.png">Trains</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-Buses-tab" data-toggle="pill" href="#pills-Buses" role="tab" aria-controls="pills-Buses" aria-selected="false"><img class="mr-2" src="~/img/nav-icon-6.png">Buses</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-Cabs-tab" data-toggle="pill" href="#pills-Cabs" role="tab" aria-controls="pills-Cabs" aria-selected="false"><img class="mr-2" src="~/img/nav-icon-7.png">Cabs</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-light-Passes-tab" data-toggle="pill" href="#pills-light-Passes" role="tab" aria-controls="pills-flight-Passes" aria-selected="false"><img class="mr-2" src="~/img/nav-icon-8.png">Flight Passes</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="search-box">
+                                <!-- ***** Emulate to Company / Employee Start ***** -->
+                                @{
+
+                                    var jsonData = ViewBag.CustomerData;
+
+                                }
+
+
+                                <!-- ***** Emulate to Company / Employee End ***** -->
+
+
+                                <form asp-action="SearchResultFlight" asp-controller="FlightSearchIndex" method="post" id="multipleValuesForm">
+
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <div class="emulate-bx">
+                                            <h6>Emulate to Company / Employee</h6>
+                                            <div class="row d-flex" id="emltoggle" style="display: none; border-bottom: 1px solid #e8ecee; background: linear-gradient(90deg, #f4f4f4 0%, #f4f4f4 35%, #fff 89%); padding-bottom: 7px;">
+                                                <!-- Legal Entity Name -->
+                                                <div class="col-12 col-md-10 col-lg-3">
+                                                    <label>Legal Entity Name</label>
+                                                    <div class="autocomplete-wrapper">
+                                                        <input type="text" name="legal_entity" id="legalEntitySelect" placeholder="Enter legal entity name" class="autocomplete-input legal-entity" required autocomplete="off">
+                                                        <span class="remove-icon">×</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Employee -->
+                                                <div class="col-12 col-md-10 col-lg-3">
+                                                    <label>Employee</label>
+                                                    <div class="autocomplete-wrapper">
+                                                        <input type="text" name="employee" id="employeeSelect" placeholder="Enter Employee name" class="autocomplete-input employee" required autocomplete="off">
+                                                        <span class="remove-icon">×</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Billing Entity Name -->
+                                                <div class="col-12 col-md-10 col-lg-3">
+                                                    <label>Billing Entity Name</label>
+                                                    <div class="autocomplete-wrapper">
+                                                        <input type="text" id="billingSelect" placeholder="Enter Billing name" name="billing" class="autocomplete-input billing" required autocomplete="off" />
+                                                        <span class="remove-icon">×</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Balance -->
+                                                <div class="col-12 col-md-10 col-lg-2 mt-5">
+                                                    <label>Balance</label>
+                                                    <input type="text" id="Mydiv" name="balance" class="form-control balance-input" placeholder="₹ 0.00" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <input type="hidden" name="hdnempid" id="hdnempid" />
+                                    }
+
+
+
+                                    <div class="S-option">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="SameAirlineRT" value="OneWay" id="one-wayid" checked>
+                                            <label class="form-check-label">One way</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="SameAirlineRT" value="RoundTrip" id="round-tripid">
+                                            <label class="form-check-label">Round Trip</label>
+                                        </div>
+                                        <div class="form-check form-check-inline d-none">
+                                            <input class="form-check-input" type="radio" name="SameAirlineRT" value="AirlineRT" id="multi-cityid">
+                                            <label class="form-check-label">Same Airline Roundtrip</label>
+                                        </div>
+                                        <div class="custom-control-inline float-right"><h5 style="font-weight:600;">Corporate Booking</h5></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="row">
+                                            <div class="col-12 col-md-10 col-lg-3 space autocomplete">
+                                                @{
+                                                    string Serchhome = ViewBag.SearchHome;
+                                                    if (!string.IsNullOrEmpty(Serchhome))
+                                                    {
+                                                        //object _simpleAvailabilityRequestModel = Newtonsoft.Json.JsonConvert.DeserializeObject<object>(Serchhome);
+
+
+                                                        model = Newtonsoft.Json.JsonConvert.DeserializeObject<SimpleAvailabilityRequestModel>(Serchhome);
+
+
+                                                        origin = model.origin;
+                                                        startdate = model.beginDate;
+
+                                                    }
+
+                                                }
+                                                <label>Flying From</label>
+                                                <span class="input-group-text flightdepr" id="myInputbx">
+                                                    <input type="text" id="myInput" maxlength="40" asp-for="origin" class="form-control text-15 " value="@origin" placeholder="Enter AirportName" onclick="toggleDropdown()">
+                                                    <span id="airportName"></span>
+                                                </span>
+                                                <div id="errororigin" class="errorbox" style="display:none;">Enter Origin Name*</div>
+
+                                                <span class="autodropdown">
+                                                    <select id="selectedItemId" name="selectedItemId" onchange="handleSelection()">
+                                                        <option value="" style="display:none;">Please select</option>
+
+                                                        @if (Citynamelist.GetCityData() != null)
+                                                        {
+                                                            foreach (var item in Citynamelist.GetCityData())
+                                                            {
+                                                                <option value="@item.citycode">@item.cityname - @item.citycode -<br>@item.airportname </option>
+
+                                                            }
+                                                        }
+
+
+                                                    </select>
+                                                </span>
+
+                                            </div>
+                                            <div class="rplc-btn">
+                                                <img src="~/img/direction-arrows.png" />
+                                            </div>
+                                            <div class="col-12 col-md-10 col-lg-3 space autocomplete">
+                                                <label>Flying To</label>
+                                                <span class="input-group-text" id="basic-addon1">
+                                                    <input type="text" maxlength="40" id="myInput1" asp-for="destination" class="form-control text-15 " value="" placeholder="Enter AirportName" onclick="toggleDropdownArrival()">
+                                                    <span id="airportArval"></span>
+                                                </span>
+                                                <div id="errordestinaton" class="errorbox" style="display:none;">Enter Destination Name*</div>
+                                                <span class="autoarrival">
+                                                    <select id="arrivalItemId" name="arrivalItemId" onchange="arrivalSelection()">
+                                                        <option value="" style="display:none;">Please select</option>
+                                                        @if (Citynamelist.GetCityData() != null)
+                                                        {
+                                                            foreach (var item in Citynamelist.GetCityData())
+                                                            {
+                                                                <option value="@item.citycode">@item.cityname - @item.citycode -<br>@item.airportname </option>
+
+                                                            }
+                                                        }
+
+
+                                                    </select>
+                                                </span>
+
+                                            </div>
+
+
+                                            <div class="col-12 col-md-10 col-lg-2 space">
+                                                <label>Departure</label>
+                                                <span class="input-group-text">
+                                                    @* <img src="~/img/calender-icon.png" alt="icon"> *@
+                                                    <input id="start-date" asp-for="beginDate" value="" type="" placeholder="Enter Date" class="form-control text-20 fw-600">
+
+                                                    <span asp-validation-for="beginDate"></span>
+                                                </span>
+                                                <span id="startDate" class="errorbox" style="display:none;">Enter Start Date*</span>
+                                            </div>
+
+                                            <div class="col-12 col-md-10 col-lg-2 space endselect">
+                                                <label>Return</label>
+                                                <span class="input-group-text" id="bgEnddate">
+                                                    @* <img src="~/img/calender-icon.png" alt="icon"> *@
+                                                    <input id="end-date" asp-for="endDate" type="" placeholder="" class="form-control text-20 fw-600" disabled>
+
+                                                    <span asp-validation-for="endDate"></span>
+                                                </span>
+                                                <span id="endDate" class="errorbox" style="display:none;">Enter End Date*</span>
+                                                <p class="rounddateinput">Book a round trip <br> to save more</p>
+                                            </div>
+                                            <div class="col-12 col-md-10 col-lg-2 space travellers">
+                                                <label>Travellers </label>
+                                                <div class="searchMenu-guests js-form-dd js-form-counters">
+                                                    <div data-x-dd-click="searchMenu-guests">
+
+                                                        <div class="text-15 text-light-1 ls-2 lh-16">
+                                                            <span class="js-count-adult text-22 text-light-1 fw-600" id="count_adult">1</span> adults
+                                                            -
+                                                            <span class="js-count-child text-22 text-light-1 fw-600" id="count_child">0</span> children
+                                                            -
+                                                            <span class="js-count-infents text-22 text-light-1 fw-600" id="count_infant">0</span> Infants
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="searchMenu-guests__field shadow-2" data-x-dd="searchMenu-guests" data-x-dd-toggle="-is-active">
+
+                                                        <div class="bg-white px-30 py-30 rounded-4">
+
+                                                            @*  ------------------------ *@
+                                                            <div class="d-flex y-gap-10 justify-between items-center">
+                                                                <div class="btn-incr-adult">
+                                                                    <div class="text-13 fw-600">Adults</div>
+
+                                                                    <input type="hidden" value="ADT" asp-for="@Model.passengercount.adulttype" />
+                                                                    <div class="text-13 fw-500">Aged 12+ yrs</div>
+                                                                </div>
+                                                                <div class="btn-increase" style="box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2); padding: 0;">
+                                                                    <div class="decrement sub btn_sub" style=" border-left: 1px solid #dcdcdc; border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc; border-right:0; border-radius: 5px 0 0 5px; margin:0; text-align: center; padding: 0; line-height: 25px;"><i class="fa fa-minus" aria-hidden="true" style="font-size: 11px; font-weight: 600;"></i></div>
+
+                                                                    <input type="number" id="field_adult" class="input-field" value="1" asp-for="@Model.passengercount.adultcount" min="1" max="9" style="background: #f6f9ff; width: 40px; height: 30px;  border-top: 1px solid #dcdcdc !important;  border-left: 1px solid #dcdcdc !important;  border-right: 1px solid #dcdcdc !important;   border-bottom: 1px solid #dcdcdc !important; text-align: center; margin: 0;">
+                                                                    <div class="increment add btn_sub" style="border-left: 0; border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc; border-right:1px solid #dcdcdc; border-radius: 0 5px 5px 0; margin:0; text-align: center; padding: 0; line-height: 25px;"><i class="fa fa-plus" aria-hidden="true" style="font-size: 11px; font-weight: 600;"></i></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="border-top-light mt-10 mb-10"></div>
+                                                            <div class="d-flex y-gap-10 justify-between items-center">
+                                                                <div class="btn-incr-chld">
+                                                                    <div class="text-13 fw-600">
+                                                                        Children
+                                                                    </div>
+                                                                    <input type="hidden" value="CHD" asp-for="@Model.passengercount.childtype" />
+                                                                    <div class="text-13 fw-500">
+                                                                        Aged 2-12 yrs
+                                                                    </div>
+                                                                </div>
+                                                                <div class="btn-increase" style="box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2); padding: 0;">
+                                                                    <div class="decrement1 sub btn_sub" style=" border-left: 1px solid #dcdcdc; border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc; border-right:0; border-radius: 5px 0 0 5px; margin:0; text-align: center; padding: 0; line-height: 25px;"><i class="fa fa-minus" aria-hidden="true" style="font-size: 11px; font-weight: 600;"></i></div>
+                                                                    <input type="number" id="field_child" class="input-field" value="0" asp-for="@Model.passengercount.childcount" min="0" max="6" style="background: #f6f9ff; width: 40px; height: 30px;  border-top: 1px solid #dcdcdc !important;  border-left: 1px solid #dcdcdc !important;  border-right: 1px solid #dcdcdc !important;   border-bottom: 1px solid #dcdcdc !important; text-align: center; margin: 0;">
+                                                                    <div class="increment1 add btn_sub" style="border-left: 0; border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc; border-right:1px solid #dcdcdc; border-radius: 0 5px 5px 0; margin:0; text-align: center; padding: 0; line-height: 25px;"><i class="fa fa-plus" aria-hidden="true" style="font-size: 11px; font-weight: 600;"></i></div>
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="border-top-light mt-10 mb-10"></div>
+                                                            <div class="d-flex y-gap-10 justify-between items-center">
+                                                                <div class="infant-area">
+                                                                    <div class="text-13 fw-600">Infants</div>
+                                                                    <input type="hidden" value="INFT" asp-for="@Model.passengercount.infanttype" />
+                                                                    <div class="text-13 fw-500">
+                                                                        Below 2 yrs
+                                                                    </div>
+                                                                </div>
+                                                                <div class="btn-increase" style="box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2); padding: 0;">
+                                                                    <div class="decrement2 sub btn_sub" style=" border-left: 1px solid #dcdcdc; border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc; border-right:0; border-radius: 5px 0 0 5px; margin:0; text-align: center; padding: 0; line-height: 25px;"><i class="fa fa-minus" aria-hidden="true" style="font-size: 11px; font-weight: 600;"></i></div>
+
+                                                                    <input type="number" id="field_infant" class="input-field" value="0" asp-for="@Model.passengercount.infantcount" min="0" max="6" style="background: #f6f9ff; width: 40px; height: 30px;  border-top: 1px solid #dcdcdc !important;  border-left: 1px solid #dcdcdc !important;  border-right: 1px solid #dcdcdc !important;   border-bottom: 1px solid #dcdcdc !important; text-align: center; margin: 0;">
+                                                                    <div class="increment2 add btn_sub" style="border-left: 0; border-top: 1px solid #dcdcdc; border-bottom: 1px solid #dcdcdc; border-right:1px solid #dcdcdc; border-radius: 0 5px 5px 0; margin:0; text-align: center; padding: 0; line-height: 25px;"><i class="fa fa-plus" aria-hidden="true" style="font-size: 11px; font-weight: 600;"></i></div>
+
+                                                                </div>
+                                                            </div>
+                                                            <div>
+                                                                <label style="margin: 11px 0 4px;width: 100%; padding: 7px 0 0; border-top: 1px solid #dddddd;">Choose Travel Class</label>
+                                                                <label id="lbEconomy" class="mt-5" style="font-weight: 500;">
+                                                                    <input type="radio" id="rbEconomy" name="flightclass" checked value="C" style="vertical-align: sub; margin-right: 5px;">
+                                                                    Corporate
+                                                                </label>
+                                                                <label id="lbBusiness" class="mt-5" style="font-weight: 500;">
+                                                                    <input type="radio" name="flightclass" value="B" id="rbBusiness" style="vertical-align: sub; margin-right: 5px;">
+                                                                    Business
+                                                                </label>
+                                                                @*<label id="lbFirstClass" class="mt-5" style="font-weight: 500;">
+                                                                    <input type="radio" name="flightclass" value="F" id="rbFirst" style="vertical-align: sub; margin-right: 5px;">
+                                                                    First Class
+                                                                </label>*@
+                                                                <label id="lbPremiumEconomy" class="mt-5" style="font-weight: 500;">
+                                                                    <input type="radio" name="flightclass" value="P" id="rbpEconomy" style="vertical-align: sub; margin-right: 5px;">
+                                                                    Premium Economy
+                                                                </label>
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-12 col-lg-12 search-bottom"></div>
+
+
+                                            <div class="col-lg-12">
+                                                <div class="row d-flex justify-content-end">
+                                                    <div class="col-12 col-md-10 col-lg-2 pr-0 mt-2">
+                                                        <button type="submit" id="searchbtn" class="btn btn-lg btn-block" onclick="validateForm()" @(User.Identity.IsAuthenticated ? "" : "disabled")>Search</button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @* <input type="hidden" name="flightclass" value="Corporate" />  *@
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <!-- ***** Flight Search Area End ***** -->
+        <!-- ***** whybook Area Start ***** -->
+        <section class="whybook">
+            <div class="hd-one mb-4">Why Book With Us?</div>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-5 col-sm-4">
+                        <div class="block-one"><img src="~/img/why-book-icon1.png" alt="#"></div>
+                        <div class="block-two">
+                            <p>Lowest Budget Airline</p>
+                            <h2>Fare Guarantee</h2>
+                        </div>
+                    </div>
+                    <div class="col-5 col-sm-4">
+                        <div class="block-one"><img src="~/img/why-book-icon2.png" alt="#"></div>
+                        <div class="block-two">
+                            <p>Easy Book In</p>
+                            <h2>Just 3 Steps</h2>
+                        </div>
+                    </div>
+                    <div class="col-5 col-sm-4">
+                        <div class="block-one"><img src="~/img/why-book-icon3.png" alt="#"></div>
+                        <div class="block-two">
+                            <p>24x365 Days</p>
+                            <h2>Free Phone Assistance</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ***** whybook Area End ***** -->
+        <!-- ***** Search History Start ***** -->
+        <section>
+            <div class="container">
+                <div class="serach-history-bx">
+                    <h4>Search History</h4>
+                    <div class="inner-bx">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Legal Entity</th>
+                                    <th>Employee</th>
+                                    <th>Billing Entity Name</th>
+                                    <th>Flying From</th>
+                                    <th>Flying To</th>
+                                    <th>Departure</th>
+                                    <th>Return</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (ViewBag.combined != null)
+                                {
+                                    int cnt = 0;
+
+                                    List<EntityInfo> entityList = ViewBag.combined as List<EntityInfo>;
+
+                                    foreach (EntityInfo item in entityList)
+                                    {
+                                        cnt = cnt + 1;
+                                        <tr>
+
+                                            <td id="uid@(cnt)" style="display:none;">@item.LegalUserId</td>
+                                            <td id="len@(cnt)" style="display:none;">@item.LegalEntityName</td>
+                                            <td id="ben@(cnt)">@item.BillingEntityFullName</td>
+                                            <td id="unm@(cnt)">@item.EmployeeFullName</td>
+                                            <td>@item.LegalEntityFullName</td>
+                                            <td id="uorg@(cnt)">@item.SearchOrigin-@item.SearchOriginCode</td>
+                                            <td id="udes@(cnt)">@item.Searchdest-@item.SearchdestCode</td>
+                                            <td id="udep@(cnt)">@item.SearchLogDeptDateTime</td>
+                                            <td id="uarr@(cnt)">@item.SearchLogArrDateTime</td>
+                                            <td><button type="button" class="btn btn-lg btn-block" onclick="return SearchSelect(@cnt);">Select</button></td>
+                                        </tr>
+                                    }
+
+
+
+                                }
+
+                                @*   <tr>
+                                    <td>HHEE56-EISAI PHARMACEUTICALS INDIA PVT LTD-BLR</td>
+                                    <td>Vinay kumar</td>
+                                    <td>HHEE56-EISAI PHARMACEUTICALS INDIA PVT LTD-BLR</td>
+                                    <td>New DELHI</td>
+                                    <td>Mumbai BOM</td>
+                                    <td>2025-03-12 </td>
+                                    <td>2025-03-18 </td>
+                                    <td><button type="submit" class="btn btn-lg btn-block">Select</button></td>
+                                </tr> *@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ***** Search History End ***** -->
+        <!-- ***** SPECIAL OFFER Area Start ***** -->
+        <section id="special-offer" class="section features-area style-two overflow-hidden pt_50">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-10 col-lg-8">
+                        <!-- Section Heading -->
+                        <div class="section-heading text-center">
+                            <h2><span class="text-primary">SPECIAL </span> OFFERS</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-4 res-margin">
+                        <!-- Special offer -->
+                        <a href="#">
+                            <div class="single-offer card">
+                                <!-- Card Top -->
+                                <div class="card-top p-3">
+                                    <div>
+                                        <img class="navbar-brand-sticky" src="~/img/Taj-lake-palace-udaipur-ind.webp" alt="image">
+                                    </div>
+                                </div>
+                                <div class="offer media bg-gray p-3">
+                                    <div class="reviewer-meta media-body align-self-center ml-2">
+                                        <h4 class="text-primary mt-1 mb-2">Taj Lake Palace, Udaipur</h4>
+                                        <p class="text-right"><a href="#">Book Now<i class="fa fa-angle-right" aria-hidden="true"></i></a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4 res-margin">
+                        <!-- Special offer -->
+                        <a href="#">
+                            <div class="single-offer card">
+                                <!-- Card Top -->
+                                <div class="card-top p-3">
+                                    <div>
+                                        <img class="navbar-brand-sticky" src="~/img/Itc-maurya-delhi.webp" alt="image">
+                                    </div>
+                                </div>
+                                <div class="offer media bg-gray p-3">
+                                    <div class="reviewer-meta media-body align-self-center ml-2">
+                                        <h4 class="text-primary mt-1 mb-2">ITC Maurya New Delhi</h4>
+                                        <p class="text-right"><a href="#">Book Now<i class="fa fa-angle-right" aria-hidden="true"></i></a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4 res-margin">
+                        <!-- Special offer -->
+                        <a href="#">
+                            <div class="single-offer card">
+                                <!-- Card Top -->
+                                <div class="card-top p-3">
+                                    <div>
+                                        <img class="navbar-brand-sticky" src="~/img/taj-mahal-palace-mumbai.webp" alt="image">
+                                    </div>
+                                </div>
+                                <div class="offer media bg-gray p-3">
+                                    <div class="reviewer-meta media-body align-self-center ml-2">
+                                        <h4 class="text-primary mt-1 mb-2">The Taj Mahal Hotel Mumbai</h4>
+                                        <p class="text-right"><a href="#">Book Now<i class="fa fa-angle-right" aria-hidden="true"></i></a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <!-- ***** SPECIAL OFFER Area End ***** -->
+        <!-- ***** Slide Item Area Start ***** -->
+        <section class="ptb_50">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-5 col-sm-4">
+                        <div class="slideItem">
+                            <i class="fa fa-comments" aria-hidden="true"></i>
+                            <span><h4>We are now available</h4>Call +155 666 888 for contact with us</span>
+                        </div>
+                    </div>
+                    <div class="col-5 col-sm-4">
+                        <div class="slideItem">
+                            <i class="fa fa-plane" aria-hidden="true"></i>
+                            <span><h4>International Flight</h4>Call +155 666 888 for booking </span>
+                        </div>
+                    </div>
+                    <div class="col-5 col-sm-4">
+                        <div class="slideItem">
+                            <img src="~/img/refund-icon.png" alt="#" class="mr-2">
+                            <span><h4>Check Refund</h4>Call +155 666 888 for check refund</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ***** Slide Item Area End ***** -->
+        <!-- ***** Destination Area Start ***** -->
+        <section class="section destination-area destination-style-two overflow-hidden ptb_62" style="background:#EDF8FF;">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-10 col-lg-8">
+                        <!-- Section Heading -->
+                        <div class="section-heading text-center">
+                            <h2><span class="text-primary">MOST POPULAR </span> DESTINATIONS</h2>
+                            <p class="d-none d-sm-block mt-4">Here are some of the places that are currently <br>the most popular choice form out trip</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <!-- Single destination -->
+                        <div class="single-destination text-center overflow-hidden m-2 m-lg-0">
+                            <!-- destination Thumb-->
+                            <a href="#">
+                                <div class="destination-thumb d-inline-block position-relative overflow-hidden">
+                                    <img src="~/img/destination/populer-destination-img-1.png" alt="">
+                                    <!-- destination Overlay -->
+                                    <div class="destination-overlay">
+                                        <h4 class="destination-name text-white">Spectacular Phuket and Krabi </h4>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <!-- Single destination -->
+                        <div class="single-destination text-center overflow-hidden m-2 m-lg-0">
+                            <!-- destination Thumb -->
+                            <a href="#">
+                                <div class="destination-thumb d-inline-block position-relative overflow-hidden">
+                                    <img src="~/img/destination/populer-destination-img-2.jpg" alt="">
+                                    <!-- destination Overlay -->
+                                    <div class="destination-overlay">
+                                        <h4 class="destination-name text-white">Blissful Bali</h4>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <!-- Single destination -->
+                        <a href="#">
+                            <div class="single-destination text-center overflow-hidden m-2 m-lg-0">
+                                <!-- destination Thumb -->
+                                <div class="destination-thumb d-inline-block position-relative overflow-hidden">
+                                    <img src="~/img/destination/populer-destination-img-3.png" alt="">
+                                    <!-- destination Overlay -->
+                                    <div class="destination-overlay">
+                                        <h4 class="destination-name text-white">Mauritius Getaway with Tarisa Resort and Spa</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <!-- Single destination -->
+                        <div class="single-destination text-center overflow-hidden m-2 m-lg-0">
+                            <!-- destination Thumb -->
+                            <a href="#">
+                                <div class="destination-thumb d-inline-block position-relative overflow-hidden">
+                                    <img src="~/img/destination/populer-destination-img-4.jpg" alt="">
+                                    <!-- destination Overlay -->
+                                    <div class="destination-overlay">
+                                        <h4 class="destination-name text-white">Mesmerizing Maldives with Medhufushi Island Resort</h4>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ***** Destination Area End ***** -->
+        <!-- ***** Download Area Start ***** -->
+        <section class="section download-area ptb_62">
+            <div class="container">
+                <div class="row justify-content-center inner-box">
+                    <div class="col-12 col-md-10 col-lg-3">
+                        <div class="section-heading text-center">
+                            <h2><span class="text-primary">Download </span> Our Mobile App</h2>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-10 col-lg-6">
+                        <!-- Download Text -->
+                        <div class="download-text text-center border-line">
+                            <!-- Store Buttons -->
+                            <div class="button-group store-buttons d-flex justify-content-center">
+                                <a href="#">
+                                    <img src="~/img/icon/google-play-black.png" alt="">
+                                </a>
+                                <a href="#">
+                                    <img src="~/img/icon/app-store-black.png" alt="">
+                                </a>
+
+                            </div>
+                            <h3 class="my-3 d-block">Get Download link on your Mobile</h3>
+                            <input type="text" class="form-control" name="name" placeholder="Enter Your Mobile Number" required="required"><button type="submit" class="btn btn-lg btn-block">Send</button>
+                        </div>
+
+                    </div>
+                    <div class="col-12 col-md-10 col-lg-3 text-center">
+                        <img src="~/img/scanner.png" alt="">
+                        <p class="my-3 d-block">Scan the QR Code to download the Mobile App</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ***** Download Area End ***** -->
+        <!--====== Footer Area Start ======-->
+        <footer class="footer-area footer-fixed">
+            <!-- Footer Top -->
+            <div class="footer-top ptb_62">
+                <div class="container">
+                    <h3 class="footer-title mb-2">Travel Guide</h3>
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <!-- Footer Items -->
+                            <div class="footer-items">
+                                <ul>
+                                    <li class="py-2"><a href="#">Andaman and Nicobar Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Kerala Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Himachal Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Kashmir Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Gujarat Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Maharashtra Travel Guide</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <!-- Footer Items -->
+                            <div class="footer-items">
+                                <ul>
+                                    <li class="py-2"><a href="#">Lakshwadweep Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Assam Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Arunachal Pradesh Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Andhra Pradesh Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Manipur Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Madhya Pradesh Travel Guide</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <!-- Footer Items -->
+                            <div class="footer-items">
+                                <ul>
+                                    <li class="py-2"><a href="#">Nagaland Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Odisha Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Tamil Nadu Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Uttaranchal Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">West Bengal Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Karnataka Travel Guide</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <!-- Footer Items -->
+                            <div class="footer-items">
+                                <ul>
+                                    <li class="py-2"><a href="#">Lakshwadweep Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Assam Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Arunachal Pradesh Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Andhra Pradesh Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Manipur Travel Guide</a></li>
+                                    <li class="py-2"><a href="#">Madhya Pradesh Travel Guide</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-mid ptb_50">
+                <div class="container">
+                    <h3 class="footer-title mb-2">Why jetwaystravel.com?</h3>
+                    <p>Our competitive rates and exclusive offers are what gives us a top notch over our competitors. We promise 'Unbeatable' services both in pricing and quality. For instance: Every Wednesday, travelers can save big with our ZERO Convenience fee on flight bookings.</p>
+                    <p>Also, we get it - travel’s a big decision. It’s not every day that you fly across the world to wander the souks of Dubai or enjoy a dreamy sunrise in Paris. But for us, it’s been our every day job for the past four decades. Let’s just say we know what travelers really want. We give you the pros and cons for all the different travel products and allow you to decide what works best for you and your family. While many travel companies claim to have experts, we believe few, match our own specialists for genuine- firsthand knowledge. We combine first-hand knowledge with exceptional special offers, and we take care of every detail to create a holiday as unique as you are. You will no more need to worry about coordinating flight bookings, hotel reservations, visa stamps or tours as all your needs are taken care of under one roof; the Jetways Travels roof. More than 85% of clients come back to us for future trips.</p>
+                    <p>When you choose Jetways Travels, your trip is in safe hands. Whilst you are abroad our team is available 24 hours a day, 365 days a year should you need assistance. We do absolutely everything for you, all you need to do is turn up at the airport with your bags and go!</p>
+                </div>
+            </div>
+
+            <div class="footer-mid-bottom ptb_25">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-lg-6">
+                            <!-- Social Icons -->
+                            <div class="social-icons d-flex">
+                                <a class="facebook" href="#">
+                                    <i class="fab fa-facebook-f"></i>
+
+                                </a>
+                                <a class="twitter" href="#">
+                                    <i class="fab fa-twitter"></i>
+
+                                </a>
+                                <a class="google-plus" href="#">
+                                    <i class="fab fa-google-plus-g"></i>
+
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6 col-lg-6 text-right">
+                            <img src="~/img/card.png" alt="card">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Copyright Area -->
+                            <div class="copyright-area text-center py-4">
+                                <!-- Copyright-->
+                                <div class="copyright">Copyrights &copy; 2023 www.jetwaystravel.com All Rights Reserved..</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!--====== Footer Area End ======-->
+    </div>
+
+
+    <!-- ***** All jQuery Plugins ***** -->
+    <!-- Social media js -->
+    <!-- Clander js -->
+    @section scripts {
+        <link href="~/css/indexvny.css" rel="stylesheet" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="/resources/demos/style.css">
+
+        <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+        <!-- Select2 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+
+        <!-- Bootstrap js -->
+        <script src="~/js/bootstrap/popper.min.js"></script>
+        <script src="~/js/bootstrap/bootstrap.min.js"></script>
+        <!-- Travellers js -->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAAz77U5XQuEME6TpftaMdX0bBelQxXRlM"></script>
+        <script src="~/js/vendors.js"></script>
+        <script src="~/js/main.js"></script>
+        <!-- Active js -->
+        <script src="~/js/custom.js/indexpage.js"></script>
+        <script src="~/lib/jquery/chosen.jquery.js"></script>
+        <script src="~/lib/jquery/chosen.jquery.min.js"></script>
+        <!-- Select2 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+        <script>
+
+            // 1. Legal Entity List
+             var legalEntities = [
+
+            @if (User.Identity.IsAuthenticated)
+            {
+                var dataList = JsonConvert.DeserializeObject<List<dynamic>>(ViewBag.CustomerData);
+                foreach (var item in dataList)
+                {
+                    @Html.Raw($"\"{item.legalEntityName}\",")
+                }
+            }
+             ];
+
+             // 2. Full JSON Data for Mapping Legal Entity -> Employees & Balance
+             var legalEntitiesData = @Html.Raw(jsonData);
+        </script>
+
+        <!--Start Emulate section -->
+        <script>
+            $(document).ready(function () {
+                // Append the tooltip box if not exists
+                if (!$('#customTooltip').length) {
+                    $('body').append('<div id="customTooltip" class="custom-tooltip"></div>');
+                }
+                const tooltipBox = $('#customTooltip');
+
+                // Custom tooltip binding function
+                function bindCustomTooltip($input) {
+                    $input.off('mouseenter mouseleave mousemove');
+
+                    $input.on('mouseenter', function (e) {
+                        const text = $(this).val();
+                        if (text) {
+                            tooltipBox.text(text).fadeIn(100);
+                        }
+                    });
+
+                    $input.on('mousemove', function (e) {
+                        tooltipBox.css({
+                            top: e.pageY + 12 + 'px',
+                            left: e.pageX + 12 + 'px'
+                        });
+                    });
+
+                    $input.on('mouseleave', function () {
+                        tooltipBox.fadeOut(100);
+                    });
+                }
+
+                // Remove title attribute logic - do nothing to prevent native tooltip
+                function updateTitle($input) {
+                    // Intentionally empty to prevent setting title attribute
+                }
+
+                const legalEntities = legalEntitiesData.map(e => e.legalEntityName);
+
+                function bindFor(companyName) {
+                    const item = legalEntitiesData.find(x => x.legalEntityName === companyName);
+
+                    const $employeeInput = $('#employeeSelect');
+                    $employeeInput.val('');
+                    $employeeInput.siblings('.remove-icon').hide();
+                    updateTitle($employeeInput);
+
+                    const $billingInput = $('#billingSelect');
+                    $billingInput.val('');
+                    $billingInput.siblings('.remove-icon').hide();
+                    updateTitle($billingInput);
+
+                    $('.balance-input').val('₹ 0.00');
+                    if (item?.presentBalance) {
+                        $('.balance-input').val('₹ ' + item.presentBalance);
+                    }
+
+                    let employees = [];
+                    if (item?.employeeNames) {
+                        employees = item.employeeNames.split(',').map(e => {
+                            const [id, name, mobile] = e.trim().split('|');
+                            return {
+                                label: `${name} (${mobile})`,
+                                value: name,
+                                name,
+                                mobile,
+                                id
+                            };
+                        });
+                    }
+
+                    if (!employees.some(emp => emp.name.toLowerCase() === 'guest user')) {
+                        employees.push({ label: 'Guest User', value: 'Guest User', name: 'Guest User', mobile: '', id: '0' });
+                    }
+
+                    $employeeInput.autocomplete('option', 'source', function (request, response) {
+                        const term = request.term.toLowerCase();
+                        const matches = employees.filter(emp =>
+                            emp.name.toLowerCase().includes(term) || emp.mobile.includes(term)
+                        );
+                        response(matches);
+                    });
+
+                    $('#hdnempid').val('0');
+                }
+
+                $('#legalEntitySelect')
+                    .val('')
+                    .attr('placeholder', 'Enter Legal Entity name')
+                    .autocomplete({
+                        source: legalEntities,
+                        minLength: 0,
+                        select: function (event, ui) {
+                            $(this).val(ui.item.value);
+                            updateTitle($(this));
+                            bindFor(ui.item.value);
+                            $(this).blur();
+                            $(this).siblings('.remove-icon').show();
+
+                            $('#employeeSelect').val('');
+                            $('#employeeSelect').siblings('.remove-icon').hide();
+                            updateTitle($('#employeeSelect'));
+
+                            $('#billingSelect').val('');
+                            $('#billingSelect').siblings('.remove-icon').hide();
+                            updateTitle($('#billingSelect'));
+
+                            return false;
+                        }
+                    })
+                    .on('focus click', function () {
+                        $(this).autocomplete('search', '');
+                    })
+                    .on('input', function () {
+                        $(this).siblings('.remove-icon').toggle(!!$(this).val());
+                        updateTitle($(this));
+                    });
+
+                $('#legalEntitySelect').siblings('.remove-icon').on('click', function () {
+                    $('#legalEntitySelect').val('').focus();
+                    updateTitle($('#legalEntitySelect'));
+                    $(this).hide();
+
+                    $('#employeeSelect').val('');
+                    $('#employeeSelect').siblings('.remove-icon').hide();
+                    updateTitle($('#employeeSelect'));
+
+                    $('#billingSelect').val('');
+                    $('#billingSelect').siblings('.remove-icon').hide();
+                    updateTitle($('#billingSelect'));
+
+                    $('.balance-input').val('₹ 0.00');
+                    $('#hdnempid').val('0');
+                });
+
+                function initEmployeeAutocomplete() {
+                    const $employeeInput = $('#employeeSelect');
+
+                    $employeeInput.autocomplete({
+                        source: [],
+                        minLength: 0,
+                        select: function (event, ui) {
+                            $(this).val(ui.item.value);
+                            updateTitle($(this));
+                            $(this).blur();
+                            $(this).siblings('.remove-icon').show();
+
+                            $('#hdnempid').val(ui.item.id || '0');
+                            fetchBillingEntities();
+                            return false;
+                        }
+                    })
+                        .on('focus click', function () {
+                            $(this).autocomplete('search', '');
+                        })
+                        .on('input', function () {
+                            $(this).siblings('.remove-icon').toggle(!!$(this).val());
+                            updateTitle($(this));
+
+                            if (!$(this).val()) {
+                                $('#billingSelect').val('');
+                                $('#billingSelect').siblings('.remove-icon').hide();
+                                updateTitle($('#billingSelect'));
+                                $('#hdnempid').val('0');
+                            }
+                        });
+
+                    $employeeInput.siblings('.remove-icon').on('click', function () {
+                        $employeeInput.val('').focus();
+                        updateTitle($employeeInput);
+                        $(this).hide();
+
+                        $('#billingSelect').val('');
+                        $('#billingSelect').siblings('.remove-icon').hide();
+                        updateTitle($('#billingSelect'));
+
+                        $('#hdnempid').val('0');
+                    });
+                }
+
+                function initBillingAutocomplete(billingEntities) {
+                    const $billingInput = $('#billingSelect');
+
+                    $billingInput
+                        .val('')
+                        .attr('placeholder', 'Enter Billing Entity name')
+                        .autocomplete({
+                            source: billingEntities,
+                            minLength: 0,
+                            select: function (event, ui) {
+                                $(this).val(ui.item.value);
+                                updateTitle($(this));
+                                $(this).blur();
+                                $(this).siblings('.remove-icon').show();
+                                return false;
+                            }
+                        })
+                        .on('focus click', function () {
+                            $(this).autocomplete('search', '');
+                        })
+                        .on('input', function () {
+                            $(this).siblings('.remove-icon').toggle(!!$(this).val());
+                            updateTitle($(this));
+                        });
+
+                    $billingInput.siblings('.remove-icon').off('click').on('click', function () {
+                        $billingInput.val('').focus();
+                        updateTitle($billingInput);
+                        $(this).hide();
+                    });
+                }
+
+                function fetchBillingEntities() {
+                    const legalEntityInput = $('#legalEntitySelect').val();
+                    if (!legalEntityInput) {
+                        alert("Please select a Legal Entity first.");
+                        return;
+                    }
+
+                    const inputName = $('#employeeSelect').val();
+                    const empId = getEmployeeIdByName(inputName, legalEntitiesData);
+
+                    $('#hdnempid').val(empId || '0');
+
+                    const legalEntityCode = legalEntityInput.split("-")[0].trim();
+                    const employeeCode = empId || '0';
+
+                    $.ajax({
+                        type: 'GET',
+                        url: `/Login/GetEmpId/?legalEntityCode=${legalEntityCode}&employeeCode=${employeeCode}`,
+                        async: true,
+                        dataType: 'json',
+                        success: function (data) {
+                            let parsedData;
+
+                            if (Array.isArray(data)) {
+                                parsedData = data;
+                            } else {
+                                try {
+                                    parsedData = JSON.parse(data);
+                                    if (!Array.isArray(parsedData)) {
+                                        alert("Unexpected data format received from server.");
+                                        return;
+                                    }
+                                } catch (err) {
+                                    console.error("Failed to parse JSON:", err, data);
+                                    return;
+                                }
+                            }
+
+                            const billingEntities = parsedData.map(item => item.billingEntityCode);
+
+                            initBillingAutocomplete(billingEntities);
+
+                            if (billingEntities.length === 1) {
+                                $('#billingSelect').val(billingEntities[0]);
+                                updateTitle($('#billingSelect'));
+                                $('#billingSelect').siblings('.remove-icon').show();
+                            } else {
+                                $('#billingSelect').val('');
+                                updateTitle($('#billingSelect'));
+                                $('#billingSelect').siblings('.remove-icon').hide();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("AJAX error:", status, error);
+                            alert("Failed to fetch billing entity data.");
+                        }
+                    });
+                }
+
+                function getEmployeeIdByName(employeeName, dataset) {
+                    for (const item of dataset) {
+                        if (item.employeeNames) {
+                            const employees = item.employeeNames.split(',').map(e => e.trim());
+                            for (const entry of employees) {
+                                const [id, name] = entry.split('|');
+                                if (name && name.trim().toLowerCase() === employeeName.trim().toLowerCase()) {
+                                    return id;
+                                }
+                            }
+                        }
+                    }
+                    return null;
+                }
+
+                $('#myForm').on('submit', function (e) {
+                    let isValid = true;
+                    $('.autocomplete-input[required]').each(function () {
+                        const $input = $(this);
+                        if (!$input.val().trim()) {
+                            $input.addClass('error');
+                            isValid = false;
+                        } else {
+                            $input.removeClass('error');
+                        }
+                    });
+
+                    if (!isValid) {
+                        e.preventDefault();
+                        alert('Please fill out all required fields.');
+                    }
+                });
+
+                // Initialize
+                initEmployeeAutocomplete();
+                bindCustomTooltip($('#legalEntitySelect'));
+                bindCustomTooltip($('#employeeSelect'));
+                bindCustomTooltip($('#billingSelect'));
+            });
+
+
+
+        </script>
+
+        <!--End Emulate section -->
+        <!--Start show and hide box -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const emulateBox = document.querySelector(".emulate-bx");
+                const header = emulateBox.querySelector("h6");
+                const arrow = header.querySelector(".toggle-arrow i");
+                const row = emulateBox.querySelector(".row");
+
+                header.style.cursor = "pointer";
+
+                header.addEventListener("click", function () {
+                    if (row.style.display === "none" || row.style.display === "") {
+                        row.style.display = "flex";
+                        arrow.className = "fa fa-angle-up"; // Change to up arrow
+                    } else {
+                        row.style.display = "none";
+                        arrow.className = "fa fa-angle-down"; // Change back to down arrow
+                    }
+                });
+            });
+        </script>
+
+        <!--End show and hide box -->
+        <!--Start login popup -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const profileButton = document.querySelector('.profile-initials');
+                const popup = document.querySelector('.profile-popup');
+
+                profileButton.addEventListener('click', function (e) {
+                    e.stopPropagation(); // Prevent event from bubbling to document
+                    popup.style.display = (popup.style.display === 'none' || popup.style.display === '') ? 'block' : 'none';
+                });
+
+                // Prevent clicks inside popup from closing it
+                popup.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                });
+
+                // Hide popup when clicking outside
+                document.addEventListener('click', function () {
+                    popup.style.display = 'none';
+                });
+            });
+        </script>
+        <!--End login popup -->
+
+        <script>
+               function SearchSelect(id)
+               {
+                  var autocompleteInstance = $('#legalEntitySelect').autocomplete('instance');
+
+               // Create a mock event object
+                   var event = $.Event('autocompleteselect');
+                   event.item = { value: document.getElementById("ben"+id).innerText }; // Replace with the value you want to select
+
+                   // Manually trigger the 'select' event
+                   autocompleteInstance._trigger('select', event, { item: event.item });
+
+                   // Optionally, update the input field with the selected value
+                   $('#legalEntitySelect').val(event.item.value);
+
+               const $employeeInput = $('#employeeSelect');
+               const autocompleteInstance2 = $employeeInput.autocomplete('instance');
+               const event1 = $.Event('autocompleteselect');
+               event1.item = { value: document.getElementById("unm"+id).innerText, id: document.getElementById("uid"+id).innerText };
+
+                  autocompleteInstance2._trigger('select', event1, { item: event1.item });
+
+
+             //  document.getElementById("employeeSelect").value = document.getElementById("unm"+id).innerText;
+               // Optionally, update the hidden employee ID field
+               $('#hdnempid').val(document.getElementById("uid"+id).innerText);
+
+               document.getElementById("myInput").value = document.getElementById("uorg"+id).innerText;
+                  document.getElementById("myInput1").value = document.getElementById("udes"+id).innerText;
+
+
+                       document.getElementById("start-date").value = document.getElementById("udep"+id).innerText;
+                     document.getElementById("end-date").value = document.getElementById("uarr"+id).innerText;
+
+                 $('#Mydiv').focus();
+
+               //          document.getElementById('Mydiv').addEventListener('click', function() {
+               //     this.focus();
+               // });
+
+            //   fetchBillingEntities();
+
+               }
+        </script>
+
+        <!--Clander auto open  popup -->
+        <script>
+
+                $("#arrivalItemId").on("change", function () {
+                const selectedText = $(this).find("option:selected").text();
+                $("#myInput1").val(selectedText);
+                $("#start-date").focus().datepicker("show"); // For jQuery UI
+            });
+        </script>
+
+    }
+
+</body>
+

@@ -1,0 +1,27 @@
+[
+  {
+    "outputFileName": "wwwroot/css/style.min.css",
+    "inputFiles": [
+      "wwwroot/css/style.css",
+      "wwwroot/css/main.css",
+      "wwwroot/css/daterangepicker.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/vendors.min.css",
+    "inputFiles": [
+      "wwwroot/css/vendors.css",
+      "wwwroot/css/roundviewpage.css",
+      "wwwroot/css/indexvny.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/custom.js/indexpage.js",
+      "wwwroot/lib/jquery/chosen.jquery.js",
+      "wwwroot/lib/jquery/chosen.jquery.min.js"
+    ]
+
+  }
+]

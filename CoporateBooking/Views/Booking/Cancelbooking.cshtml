@@ -1,0 +1,268 @@
+﻿@model List<FullBookingDetailsDto>
+
+@{
+    ViewBag.Title = "Air India Express Booking Summary";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+            color: #212529;
+        }
+
+        .booking-card {
+            background: #fff;
+            padding: 24px;
+            max-width: 920px;
+            margin: 30px auto;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+            .flight-header h3 {
+                margin: 0;
+                font-size: 18px;
+                color: #ea5b0c;
+            }
+
+        .flight-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .flight-info div {
+                text-align: center;
+            }
+
+            .flight-info .airport {
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            .flight-info .datetime {
+                font-size: 14px;
+                color: #555;
+            }
+
+        .booking-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .meta-item {
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+        }
+
+            .meta-item span {
+                display: block;
+                color: #888;
+                font-size: 13px;
+            }
+
+        .passenger-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+            .passenger-table th, .passenger-table td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+                font-size: 14px;
+            }
+
+        .status-cancelled {
+            background-color: #fff3cd;
+            color: #a15200;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .footer-btns {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #0069d9;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .btn:hover {
+                background-color: #0056b3;
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #545b62;
+            }
+    </style>
+</head>
+<body>
+
+    @foreach (var mdl in Model)
+    {
+        var booking = mdl.Booking;
+        var segments = mdl.Segments;
+        var passengers = mdl.Passengers;
+        var duration = booking.ArrivalDate - booking.DepartureDate;
+
+        <div class="booking-card">
+            <div class="flight-header">
+                <h3>
+                    Air India Express - @string.Join(", ", segments.Select(s => s.CarrierCode + " " + s.Identifier))<br />
+                    <small>Class: Economy | Type: @booking.BookingType</small>
+                </h3>
+                <p><strong>Airline PNR :</strong> @booking.RecordLocator</p>
+            </div>
+
+            <div class="flight-info">
+                <div>
+                    <div class="airport">@booking.Origin</div>
+                    <div class="datetime">@booking.DepartureDate.ToString("HH:mm ddd dd MMM, yyyy")</div>
+                    <div>Terminal: @segments.FirstOrDefault()?.DepartureTerminal</div>
+                </div>
+                <div>
+                    <div>@($"{duration.Hours} h {duration.Minutes} m")</div>
+                    <div>● ● ●</div>
+                    <div>@(segments.Count > 1 ? "Multi-Leg" : "Non-Stop")</div>
+                </div>
+                <div>
+                    <div class="airport">@booking.Destination</div>
+                    <div class="datetime">@booking.ArrivalDate.ToString("HH:mm ddd dd MMM, yyyy")</div>
+                    <div>Terminal: @segments.LastOrDefault()?.ArrivalTerminal</div>
+                </div>
+            </div>
+
+            <div class="booking-meta">
+                <div class="meta-item">Trip Type<br><span>@booking.TripType</span></div>
+                <div class="meta-item">Booked Date<br><span>@booking.BookedDate.ToString("dd MMM yyyy")</span></div>
+                <div class="meta-item">Total Amount<br><span>INR @booking.TotalAmount.ToString("N0")</span></div>
+                <div class="meta-item">Booking Status<br><span>@booking.BookingStatus</span></div>
+            </div>
+
+            <form asp-controller="CancelBooking" asp-action="CancelAction" asp-route-pnr="@booking.RecordLocator"
+                  asp-route-airline="@ViewBag.AirlineId" method="post" id="cancelForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="cancellationType" id="cancellationType" value="complete" />
+
+                <h4>Passenger Details</h4>
+                <table class="passenger-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll" /></th>
+                            <th>Name</th>
+                            <th>Amount</th>
+                            <th>Seatnumber</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var groupedPassengers = passengers
+                            .GroupBy(p => $"{p.FirstName} {p.LastName}")
+                            .Select(g => new
+                            {
+                                Name = g.Key,
+                                Seat = g.FirstOrDefault()?.SeatNumber ?? "—",
+                                Total = g.Sum(p => p.TotalAmount + p.TotalAmount_Tax),
+                                IsCancelled = g.All(p => p.TotalAmount == 0)
+                            })
+                            .ToList();
+                        }
+
+                        @for (int i = 0; i < groupedPassengers.Count; i++)
+                        {
+                            var pax = groupedPassengers[i];
+                            <tr>
+                                <td><input type="checkbox" class="passenger-checkbox" name="passengerIndexes" value="@i" /></td>
+                                <td>@pax.Name</td>
+                                <td>INR @pax.Total.ToString("N0")</td>
+                                <td>@pax.Seat</td>
+                                <td>
+                                    <span class="status-cancelled">
+                                        @(pax.IsCancelled ? "Cancelled" : "Confirmed")
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+                <div class="footer-btns">
+                    <a href="#" class="btn btn-secondary">Back</a>
+                    <button type="submit" class="btn" id="cancelBtn">Cancel Booking</button>
+                </div>
+            </form>
+        </div>
+    }
+
+    <script>
+        document.getElementById("selectAll").addEventListener("change", function () {
+            const checkboxes = document.querySelectorAll(".passenger-checkbox");
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        document.getElementById("cancelForm").addEventListener("submit", function (e) {
+            const all = document.querySelectorAll(".passenger-checkbox");
+            const selected = document.querySelectorAll(".passenger-checkbox:checked");
+
+            if (selected.length === 0) {
+                alert("Please select at least one passenger to cancel.");
+                e.preventDefault();
+                return;
+            }
+
+            const isPartial = selected.length < all.length;
+            document.getElementById("cancellationType").value = isPartial ? "partial" : "complete";
+
+            const message = isPartial
+                ? `You are cancelling ${selected.length} of ${all.length} passengers. Proceed with partial cancellation?`
+                : "You are about to cancel the entire booking. Proceed with full cancellation?";
+
+            if (!confirm(message)) {
+                e.preventDefault();
+            }
+        });
+    </script>
+
+</body>
+</html>

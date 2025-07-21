@@ -1,0 +1,107 @@
+﻿using Azure;
+using DomainLayer.Model;
+using Indigo;
+using IndigoSessionmanager_;
+using Newtonsoft.Json;
+using Utility;
+
+
+namespace OnionConsumeWebAPI.Controllers.Indigo
+{
+    public class _login
+    {
+        Logs logs = new Logs();
+
+        public async Task<LogonResponse> Login(string JourneyType, string _Airline = "", string _baseurl = "")
+        {
+            #region Logon
+            LogonRequest _logonRequestobj = new LogonRequest();
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_baseurl);
+
+                HttpResponseMessage responsindigo = await client.GetAsync("api/Login/getotacredairasia");
+                if (responsindigo.IsSuccessStatusCode)
+                {
+                    _logonRequestobj.ContractVersion = 452;
+                    LogonRequestData LogonRequestDataobj = new LogonRequestData();
+                    var results = responsindigo.Content.ReadAsStringAsync().Result;
+                    var JsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+                    if (JsonObject[2].FlightCode == 4)
+                    {
+                        LogonRequestDataobj.AgentName = JsonObject[2].username;
+                        LogonRequestDataobj.Password = JsonObject[2].password;
+                        LogonRequestDataobj.DomainCode = JsonObject[2].domain;
+                        _logonRequestobj.logonRequestData = LogonRequestDataobj;
+                    }
+                }
+            }
+            _getapiIndigo objIndigo = new _getapiIndigo();
+            LogonResponse _logonResponseobj = await objIndigo.Signature(_logonRequestobj);
+            if (_Airline.ToLower() == "indigooneway")
+            {
+                logs.WriteLogs(JsonConvert.SerializeObject(_logonRequestobj), "1-LogonReq", "IndigoOneWay", JourneyType);
+                logs.WriteLogs(JsonConvert.SerializeObject(_logonResponseobj), "1-LogonRes", "IndigoOneWay", JourneyType);
+            }
+            else
+            {
+                logs.WriteLogsR(JsonConvert.SerializeObject(_logonRequestobj), "1-LogonReq", "IndigoRT");
+                logs.WriteLogsR(JsonConvert.SerializeObject(_logonResponseobj), "1-LogonRes", "IndigoRT");
+                //logs.WriteLogsR("Request: " + JsonConvert.SerializeObject(_logonRequestobj) + "\n Response: " + JsonConvert.SerializeObject(_logonResponseobj), "Logon", "IndigoRT");
+            }
+
+            return (LogonResponse)_logonResponseobj;
+            #endregion
+
+        }
+
+        public async Task<LogonResponse> Login(string _Airline = "")
+        {
+            #region Logon
+            LogonRequest _logonRequestobj = new LogonRequest();
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5225/");
+                //client.BaseAddress = new Uri("http://192.168.1.104/");
+                HttpResponseMessage responsindigo = await client.GetAsync("api/Login/getotacredairasia");
+                if (responsindigo.IsSuccessStatusCode)
+                {
+
+                    _logonRequestobj.ContractVersion = 452;
+                    LogonRequestData LogonRequestDataobj = new LogonRequestData();
+                    var results = responsindigo.Content.ReadAsStringAsync().Result;
+                    var JsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+                    if (JsonObject[2].FlightCode == 4)
+                    {
+                        LogonRequestDataobj.AgentName = JsonObject[2].username;
+                        LogonRequestDataobj.Password = JsonObject[2].password;
+                        LogonRequestDataobj.DomainCode = JsonObject[2].domain;
+                        _logonRequestobj.logonRequestData = LogonRequestDataobj;
+
+                    }
+                }
+            }
+
+
+
+
+            _getapiIndigo objIndigo = new _getapiIndigo();;
+            LogonResponse _logonResponseobj = await objIndigo.Signature(_logonRequestobj);
+            if (_Airline.ToLower() == "indigooneway")
+            {
+                logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_logonRequestobj) + "\n Response: " + JsonConvert.SerializeObject(_logonResponseobj), "Logon", "IndigoOneWay");
+            }
+            else
+            {
+                logs.WriteLogsR("Request: " + JsonConvert.SerializeObject(_logonRequestobj) + "\n Response: " + JsonConvert.SerializeObject(_logonResponseobj), "Logon", "SameIndigoRT");
+            }
+
+            return (LogonResponse)_logonResponseobj;
+            #endregion
+
+        }
+
+    }
+}

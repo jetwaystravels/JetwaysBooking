@@ -1,0 +1,39 @@
+@{
+    string errordesc = string.Empty;
+    if (@ViewBag.ErrorMessage != null && @ViewBag.ErrorMessage != "")
+    {
+        errordesc = @ViewBag.ErrorMessage;
+    }
+    else
+    {
+        errordesc = "Something went wrong";
+    }
+}
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> 
+    <!-- Title  -->
+    <title>Jetways Travels</title>
+    <!-- Favicon  -->
+    <link rel="icon" href="~/img/favicon.png">
+    <!-- Style css -->
+  <link rel="stylesheet" href="~/css/main.css">
+  <link rel="stylesheet" href="~/css/style.css">
+ </head>
+<body style="background:#f0f0f0;">
+ <div class="container">
+        <div class="service-erro-bx">
+            <img src="~/img/error-mgs-icon.png" alt="image" width="75">
+            <p class="mt-10 main mb-10">@errordesc . <br />Please try again later.</p>
+		<p>We're sorry for the inconvenience.</p>
+            <a class="btn btn-lg mt-30" asp-controller="FlightSearchIndex" asp-action="Index">
+                Go to Home Page
+            </a>
+	</div>
+</div>
+</body>
+</html> 

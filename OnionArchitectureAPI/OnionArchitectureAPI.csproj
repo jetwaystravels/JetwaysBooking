@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AWSProjectType>Lambda</AWSProjectType>
+		
+	</PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Services\Spicejet\_commit.cs" />
+    <Compile Remove="Services\Spicejet\_GetSSR.cs" />
+    <Compile Remove="Services\Spicejet\_sell.cs" />
+    <Compile Remove="Services\Spicejet\_SellSSR.cs" />
+    <Compile Remove="Services\Spicejet\_updateContact.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Logo\Roboto-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Logo\Roboto-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.5.1" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
+    <PackageReference Include="Azure.Identity" Version="1.11.4" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.6.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.15" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="PDFsharp" Version="6.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="ZXing.Net" Version="0.16.9" />
+    <PackageReference Include="ZXing.Net.Bindings.Windows.Compatibility" Version="0.16.12" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Indigo\Indigo.csproj" />
+    <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj" />
+    <ProjectReference Include="..\Spicejet\Spicejet.csproj" />
+    <ProjectReference Include="..\Utility\Utility.csproj" />
+  </ItemGroup>
+	<PropertyGroup>
+		<ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+	</PropertyGroup>
+</Project>

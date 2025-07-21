@@ -1,0 +1,478 @@
+﻿
+@{
+    Layout = null;
+    var data = Model;
+
+}
+
+<style>
+    .Modal-body {
+        height: 400px;
+        overflow-x: auto;
+    }
+
+    .email-bx h5 {
+        font-weight: bold;
+        color: #343a40;
+    }
+
+    .email-bx label {
+        font-weight: 500;
+    }
+
+    .email-bx textarea {
+        resize: vertical;
+    }
+
+    input.priceFare {
+        border: none;
+        width: 80px;
+        color: #EF0000;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .email-bx {display:none}
+    .addmarkup-bx {display:none;}
+
+</style>
+
+<script>
+   
+
+    document.getElementById("exportExcelBtn").addEventListener("click", function () {
+        debugger;
+        const modelData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        const airlineNames = {
+            "IX": "Air India Express",
+            "SG": "SpiceJet",
+            "6E": "IndiGo",
+            "QP": "Akasa Air",
+            "AI": "Air India"
+        };
+
+        if (modelData && modelData.SimpleAvailibilityaAddResponcelist) {
+            const exportData = [];
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][name="fareprint"]:checked');
+            const flightClassType = document.getElementById("flightClassInput").value;
+            const fareInputs = document.querySelectorAll(".priceFare");
+
+            checkboxes.forEach((checkbox) => {
+                const index = parseInt(checkbox.value);
+                const flight = modelData.SimpleAvailibilityaAddResponcelist[index];
+                const carrierCode = flight.segments[0]?.identifier?.carrierCode;
+                const airlineName = airlineNames[carrierCode] || carrierCode || "Unknown Airline";
+                const updatedFare = parseFloat(fareInputs[index]?.value) || flight.fareTotalsum;
+
+                exportData.push({
+                    "Flight No.": `${carrierCode}-${flight.segments[0]?.identifier?.identifier}`,
+                    "Airline": airlineName,
+                    "Origin": flight.designator.origin,
+                    "Destination": flight.designator.destination,
+                    "Departure Time": flight.designator.departure,
+                    "Arrival Time": flight.designator.arrival,
+                    "Fare Class": flightClassType,
+                    "Fare Total": updatedFare.toFixed(2)
+                });
+            });
+
+            if (exportData.length > 0) {
+                const worksheet = XLSX.utils.json_to_sheet(exportData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Flights");
+                XLSX.writeFile(workbook, "Selected_FlightData.xlsx");
+            } else {
+                alert("Please select at least one flight to export.");
+            }
+        } else {
+            console.error("No flight data found.");
+        }
+    });
+
+
+    //***************************MarkUp Ammount Add********************/
+    document.getElementById("applyMarkup").addEventListener("click", function () {
+        debugger;
+        let markup = parseFloat(document.getElementById("markupAmount").value);
+
+        if (isNaN(markup)) {
+            alert("Please enter a valid markup amount.");
+            return;
+        }
+        document.querySelectorAll(".priceFare").forEach(function (input) {
+            let originalFare = parseFloat(input.value);
+
+            if (!isNaN(originalFare)) {
+                let newFare = originalFare + markup;
+                input.value = newFare.toFixed(2);
+            }
+        });
+        document.querySelector('.addmarkup-bx').style.display = 'none';
+        document.querySelector('.airline-bx').style.display = 'block';
+    });
+
+
+
+    //Copy content 
+    document.getElementById("copyModalContentBtn").addEventListener("click", function () {
+        const modalContent = document.querySelector('#exampleModalToggle .modal-content');
+
+        //const closeButton = modalContent.querySelector('.close');
+
+        if (!modalContent) return;
+
+        // Hide the close button temporarily
+        //if (closeButton) closeButton.style.display = 'none';
+
+        const range = document.createRange();
+        range.selectNode(modalContent);
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        try {
+            const success = document.execCommand('copy');
+            if (success) {
+                alert("Flight Details copied to clipboard!");
+            } else {
+                alert("Failed to copy content.");
+            }
+        } catch (err) {
+            console.error("Copy failed:", err);
+        }
+
+        selection.removeAllRanges();
+    });
+
+   //Checkbox check
+    $('#checkALL').on('change', function () {
+        $('.fareprint-checkbox').prop('checked', this.checked);
+    });
+    $('.fareprint-checkbox').on('change', function () {
+        const allChecked = $('.fareprint-checkbox').length === $('.fareprint-checkbox:checked').length;
+        $('#checkALL').prop('checked', allChecked);
+    });
+
+   
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="airline-bx">
+            <h4>@Model.SimpleAvailibilityaAddResponcelist[0].designator.origin - @Model.SimpleAvailibilityaAddResponcelist[0].designator.destination - @Model.SimpleAvailibilityaAddResponcelist[0].designator.arrival.ToString("dd-MM-yyyy")</h4>
+            <div class="inner-bx">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th id="">Airline</th>
+                            <th>Departure Airport</th>
+                            <th>Departure</th>
+                            <th>Connection</th>
+                            <th>Arrival Airport</th>
+                            <th>Arrival</th>
+                            <th>Fare Type</th>
+                            <th>Class</th>
+                            <th>Price</th>
+                            <th class="check-bx"><input type="checkbox" id="checkALL" name="name"></th>
+                        </tr>
+                    </thead>
+                    @{
+                        @for (var j = 0; j < Model.SimpleAvailibilityaAddResponcelist.Count; j++)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @* <span><img class="size-20" src="/img/flight-logo-icon/AIX_X_Logo_Orange.png" alt="image"></span> *@
+                                        <span>
+                                            @if (Model.SimpleAvailibilityaAddResponcelist[j].Airline.ToString().ToLower().Equals("spicejet"))
+                                            {
+
+                                                <img class="size-40" src="~/img/flight-logo-icon/SG.png" alt="image">
+                                            }
+                                            else if (Model.SimpleAvailibilityaAddResponcelist[j].Airline.ToString().ToLower().Equals("indigo"))
+                                            {
+
+                                                <img class="size-40" src="~/img/flight-logo-icon/6E.png" alt="image">
+                                            }
+                                            else if (Model.SimpleAvailibilityaAddResponcelist[j].Airline.ToString().ToLower().Equals("akasaair"))
+                                            {
+
+                                                <img class="size-40" src="~/img/flight-logo-icon/akasa.png" alt="image">
+                                            }
+                                            else if (Model.SimpleAvailibilityaAddResponcelist[j].segments[0].identifier.carrierCode.Equals("AI"))
+                                            {
+                                                <img class="size-40" src="~/img/flight-logo-icon/airindia.png" alt="image">
+                                            }
+                                            else if (Model.SimpleAvailibilityaAddResponcelist[j].segments[0].identifier.carrierCode.Equals("UK"))
+                                            {
+                                                <img class="size-40" src="~/img/flight-logo-icon/vistara.png" alt="image">
+                                            }
+                                            else if (Model.SimpleAvailibilityaAddResponcelist[j].segments[0].identifier.carrierCode.Equals("H1"))
+                                            {
+                                                <img class="size-40" src="~/img/flight-logo-icon/hahnair.png" alt="image">
+                                            }
+                                            else
+                                            {
+                                                <img class="size-40" src="~/img/flight-logo-icon/AIX_X_Logo_Orange.png" alt="image">
+                                            }
+                                        </span>
+                                        <span>@Model.SimpleAvailibilityaAddResponcelist[j].segments[0].identifier.carrierCode-@Model.SimpleAvailibilityaAddResponcelist[j].segments[0].identifier.identifier</span>
+                                    </td>
+                                    <td>
+                                        <span>@Model.SimpleAvailibilityaAddResponcelist[j].designator.origin </span>
+
+                                    </td>
+                                    @{
+                                        var departuretime = @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].designator.departure;
+                                        string departuretimestr = departuretime.ToString();
+                                        var departuretimefinal = departuretimestr.Substring(11, 5);
+                                    }
+                                    <td>@Model.SimpleAvailibilityaAddResponcelist[0].designator.departure.ToString("dd-MM-yyyy") @departuretimefinal</td>
+                                    @{
+                                        var stops = Model.SimpleAvailibilityaAddResponcelist[j].stops;
+                                        if (stops == 0)
+                                        {
+                                            <td class="mt-1">Non Stop</td>
+                                        }
+                                        if (stops == 1)
+                                        {
+
+                                            <td>@stops Stop via &nbsp; @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[0].designator.destination</td>
+
+
+                                        }
+                                        if (stops == 2)
+                                        {
+
+                                            <td>@stops Stop via &nbsp;</td>
+
+                                            @if (Model.SimpleAvailibilityaAddResponcelist[j].Airline == Airlines.Vistara || Model.SimpleAvailibilityaAddResponcelist[j].Airline == Airlines.AirIndia || Model.SimpleAvailibilityaAddResponcelist[j].Airline == Airlines.Hehnair)
+                                            {
+                                                @if (Model.SimpleAvailibilityaAddResponcelist[j].segments.Count == 3)
+                                                {
+                                                    @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[0].designator.destination
+
+                                                    @Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs[0].designator.destination
+
+                                                }
+                                                else if (Model.SimpleAvailibilityaAddResponcelist[j].segments.Count == 2)
+                                                {
+                                                    @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[0].designator.destination @Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs[0].designator.destination
+
+                                                }
+                                                else
+                                                {
+
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs.Count >= 2)
+                                                {
+                                                    @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[0].designator.destination @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[1].designator.destination
+
+                                                }
+                                                else
+                                                {
+                                                    @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[0].designator.destination @Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs[0].designator.destination
+
+                                                }
+
+
+
+                                                @if (Model.SimpleAvailibilityaAddResponcelist[j].segments.Count > 2 && Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs.Count >= 1)
+                                                {
+                                                    @Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs[0].designator.destination
+                                                }
+                                                else
+                                                {
+                                                    // <div class="mt-1">2 Stop via  @Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs[0].designator.destination  <b>,</b></div>
+
+                                                }
+                                            }
+
+
+                                        }
+                                        if (stops == 3)
+                                        {
+                                            <td>@stops Stop via &nbsp;</td>
+
+
+                                            @if (Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs.Count == 2)
+                                            {
+                                                @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[0].designator.destination  @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[1].designator.destination
+                                            }
+                                            else
+                                            {
+                                                // <div class="mt-1">2 Stop via  @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].legs[0].designator.destination  <b>,</b></div>
+
+                                            }
+
+
+                                            @if (Model.SimpleAvailibilityaAddResponcelist[j].segments.Count > 2 && Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs.Count >= 1)
+                                            {
+                                                @Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs[0].designator.destination
+                                            }
+                                            else
+                                            {
+                                                // <div class="mt-1">2 Stop via  @Model.SimpleAvailibilityaAddResponcelist[j].segments[1].legs[0].designator.destination  <b>,</b></div>
+
+                                            }
+
+                                        }
+                                    }
+
+                                    <td>
+                                        <span>@Model.SimpleAvailibilityaAddResponcelist[0].designator.destination</span>
+
+                                    </td>
+                                    @{
+                                        var arrivaltime = @Model.SimpleAvailibilityaAddResponcelist[j].segments[0].designator.arrival;
+                                        string arrivaltimestr = arrivaltime.ToString();
+                                        var arrivaltimefinal = arrivaltimestr.Substring(11, 5);
+                                    }
+                                    <td>@Model.SimpleAvailibilityaAddResponcelist[0].designator.arrival.ToString("dd-MM-yyyy") @arrivaltimefinal</td>
+                                    @{
+                                        <td>
+                                            @for (var k = 0; k < Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual.Count; k++)
+                                            {
+                                                string Faretype = string.Empty;
+
+                                                if (Model.SimpleAvailibilityaAddResponcelist[j].Airline == Airlines.Indigo)
+                                                {
+                                                    if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("J"))
+                                                        Faretype = "Flexi Plus";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("R"))
+                                                        Faretype = "Retail Fare";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("O"))
+                                                        Faretype = "Super 6E";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("A"))
+                                                        Faretype = "Family Fare";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("BR"))
+                                                        Faretype = "Stretch";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("BC"))
+                                                        Faretype = "Stretch+";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("F"))
+                                                        Faretype = "Corporate Fare";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("M"))
+                                                        Faretype = "Corp Connect Fare";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("C"))
+                                                        Faretype = "Coupon Fare";
+                                                    else
+                                                        Faretype = "Saver Fare";
+                                                }
+                                                else if (Model.SimpleAvailibilityaAddResponcelist[j].Airline == Airlines.Spicejet)
+                                                {
+                                                    if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass != null)
+                                                    {
+                                                        if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("RS"))
+                                                            Faretype = "Spice Plus";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("SF"))
+                                                            Faretype = "Spice Flex";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("SC"))
+                                                            Faretype = "Spice Max";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("SS"))
+                                                            Faretype = "Saver Fare";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("CP"))
+                                                            Faretype = "Corporate Fare";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("PC"))
+                                                            Faretype = "Corporate Fare";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("CM"))
+                                                            Faretype = "Corporate Max fare";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("MC"))
+                                                            Faretype = "Corporate Max fare";
+                                                    }
+                                                }
+                                                else if (Model.SimpleAvailibilityaAddResponcelist[j].Airline == Airlines.AkasaAir)
+                                                {
+                                                    if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("EC"))
+                                                        Faretype = "Saver fare";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("AV"))
+                                                        Faretype = "Flexi fare";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("CP"))
+                                                        Faretype = "Corporate fare";
+                                                    else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("SP"))
+                                                        Faretype = "Special Fares";
+                                                }
+                                                else
+                                                {
+                                                    if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass != null)
+                                                    {
+                                                        if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("EC"))
+                                                            Faretype = "Xpress Value";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("HF"))
+                                                            Faretype = "Vista Flex";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("LT"))
+                                                            Faretype = "Xpress lite";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("VV"))
+                                                            Faretype = "Xpress Bizz";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("FS"))
+                                                            Faretype = "Corporate Flex";
+                                                        else if (Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[k].procuctclass.Equals("SM"))
+                                                            Faretype = "Corporate Value";
+                                                    }
+                                                }
+                                                <text>
+                                                    @Faretype<br />
+                                                    (@Model.SimpleAvailibilityaAddResponcelist[j].faresIndividual[0].procuctclass) <br />
+                                                 </text>
+                                            }
+                                        </td>
+
+                                        var flightClass =TempData["FlightClass"]?.ToString();
+                                            string classType = flightClass == "E" ? "Economy" : (flightClass == "B" ? "Business" : flightClass == "P" ? "Premium" : "Unknown");
+                                    }
+
+                                    <td><input type="hidden" id="flightClassInput" value="@classType">@classType</td>
+                                    @{
+                                        var fareAmount = Model.SimpleAvailibilityaAddResponcelist[j].fareTotalsum;
+                                    }
+                                    <td class="price">₹ <input class="priceFare" type="text" value="@Model.SimpleAvailibilityaAddResponcelist[j].fareTotalsum" name="name"> </td>
+                                    <td class="check-bx"><input type="checkbox" value="@j" data-index="@j" name="fareprint" class="fareprint-checkbox"></td>
+                                    
+                                </tr>
+
+                            </tbody>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="email-bx  p-4" style="background-color: #f8f9fa; border-radius: 10px;">
+            <h5 class="mb-3">Send Email Quote</h5>
+            <form id="emailForm" method="post" asp-controller="ResultFlightView" asp-action="SendEmail">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="emailTo">To (Email address)</label>
+                            <input type="email" class="form-control" id="emailTo" name="emailTo" placeholder="Enter recipient's email" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="emailSubject">Subject</label>
+                            <input type="text" class="form-control" id="emailSubject" name="emailSubject" placeholder="Enter email subject" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="emailMessage">Message</label>
+                            <textarea class="form-control" id="emailMessage" name="emailMessage" rows="6" placeholder="Write your message here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100"><i class="fa fa-paper-plane" aria-hidden="true"></i> Send Email</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="addmarkup-bx ">
+            <div class="row p-4">
+                <div class="col-md-6">
+                    <h6>Enter Markup Amount:</h6>
+                    <input type="number" id="markupAmount" placeholder="Enter amount" class="form-control" />
+                    <button id="applyMarkup" class="btn btn-primary mt-2">Apply Markup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
