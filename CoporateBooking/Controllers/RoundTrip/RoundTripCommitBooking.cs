@@ -5545,10 +5545,14 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     tb_Passengerobj.Seatnumber = "";
                                                     //}
 
+                                                    string data5=string.Empty;
                                                     string combinedName = (tb_Passengerobj.FirstName + "_" + tb_Passengerobj.LastName).ToUpper() + "_" + pnrResDetail.Bonds.Legs[isegment].AircraftCode;
-                                                    string data5 = htpassenegerdata[combinedName].ToString();
-                                                    tb_Passengerobj.TotalAmount = Convert.ToDecimal(data5.Split('/')[0]);
-                                                    tb_Passengerobj.TotalAmount_tax = Convert.ToDecimal(data5.Split('/')[1]);
+                                                    if (htpassenegerdata.Contains(combinedName))
+                                                    {
+                                                        data5 = htpassenegerdata[combinedName].ToString();
+                                                        tb_Passengerobj.TotalAmount = Convert.ToDecimal(data5.Split('/')[0]);
+                                                        tb_Passengerobj.TotalAmount_tax = Convert.ToDecimal(data5.Split('/')[1]);
+                                                    }
                                                     if (htpaxFQTVdetails.Contains(tb_Passengerobj.FirstName.ToUpper().Trim() + "_" + tb_Passengerobj.LastName.ToUpper().Trim()))
                                                     {
                                                         tb_Passengerobj.FrequentFlyerNumber = htpaxFQTVdetails[tb_Passengerobj.FirstName.ToUpper().Trim() + "_" + tb_Passengerobj.LastName.ToUpper().Trim()].ToString();
@@ -5585,9 +5589,12 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                                 //}
                                                                 //}
                                                                 string combinedkey = (infantList[inf].first + "_" + infantList[inf].last).ToUpper() + "_" + pnrResDetail.Bonds.Legs[isegment].AircraftCode;
-                                                                data5 = htpassenegerdata[combinedkey].ToString();
-                                                                tb_Passengerobj.InftAmount = Convert.ToDouble(data5.Split('/')[0]);
-                                                                tb_Passengerobj.InftAmount_Tax = Convert.ToDouble(data5.Split('/')[1]);
+                                                                if (htpassenegerdata.Contains(combinedName))
+                                                                {
+                                                                    data5 = htpassenegerdata[combinedkey].ToString();
+                                                                    tb_Passengerobj.InftAmount = Convert.ToDouble(data5.Split('/')[0]);
+                                                                    tb_Passengerobj.InftAmount_Tax = Convert.ToDouble(data5.Split('/')[1]);
+                                                                }
                                                             }
                                                         }
 

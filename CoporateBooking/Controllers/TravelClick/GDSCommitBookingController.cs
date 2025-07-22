@@ -1030,9 +1030,12 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                                     //}
                                                     //}
                                                     string combinedkey = (infantList[inf].first + "_" + infantList[inf].last).ToUpper() + "_" + pnrResDetail.Bonds.Legs[isegment].AircraftCode;
-                                                    data = htpassenegerdata[combinedkey].ToString();
-                                                    tb_Passengerobj.InftAmount = Convert.ToDouble(data.Split('/')[0]);
-                                                    tb_Passengerobj.InftAmount_Tax = Convert.ToDouble(data.Split('/')[1]);
+                                                    if (htpassenegerdata.Contains(combinedkey))
+                                                    {
+                                                        data = htpassenegerdata[combinedkey].ToString();
+                                                        tb_Passengerobj.InftAmount = Convert.ToDouble(data.Split('/')[0]);
+                                                        tb_Passengerobj.InftAmount_Tax = Convert.ToDouble(data.Split('/')[1]);
+                                                    }
                                                 }
                                             }
 
