@@ -888,7 +888,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                 string _data = JsonConvert.SerializeObject(passengerdetails);
                 List<passkeytype> _newPassengerdetailsSG = (List<passkeytype>)JsonConvert.DeserializeObject(_data, typeof(List<passkeytype>));
 
-                if (i1 == 1 && dataArray[i1].ToLower() == "indigo")
+                if (i1 == 1 && ((dataArray[0].ToLower() == "indigo" && dataArray[1].ToLower() == "indigo")|| dataArray[0].ToLower() == "airindia" && dataArray[1].ToLower() == "airindia"))
                 {
                     foreach (var p in _newPassengerdetailsSG)
                     {
@@ -1323,7 +1323,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                     if (dataArray[i1].ToLower() == "vistara" || dataArray[i1].ToLower() == "airindia")
                     {
                         //HttpContext.Session.SetString("PassengerNameDetails", JsonConvert.SerializeObject(passengerdetails));
-                        passobj = objMongoHelper.Zip(JsonConvert.SerializeObject(passengerdetails));
+                        passobj = objMongoHelper.Zip(JsonConvert.SerializeObject(_newPassengerdetailsSG));
                         _mongoDBHelper.UpdateFlightTokenOldPassengerGDS(Guid, "GDS", passobj);
 
                     }

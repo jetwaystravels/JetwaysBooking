@@ -5470,6 +5470,17 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             List<passkeytype> paxList = (List<passkeytype>)JsonConvert.DeserializeObject(passenger, typeof(List<passkeytype>));
                                             List<passkeytype> infantList = paxList.Where(p => p.passengertypecode == "INF").ToList();
 
+                                            //for frequentFlyer info
+                                            Hashtable htpaxFQTVdetails = new Hashtable();
+                                            foreach (Match item in Regex.Matches(strResponseretriv, @"FQTV""\s*FreeText=""/AI(?<FQTV>[\s\S]*?)-(?<LastName>[\s\S]*?)/(?<FirstName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                            {
+                                                if (!htpaxFQTVdetails.Contains(item.Groups["FQTV"].Value.ToUpper().Trim()))
+                                                {
+                                                    htpaxFQTVdetails.Add(item.Groups["FirstName"].Value.ToUpper().Trim() + "_" + item.Groups["LastName"].Value.ToUpper().Trim(), item.Groups["FQTV"].Value);
+                                                }
+                                            }
+
+
                                             //To do
                                             Hashtable htpaxdetails = new Hashtable();
                                             foreach (Match item in Regex.Matches(strResponseretriv, @"<air:TicketInfo[\s\S]*?BookingTravelerRef=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
@@ -5538,6 +5549,11 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     string data5 = htpassenegerdata[combinedName].ToString();
                                                     tb_Passengerobj.TotalAmount = Convert.ToDecimal(data5.Split('/')[0]);
                                                     tb_Passengerobj.TotalAmount_tax = Convert.ToDecimal(data5.Split('/')[1]);
+                                                    if (htpaxFQTVdetails.Contains(tb_Passengerobj.FirstName.ToUpper().Trim() + "_" + tb_Passengerobj.LastName.ToUpper().Trim()))
+                                                    {
+                                                        tb_Passengerobj.FrequentFlyerNumber = htpaxFQTVdetails[tb_Passengerobj.FirstName.ToUpper().Trim() + "_" + tb_Passengerobj.LastName.ToUpper().Trim()].ToString();
+                                                    }
+
                                                     //if (JsonObjPNRBooking.data.info.createdDate != null)
                                                     tb_Passengerobj.CreatedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim());  //DateTime.Now;
                                                     tb_Passengerobj.Createdby = ""; //"Online";
