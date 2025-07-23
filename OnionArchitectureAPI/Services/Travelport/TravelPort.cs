@@ -3392,7 +3392,7 @@ namespace OnionArchitectureAPI.Services.Travelport
                         createPNRReq.Append("<PhoneNumber Number=\"" + passengerdetails[0].mobile + "\"  />");
                         createPNRReq.Append("<Email EmailID=\"" + passengerdetails[0].Email + "\" />");
                     }
-                    if (i == 0 && passengerdetails[i].passengertypecode == "ADT")
+                    if (passengerdetails[i].passengertypecode == "ADT")
                     {
                         if (passengerdetails[i].title.ToLower() == "mr")
                         {
@@ -3422,13 +3422,15 @@ namespace OnionArchitectureAPI.Services.Travelport
                         //createPNRReq.Append("<Country>IN</Country>");
                         //createPNRReq.Append("</Address>");
                         //International
-                        if (p1==0 && !string.IsNullOrEmpty(passengerdetails[i].DepartFrequentFlyer))
+                        if (p1 == 0 && !string.IsNullOrEmpty(passengerdetails[i].DepartFrequentFlyer))
                         {
-                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"AI" + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
                         }
                         else
                         {
-                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].ReturnFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].ReturnFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"AI" + passengerdetails[i].ReturnFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
                         }
                         createPNRReq.Append("<Address>");
                         createPNRReq.Append("<AddressName>DemoSiteAddress</AddressName>");
@@ -3456,11 +3458,13 @@ namespace OnionArchitectureAPI.Services.Travelport
                         }
                         if (p1 == 0 && !string.IsNullOrEmpty(passengerdetails[i].DepartFrequentFlyer))
                         {
-                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"AI" + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
                         }
                         else
                         {
-                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].ReturnFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"AI" + passengerdetails[i].ReturnFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
                         }
                         createPNRReq.Append("<SSR Type=\"CTCM\" Status=\"HK\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\" FreeText=\"1234567890\"/>");
                         createPNRReq.Append("<SSR Type=\"CTCE\" Status=\"HK\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\" FreeText=\"test//ENDFARE.in\"/>");
@@ -4437,7 +4441,7 @@ namespace OnionArchitectureAPI.Services.Travelport
                     }
                     count++;
                 }
-                
+
                 createSSRReq.Append(Segmentblock.Split('@')[0].Replace("common_v52_0", "com"));
                 createSSRReq.Append("</air:AirSolution><air:OptionalServices><air:OptionalServicesTotal/>");
 
