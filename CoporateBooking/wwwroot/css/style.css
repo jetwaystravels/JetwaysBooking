@@ -4432,6 +4432,57 @@ a.login-otp {
 
 /*End login section */
 
+/* Start My booking success popup */
+
+.M-bkg-success-popup {
+    position: fixed;
+    z-index: 1;
+    left: 30%;
+    top: 45%;
+    width: auto;
+    height: auto;
+    overflow: auto;
+    color: #155724;
+    background-color: #8ec3b3;
+    text-align: center;
+    padding: 2px;
+    color: #111111;
+}
+
+    .M-bkg-success-popup .inner-bx {
+        background-color: #fefefe;
+        padding: 6px 49px 20px;
+    }
+
+    .M-bkg-success-popup .closeone {
+        color: #7e7e7e;
+        float: right;
+        font-size: 28px;
+        font-weight: 400;
+        position: absolute;
+        top: 0;
+        right: 16px;
+    }
+
+    .M-bkg-success-popup strong {
+        display: block;
+        font-size: 20px;
+        color: #155724;
+        padding-bottom: 8px;
+    }
+
+    .M-bkg-success-popup .total-Amout {
+        font-weight: 600;
+        margin-top: 5px;
+    }
+
+        .M-bkg-success-popup .total-Amout span {
+            font-weight: normal;
+            margin-left: 6px;
+        }
+
+/* End My booking success popup */
+
 /* Start My booking section */
 .m-booking {
     padding: 15px 0;
@@ -4587,12 +4638,17 @@ a.login-otp {
         top:94px;
         width: 320px;*/
         right: 0;
-        top: 37px;
+        /*top: 37px;*/
+        top: -153px;
         width: 320px;
         z-index: 10;
         background: #f9f9f9;
         border-radius: 4px;
     }
+
+        .m-booking .popbx .table {
+            margin-bottom: 0;
+        }
 
 .popbx .table td, .table th {
     border: none !important;

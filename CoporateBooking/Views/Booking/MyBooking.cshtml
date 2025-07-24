@@ -103,16 +103,18 @@
             <img class="navbar-brand-regular" src="~/img/flight-bg-img.jpg" alt="bannerimge" style="opacity: 0.8;">
         </div>
         <!-- ***** End inner search ***** -->
-
-
         @{
             if (ViewBag.Message != null)
             {
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Success!</strong> @ViewBag.Message
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                <div class="/* alert */ M-bkg-success-popup /* alert-success */ /* alert-dismissible */ fade show" role="alert">
+                    <div class="inner-bx">
+                        <img src="~/img/succesimg.gif" style="height: 80px;">
+                        <strong>Success!</strong> @ViewBag.Message
+                        <div class="total-Amout">Total Amount:<span>INR 300</span></div>
+                        <button type="button" class="closeone" data-dismiss="alert" aria-label="closeone">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                 </div>
             }
 
@@ -168,81 +170,81 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-                                
+
 
                                 <tbody>
-                                   @if (Model != null && Model.Count > 0)
-{
-    var groupedBookings = Model
-        .Where(x => x.cancelstatus == 0 && x.DepartureDate >= DateTime.Today)
-        .GroupBy(x => x.BookingRelationId);
+                                    @if (Model != null && Model.Count > 0)
+                                    {
+                                        var groupedBookings = Model
+                                        .Where(x => x.cancelstatus == 0 && x.DepartureDate >= DateTime.Today)
+                                        .GroupBy(x => x.BookingRelationId);
 
-    foreach (var group in groupedBookings)
-    {
-        foreach (var books in group)
-        {
-            <tr>
-                <td class="text-center trip-id">
-                    @{
-                        string imagePath = books.AirLineID switch
-                        {
-                            1 => Url.Content("~/img/flight-logo-icon/AIX_X_Logo_Orange.png"),
-                            2 => Url.Content("~/img/flight-logo-icon/akasa.png"),
-                            3 => Url.Content("~/img/flight-logo-icon/SG.png"),
-                            4 => Url.Content("~/img/flight-logo-icon/6E.png"),
-                            5 => Url.Content("~/img/flight-logo-icon/airindia.png"),
-                            _ => Url.Content("~/images/airlines/default.png")
-                        };
-                    }
-                    <img src="@imagePath" alt="Airline Logo" style="height: 30px;" />
-                    @books.FlightID
-                </td>
+                                        foreach (var group in groupedBookings)
+                                        {
+                                            foreach (var books in group)
+                                            {
+                                                <tr>
+                                                    <td class="text-center trip-id">
+                                                        @{
+                                                            string imagePath = books.AirLineID switch
+                                                            {
+                                                                1 => Url.Content("~/img/flight-logo-icon/AIX_X_Logo_Orange.png"),
+                                                                2 => Url.Content("~/img/flight-logo-icon/akasa.png"),
+                                                                3 => Url.Content("~/img/flight-logo-icon/SG.png"),
+                                                                4 => Url.Content("~/img/flight-logo-icon/6E.png"),
+                                                                5 => Url.Content("~/img/flight-logo-icon/airindia.png"),
+                                                                _ => Url.Content("~/images/airlines/default.png")
+                                                            };
+                                                        }
+                                                        <img src="@imagePath" alt="Airline Logo" style="height: 30px;" />
+                                                        @books.FlightID
+                                                    </td>
 
-                <td class="travel-date">
-                    <strong>@Convert.ToDateTime(books.DepartureDate).ToString("dd-MMM")</strong> -
-                    @Convert.ToDateTime(books.DepartureDate).ToString("yyyy"),
-                    <strong>@Convert.ToDateTime(books.DepartureDate).ToString("HH:mm")</strong>
-                </td>
+                                                    <td class="travel-date">
+                                                        <strong>@Convert.ToDateTime(books.DepartureDate).ToString("dd-MMM")</strong> -
+                                                        @Convert.ToDateTime(books.DepartureDate).ToString("yyyy"),
+                                                        <strong>@Convert.ToDateTime(books.DepartureDate).ToString("HH:mm")</strong>
+                                                    </td>
 
-                <td class="pnr-no">@books.RecordLocator</td>
+                                                    <td class="pnr-no">@books.RecordLocator</td>
 
-                <td class="trv-dtl">
-                    @books.Passengers <br />
-                    <small>Jetways Travels</small>
-                </td>
+                                                    <td class="trv-dtl">
+                                                        @books.Passengers <br />
+                                                        <small>Jetways Travels</small>
+                                                    </td>
 
-                <td class="trp-dtl">
-                    Domestic @books.TripType (Online)<br />
-                    @Convert.ToDateTime(books.DepartureDate).ToString("dd-MMM-yyyy, HH:mm") 
-                    @books.Origin to @books.Destination |<br />
-                    @books.Segments | PNR: @books.RecordLocator
-                </td>
+                                                    <td class="trp-dtl">
+                                                        Domestic @books.TripType (Online)<br />
+                                                        @Convert.ToDateTime(books.DepartureDate).ToString("dd-MMM-yyyy, HH:mm")
+                                                        @books.Origin to @books.Destination |<br />
+                                                        @books.Segments | PNR: @books.RecordLocator
+                                                    </td>
 
-                <td class="status-booked status" style="color:#008000;">
-                    <i class="fa fa-check-circle" aria-hidden="true"></i> Booked
-                </td>
+                                                    <td class="status-booked status" style="color:#008000;">
+                                                        <i class="fa fa-check-circle" aria-hidden="true"></i> Booked
+                                                    </td>
 
                                                     <td class="action text-center align-middle border-start">
-                    @if (books == group.First())  
-                    {
-                        <div class="booking-row">
-                            <form asp-controller="Booking" asp-action="Cancelbooking" class="d-inline"
-                                  asp-route-brid="@books.BookingRelationId" 
-                                  asp-route-pnr="@books.RecordLocator" 
-                                  asp-route-airline="@books.AirLineID" method="post">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="cancel-btn action-btn"
-                                        style="color: #fff; border: #ddd 1px solid; background: #EF0000;">
-                                    Manage Booking
-                                </button>
-                            </form>
-                        </div>
-                    }
-                </td>
-            </tr>
-        }
-    }
-}
+                                                        @if (books == group.First())
+                                                        {
+                                                            <div class="booking-row">
+                                                                <form asp-controller="Booking" asp-action="Cancelbooking" class="d-inline"
+                                                                      asp-route-brid="@books.BookingRelationId"
+                                                                      asp-route-pnr="@books.RecordLocator"
+                                                                      asp-route-airline="@books.AirLineID" method="post">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <button type="submit" class="cancel-btn action-btn"
+                                                                            style="color: #fff; border: #ddd 1px solid; background: #EF0000;">
+                                                                        Manage Booking
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
 
                                 </tbody>
                             </table>
@@ -498,13 +500,50 @@
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   
+
 
 
     <script>
+        // function OldViewRefundData(id, pnr) {
+        //     Show the pop-up box
+        //     document.getElementById("popbx-" + id).style.display = "block";
+
+        //     $.ajax({
+        //             url: "/CancelBooking/CancelRefund?flightid=" + encodeURIComponent(id) + "&pnr=" + encodeURIComponent(pnr),
+        //             type: "GET",
+        //             contentType: "application/json",
+        //             success: function (data) {
+        //                // alert(data);
+        //                 console.log("Refund Data:", data);
+
+        //                 document.getElementById(id + "-1").innerHTML = data[0].bookingAmount;
+        //                 document.getElementById(id + "-2").innerHTML = data[0].deductionAmount;
+        //                 document.getElementById(id + "-3").innerHTML = data[0].refundAmount;
+        //                 // You can update the DOM here with returned data if needed
+        //                   return false;
+        //             },
+        //             error: function (xhr, status, error) {
+        //                  alert(error);
+        //                 console.error("Error:", error);
+        //             }
+        //         });
+        //     }
+
+        //     function closeRefundPopup(id) {
+        //     document.getElementById("popbx-" + id).style.display = "none";
+        // }
+
         function OldViewRefundData(id, pnr) {
-            // Show the pop-up box
-            document.getElementById("popbx-" + id).style.display = "block";
+            // Step 1: Close any open popup first
+            document.querySelectorAll('.popbx').forEach(function (box) {
+                box.style.display = 'none';
+            });
+
+            // Step 2: Show only the selected popup
+            const popup = document.getElementById("popbx-" + id);
+            if (popup) {
+                popup.style.display = "block";
+            }
 
             $.ajax({
                     url: "/CancelBooking/CancelRefund?flightid=" + encodeURIComponent(id) + "&pnr=" + encodeURIComponent(pnr),
@@ -513,7 +552,7 @@
                     success: function (data) {
                        // alert(data);
                         console.log("Refund Data:", data);
-                      
+
                         document.getElementById(id + "-1").innerHTML = data[0].bookingAmount;
                         document.getElementById(id + "-2").innerHTML = data[0].deductionAmount;
                         document.getElementById(id + "-3").innerHTML = data[0].refundAmount;
@@ -525,10 +564,14 @@
                         console.error("Error:", error);
                     }
                 });
-            }
+            return false; // Prevent default action
+        }
 
-            function closeRefundPopup(id) {
-            document.getElementById("popbx-" + id).style.display = "none";
+        function closeRefundPopup(id) {
+            const popup = document.getElementById("popbx-" + id);
+            if (popup) {
+                popup.style.display = "none";
+            }
         }
     </script>
 
