@@ -224,7 +224,7 @@
                                                         <i class="fa fa-check-circle" aria-hidden="true"></i> Booked
                                                     </td>
 
-                                                    <td class="action text-center align-middle border-start">
+                                                    @* <td class="action text-center align-middle border-start">
                                                         @if (books == group.First())
                                                         {
                                                             <div class="booking-row">
@@ -240,7 +240,27 @@
                                                                 </form>
                                                             </div>
                                                         }
-                                                    </td>
+                                                    </td>  *@
+
+
+                                                    @if (books == group.First())
+                                                    {
+                                                        <td class="action text-center align-middle border-start" rowspan="@group.Count()">
+                                                            <div class="booking-row">
+                                                                <form asp-controller="Booking" asp-action="Cancelbooking" class="d-inline"
+                                                                      asp-route-brid="@books.BookingRelationId"
+                                                                      asp-route-pnr="@books.RecordLocator"
+                                                                      asp-route-airline="@books.AirLineID" method="post">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <button type="submit" class="cancel-btn action-btn"
+                                                                            style="color: #fff; border: #ddd 1px solid; background: #EF0000;">
+                                                                        Manage Booking
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    }
+
                                                 </tr>
                                             }
                                         }

@@ -801,7 +801,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                     using (HttpClient client = new HttpClient())
                     {
                         AddGSTInformation addinformation = new AddGSTInformation();
-                        addinformation.contactTypeCode = "G";
+                        addinformation.contactTypeCode = "g";
                         GSTPhonenumber Phonenumber = new GSTPhonenumber();
                         List<GSTPhonenumber> Phonenumberlist = new List<GSTPhonenumber>();
                         Phonenumber.type = "Other";

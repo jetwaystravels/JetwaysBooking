@@ -277,7 +277,7 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                 string title = contactobject.title;
                 string countryCode = contactobject.countrycode;
                 AddGSTInformation addinformation = new AddGSTInformation();
-                addinformation.contactTypeCode = "G";
+                addinformation.contactTypeCode = "g";
                 GSTPhonenumber Phonenumber = new GSTPhonenumber();
                 List<GSTPhonenumber> Phonenumberlist = new List<GSTPhonenumber>();
                 Phonenumber.type = "Other";
