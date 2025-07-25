@@ -900,8 +900,10 @@ namespace OnionConsumeWebAPI.Controllers
                             tb_Passengerobj.Title = items.Value.name.title;
                             tb_Passengerobj.LastName = items.Value.name.last;
 
-                            tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).Email;
-                            tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).mobile;
+                            //tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).Email;
+                            //tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).mobile;
+                            tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.Email ?? string.Empty;
+                            tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.mobile ?? string.Empty;
                             tb_Passengerobj.FastForwardService = 'N';
                             //tb_Passengerobj.FrequentFlyerNumber = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).FrequentFlyer;
                             tb_Passengerobj.FrequentFlyerNumber = "";

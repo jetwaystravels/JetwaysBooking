@@ -20,32 +20,32 @@
     <link rel="stylesheet" href="~/css/style.css">
     <link rel="stylesheet" href="~/css/daterangepicker.css">
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f8f9fa;
-            padding: 20px;
-            color: #212529;
-        }
 
         .booking-card {
             background: #fff;
-            padding: 24px;
+            padding: 16px;
             max-width: 920px;
-            margin: 30px auto;
+            margin: -48px auto;
             border-radius: 8px;
             margin-top: 90px;
-            border: 1px solid rgba(156, 170, 179, .28);
-            box-shadow: 0 0 9px 0 rgba(0, 0, 0, .15);
-            margin-top: 20px;
+            border: 1px solid rgba(156, 170, 179, .90);
+            box-shadow: 0 0 9px 0 rgba(0, 0, 0, .25);
+            /* margin-top: -10px; */
+            position: relative;
+            top: -250px;
         }
 
-            .booking-card h4 {
-                font-size: 15px;
-                font-weight: 600;
-                margin-bottom: 20px;
-            }
+        .booking-banner {
+            box-shadow: 0 0 9px 0 rgba(0, 0, 0, .40);
+            border-bottom: 1px solid rgba(156, 170, 179, 100);
+            margin-top: 50px;
+        }
 
-
+        .booking-card h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 
 
         .flight-header {
@@ -59,6 +59,7 @@
 
             .flight-header span {
                 font-weight: 700;
+                color: #0C4D75;
             }
 
             .flight-header h3 {
@@ -96,6 +97,7 @@
             font-size: 20px;
             font-weight: 700;
             margin: 0;
+            color: #0C4D75;
         }
 
         .flight-info .datetime {
@@ -110,7 +112,7 @@
             background-color: #CFF0FF;
             padding: 12px 16px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-size: 14px;
         }
 
@@ -272,14 +274,15 @@
             </div>
         </header>
         <!-- ***** Header End ***** -->
-        <div><img src="~/img/bk-cancel-banner.png"></div>
+        <div class="booking-banner">
+            <img src="~/img/bk-cancel-banner.png">
+        </div>
         @foreach (var mdl in Model)
         {
             var booking = mdl.Booking;
             var segments = mdl.Segments;
             var passengers = mdl.Passengers;
             var duration = booking.ArrivalDate - booking.DepartureDate;
-           
 
             <div class="booking-card">
                 <div class="flight-header">
@@ -298,8 +301,8 @@
                     </div>
                     <div class="timeline">
                         <div>@($"{duration.Hours} h {duration.Minutes} m")</div>
-                        <div>● ● ●</div>
-                        <div>@(segments.Count > 1 ? "Multi-Leg" : "Non-Stop")</div>
+                        <div><img src="~/img/Flight-R-icon.png"></div>
+                        <div style="font-size: 12px;">@(segments.Count > 1 ? "Multi-Leg" : "Non-Stop")</div>
                     </div>
                     <div class="route">
                         <div class="airport">@booking.Destination</div>
@@ -320,7 +323,9 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="cancellationType" id="cancellationType" value="complete" />
 
-                    <h4>Passenger Details</h4>
+                    <h4>
+                        <i class="fa fa-user" aria-hidden="true" style="margin-right: 10px; margin-left: 13px;"></i>Passenger Details
+                    </h4>
                     <table class="passenger-table">
                         <thead>
                             <tr>

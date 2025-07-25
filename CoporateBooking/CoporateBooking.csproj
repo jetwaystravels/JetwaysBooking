@@ -75,6 +75,7 @@
     <Content Remove="wwwroot\js\vendor\npm.js" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Controllers\AirAsia\2ktqzea3.dqv~" />
     <None Remove="Views\AATripsell\LoadSeatMapList.cshtml~RF5d63b9e.TMP" />
     <None Remove="Views\AATripsell\_ServiceRequestsPartialView.cshtml~RF76dfc3.TMP" />
   </ItemGroup>

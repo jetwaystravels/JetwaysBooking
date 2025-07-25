@@ -271,8 +271,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(AppUrlConstant.BaseURL);
-                //HttpResponseMessage response = await client.GetAsync("api/Login/getotacredairasia");
+                
                 HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
+                //HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+                //Air Asia login
                 //Air Asia login
                 if (response.IsSuccessStatusCode)
                 {
