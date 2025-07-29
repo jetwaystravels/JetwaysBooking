@@ -21,18 +21,50 @@ namespace DomainLayer.Model
 
     public class _credentials
     {
+
+        public int supplierid { get; set; }
+      //  public string organizationId { get; private set; }
+
         [Key]
         public string?   username  { get; set; }
         public string? alternateIdentifier { get; set; }
         public string? password { get; set; }
+
         public string? domain { get; set; }
+
+        private string _organizationId;
+        public string organizationId
+        {
+            get => _organizationId;
+            set
+            {
+                _organizationId = value;
+                domain = value; // Assigning directly inside setter
+            }
+        }
+
+        public string? Image { get; set; }
+
+        private string _img_name;
+        public string img_name
+        {
+            get => _img_name;
+            set
+            {
+                _img_name = value;
+                Image = value; // Assigning directly inside setter
+            }
+        }
+
+
         public string? location { get; set; }
         public string? channelType { get; set; }
         public string? loginRole { get; set; }
-        public string? Image { get; set; }
-        public int? FlightCode { get; set; }
+       
+        public int? FlightCode => supplierid;
 
-       // public int? Status { get; set; }
+        // New Status Property(1 = Active, 0 = Inactive)
+        public int Status { get; set; } = 1;
 
     }
     //public class _credentialsAkasha

@@ -246,6 +246,45 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             decimal fareTotalsum = 0;
             string formatTime = string.Empty;
 
+            //if (!Request.Form.ContainsKey("hdnlegal") || string.IsNullOrEmpty(Request.Form["hdnlegal"]))
+            //{
+            //    string rawLegalEntity = Convert.ToString(formCollection["legal_entity"]);
+
+            //    if (!string.IsNullOrWhiteSpace(rawLegalEntity))
+            //    {
+            //        string apiUrl = $"{AppUrlConstant.Getsupplierdealcode}?legalcode={rawLegalEntity.Split('-')[0].Trim()}";
+
+            //        try
+            //        {
+            //            using (HttpClient client = new HttpClient())
+            //            {
+            //                client.DefaultRequestHeaders.Accept.Add(
+            //                    new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+            //                HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+            //                if (response.IsSuccessStatusCode)
+            //                {
+            //                    string jsonData = await response.Content.ReadAsStringAsync();
+            //                      var deals = JsonConvert.DeserializeObject<List<DealCodeResponse>>(jsonData);
+
+            //                    // Access properties
+            //                    foreach (var deal in deals)
+            //                    {
+            //                       // Console.WriteLine($"Deal: {deal.DealCodeName}, Status: {deal.Status}");
+            //                    }
+            //                }
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+                        
+            //        }
+            //    }
+            //}
+
+
+
             MongoSuppFlightToken mongoAirAsiaToken = new MongoSuppFlightToken();
             MongoSuppFlightToken mongoAKashaToken = new MongoSuppFlightToken();
             MongoSuppFlightToken mongoSpiceToken = new MongoSuppFlightToken();
@@ -270,10 +309,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri(AppUrlConstant.BaseURL);
-                
-                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
-                //HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+                client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
+
+                // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
+                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
                 //Air Asia login
                 //Air Asia login
                 if (response.IsSuccessStatusCode)
@@ -285,7 +324,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                      {
                          // Airasia
                          _credentialsAirasia = new _credentials();
-                         _credentialsAirasia = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 1);
+                         _credentialsAirasia = jsonObject.FirstOrDefault(cred => cred?.supplierid == 1 && cred.Status == 1);
 
                      },  // close first Action
 
@@ -293,13 +332,13 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                      {
                          // Akasa
                          _CredentialsAkasha = new _credentials();
-                         _CredentialsAkasha = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 2);
+                         _CredentialsAkasha = jsonObject.FirstOrDefault(cred => cred?.supplierid == 2 && cred.Status == 1);
                      },
                      () =>
                      {
                          // GDS
                          _CredentialsGDS = new _credentials();
-                         _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 5);
+                         _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
                      },
                      () =>
                      {
@@ -310,7 +349,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          LogonRequestDataobj = new SpicejetSessionManager_.LogonRequestData();
 
                          _CredentialsSpiceJet = new _credentials();
-                         _CredentialsSpiceJet = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 3);
+                         _CredentialsSpiceJet = jsonObject.FirstOrDefault(cred => cred?.supplierid == 3 && cred.Status == 1);
                      },
                      () =>
                      {
@@ -321,7 +360,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          LogonRequestDataIndigoobj = new IndigoSessionmanager_.LogonRequestData();
 
                          _CredentialsIndigo = new _credentials();
-                         _CredentialsIndigo = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 4);
+                         _CredentialsIndigo = jsonObject.FirstOrDefault(cred => cred?.supplierid == 4 && cred.Status == 1);
                      }
 
                  );

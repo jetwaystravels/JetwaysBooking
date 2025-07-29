@@ -698,49 +698,51 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                     AirLineFlightTicketBooking airLineFlightTicketBooking = new AirLineFlightTicketBooking();
                     airLineFlightTicketBooking.BookingID = JsonObjPNRBooking.data.bookingKey;
                     #region DB Save
-                    tb_Booking tb_Booking = new tb_Booking();
-                    tb_Booking.AirLineID = 2;
-                    string productcode = JsonObjPNRBooking.data.journeys[0].segments[0].fares[0].productClass;
-                    var fareName = FareList.GetAllfare().Where(x => ((string)productcode).Equals(x.ProductCode)).FirstOrDefault();
-                    tb_Booking.BookingType = "Corporate-" + JsonObjPNRBooking.data.journeys[0].segments[0].fares[0].productClass + " (" + fareName.Faredesc + ")";
-                    LegalEntity legal = new LegalEntity();
-                    legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
-                    if (legal != null)
+                    try
                     {
-                        tb_Booking.CompanyName = legal.BillingEntityFullName;
-                    }
-                    else
-                    {
-                        tb_Booking.CompanyName = "";
-                    }
-                    tb_Booking.BookingRelationId = Guid;
-                    tb_Booking.TripType = "OneWay";
-                    tb_Booking.BookingID = JsonObjPNRBooking.data.bookingKey;
-                    tb_Booking.RecordLocator = JsonObjPNRBooking.data.recordLocator;
-                    tb_Booking.CurrencyCode = JsonObjPNRBooking.data.currencyCode;
-                    tb_Booking.Origin = JsonObjPNRBooking.data.journeys[0].designator.origin;
-                    tb_Booking.Destination = JsonObjPNRBooking.data.journeys[0].designator.destination;
-                    tb_Booking.BookedDate = JsonObjPNRBooking.data.info.bookedDate;
-                    tb_Booking.TotalAmount = JsonObjPNRBooking.data.breakdown.totalAmount;
-                    if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices != null)
-                    {
-                        if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.total != null)
+                        tb_Booking tb_Booking = new tb_Booking();
+                        tb_Booking.AirLineID = 2;
+                        string productcode = JsonObjPNRBooking.data.journeys[0].segments[0].fares[0].productClass;
+                        var fareName = FareList.GetAllfare().Where(x => ((string)productcode).Equals(x.ProductCode)).FirstOrDefault();
+                        tb_Booking.BookingType = "Corporate-" + JsonObjPNRBooking.data.journeys[0].segments[0].fares[0].productClass + " (" + fareName.Faredesc + ")";
+                        LegalEntity legal = new LegalEntity();
+                        legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
+                        if (legal != null)
                         {
-                            tb_Booking.SpecialServicesTotal = JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.total;
+                            tb_Booking.CompanyName = legal.BillingEntityFullName;
                         }
-                        if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.taxes != null)
+                        else
                         {
-                            tb_Booking.SpecialServicesTotal_Tax = JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.taxes;
+                            tb_Booking.CompanyName = "";
                         }
-                    }
-                    if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats != null)
-                    {
-                        if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats.total > 0 || JsonObjPNRBooking.data.breakdown.passengerTotals.seats.total != null)
+                        tb_Booking.BookingRelationId = Guid;
+                        tb_Booking.TripType = "OneWay";
+                        tb_Booking.BookingID = JsonObjPNRBooking.data.bookingKey;
+                        tb_Booking.RecordLocator = JsonObjPNRBooking.data.recordLocator;
+                        tb_Booking.CurrencyCode = JsonObjPNRBooking.data.currencyCode;
+                        tb_Booking.Origin = JsonObjPNRBooking.data.journeys[0].designator.origin;
+                        tb_Booking.Destination = JsonObjPNRBooking.data.journeys[0].designator.destination;
+                        tb_Booking.BookedDate = JsonObjPNRBooking.data.info.bookedDate;
+                        tb_Booking.TotalAmount = JsonObjPNRBooking.data.breakdown.totalAmount;
+                        if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices != null)
                         {
-                            tb_Booking.SeatTotalAmount = JsonObjPNRBooking.data.breakdown.passengerTotals.seats.total;
-                            tb_Booking.SeatTotalAmount_Tax = JsonObjPNRBooking.data.breakdown.passengerTotals.seats.taxes;
-                            if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments != null)
-                                tb_Booking.SeatAdjustment = JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments;
+                            if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.total != null)
+                            {
+                                tb_Booking.SpecialServicesTotal = JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.total;
+                            }
+                            if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.taxes != null)
+                            {
+                                tb_Booking.SpecialServicesTotal_Tax = JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.taxes;
+                            }
+                        }
+                        if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats != null)
+                        {
+                            if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats.total > 0 || JsonObjPNRBooking.data.breakdown.passengerTotals.seats.total != null)
+                            {
+                                tb_Booking.SeatTotalAmount = JsonObjPNRBooking.data.breakdown.passengerTotals.seats.total;
+                                tb_Booking.SeatTotalAmount_Tax = JsonObjPNRBooking.data.breakdown.passengerTotals.seats.taxes;
+                                if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments != null)
+                                    tb_Booking.SeatAdjustment = JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments;
 
                         }
                     }
@@ -920,7 +922,8 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                             tb_Passengerobj.LastName = items.Value.name.last;
 
                             tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.Email ?? string.Empty;
-                            tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.mobile ?? string.Empty; tb_Passengerobj.FastForwardService = 'N';
+                            tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.mobile ?? string.Empty; 
+							tb_Passengerobj.FastForwardService = 'N';
                             //tb_Passengerobj.FrequentFlyerNumber = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).FrequentFlyer;
                             tb_Passengerobj.FrequentFlyerNumber = "";
                             if (tb_Passengerobj.Title == "MR" || tb_Passengerobj.Title == "Master" || tb_Passengerobj.Title == "MSTR")
@@ -1004,81 +1007,81 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                             }
                             string oridest = JsonObjPNRBooking.data.journeys[0].segments[isegment].designator.origin + JsonObjPNRBooking.data.journeys[0].segments[isegment].designator.destination;
 
-                            // Handle carrybages and fees
-                            List<FeeDetails> feeDetails = new List<FeeDetails>();
-                            double TotalAmount_Seat = 0;
-                            decimal TotalAmount_Seat_tax = 0;
-                            decimal TotalAmount_Seat_discount = 0;
-                            double TotalAmount_Meals = 0;
-                            decimal TotalAmount_Meals_tax = 0;
-                            decimal TotalAmount_Meals_discount = 0;
-                            double TotalAmount_Baggage = 0;
-                            decimal TotalAmount_Baggage_tax = 0;
-                            decimal TotalAmount_Baggage_discount = 0;
-                            string carryBagesConcatenation = "";
-                            string MealConcatenation = "";
-                            int feesCount = items.Value.fees.Count;
-                            foreach (var fee in items.Value.fees)
-                            {
-                                string ssrCode = fee.ssrCode?.ToString();
-                                if (ssrCode != null)
+                                // Handle carrybages and fees
+                                List<FeeDetails> feeDetails = new List<FeeDetails>();
+                                double TotalAmount_Seat = 0;
+                                decimal TotalAmount_Seat_tax = 0;
+                                decimal TotalAmount_Seat_discount = 0;
+                                double TotalAmount_Meals = 0;
+                                decimal TotalAmount_Meals_tax = 0;
+                                decimal TotalAmount_Meals_discount = 0;
+                                double TotalAmount_Baggage = 0;
+                                decimal TotalAmount_Baggage_tax = 0;
+                                decimal TotalAmount_Baggage_discount = 0;
+                                string carryBagesConcatenation = "";
+                                string MealConcatenation = "";
+                                int feesCount = items.Value.fees.Count;
+                                foreach (var fee in items.Value.fees)
                                 {
-                                    if (ssrCode.StartsWith("X"))
+                                    string ssrCode = fee.ssrCode?.ToString();
+                                    if (ssrCode != null)
                                     {
-                                        if (fee.flightReference.ToString().Contains(oridest) == true && TicketCarryBag.Count > 0)
+                                        if (ssrCode.StartsWith("X"))
                                         {
-                                            TicketCarryBag[tb_Passengerobj.PassengerKey.ToString()] = fee.ssrCode;
-                                            var BaggageName = MealImageList.GetAllmeal()
-                                                            .Where(x => ((string)fee.ssrCode).Contains(x.MealCode))
-                                                            .Select(x => x.MealImage)
-                                                            .FirstOrDefault();
-                                            carryBagesConcatenation += fee.ssrCode + "-" + BaggageName + ",";
-                                        }
-                                    }
-                                    else if (ssrCode.StartsWith("P") || ssrCode.StartsWith("C"))
-                                    {
-                                        if (fee.flightReference.ToString().Contains(oridest) == true && TicketMeal.Count > 0)
-                                        {
-                                            TicketMeal[tb_Passengerobj.PassengerKey.ToString()] = fee.ssrCode;
-                                            var MealName = MealImageList.GetAllmeal()
-                                                            .Where(x => ((string)fee.ssrCode).Contains(x.MealCode))
-                                                            .Select(x => x.MealImage)
-                                                            .FirstOrDefault();
-                                            MealConcatenation += fee.ssrCode + "-" + MealName + ",";
-                                        }
-                                    }
-                                }
-                                Hashtable TicketMealTax = new Hashtable();
-                                Hashtable TicketMealAmountTax = new Hashtable();
-                                Hashtable TicketCarryBagAMountTax = new Hashtable();
-
-                                // Iterate through service charges
-                                int ServiceCount = fee.serviceCharges.Count;
-                                if (fee.code.ToString().StartsWith("SFE"))
-                                {
-                                    foreach (var serviceCharge in fee.serviceCharges)
-                                    {
-                                        string serviceChargeCode = serviceCharge.code?.ToString();
-                                        double amount = (serviceCharge.amount != null) ? Convert.ToDouble(serviceCharge.amount) : 0;
-                                        if (serviceChargeCode != null)
-                                        {
-                                            if (fee.flightReference.ToString().Contains(oridest) == true)
+                                            if (fee.flightReference.ToString().Contains(oridest) == true && TicketCarryBag.Count >= 0)
                                             {
-                                                if (serviceChargeCode.StartsWith("SFE") && serviceCharge.type == "6" && TicketSeat.Count > 0)
-                                                {
-                                                    TotalAmount_Seat = amount;
-                                                    TicketSeat[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Seat;
-                                                }
-                                                else if (serviceCharge.type == "3")
-                                                {
-                                                    TotalAmount_Seat_tax += Convert.ToDecimal(amount);
-                                                }
-                                                else if (serviceCharge.type == "1")
-                                                {
-                                                    TotalAmount_Seat_discount += Convert.ToDecimal(amount);
-                                                }
+                                                TicketCarryBag[tb_Passengerobj.PassengerKey.ToString()] = fee.ssrCode;
+                                                var BaggageName = MealImageList.GetAllmeal()
+                                                                .Where(x => ((string)fee.ssrCode).Contains(x.MealCode))
+                                                                .Select(x => x.MealImage)
+                                                                .FirstOrDefault();
+                                                carryBagesConcatenation += fee.ssrCode + "-" + BaggageName + ",";
                                             }
                                         }
+                                        else if (ssrCode.StartsWith("P") || ssrCode.StartsWith("C"))
+                                        {
+                                            if (fee.flightReference.ToString().Contains(oridest) == true && TicketMeal.Count >= 0)
+                                            {
+                                                TicketMeal[tb_Passengerobj.PassengerKey.ToString()] = fee.ssrCode;
+                                                var MealName = MealImageList.GetAllmeal()
+                                                                .Where(x => ((string)fee.ssrCode).Contains(x.MealCode))
+                                                                .Select(x => x.MealImage)
+                                                                .FirstOrDefault();
+                                                MealConcatenation += fee.ssrCode + "-" + MealName + ",";
+                                            }
+                                        }
+                                    }
+                                    Hashtable TicketMealTax = new Hashtable();
+                                    Hashtable TicketMealAmountTax = new Hashtable();
+                                    Hashtable TicketCarryBagAMountTax = new Hashtable();
+
+                                    // Iterate through service charges
+                                    int ServiceCount = fee.serviceCharges.Count;
+                                    if (fee.code.ToString().StartsWith("SFE"))
+                                    {
+                                        foreach (var serviceCharge in fee.serviceCharges)
+                                        {
+                                            string serviceChargeCode = serviceCharge.code?.ToString();
+                                            double amount = (serviceCharge.amount != null) ? Convert.ToDouble(serviceCharge.amount) : 0;
+                                            if (serviceChargeCode != null)
+                                            {
+                                                if (fee.flightReference.ToString().Contains(oridest) == true)
+                                                {
+                                                    if (serviceChargeCode.StartsWith("SFE") && serviceCharge.type == "6" && TicketSeat.Count >= 0)
+                                                    {
+                                                        TotalAmount_Seat = amount;
+                                                        TicketSeat[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Seat;
+                                                    }
+                                                    else if (serviceCharge.type == "3")
+                                                    {
+                                                        TotalAmount_Seat_tax += Convert.ToDecimal(amount);
+                                                    }
+                                                    else if (serviceCharge.type == "1")
+                                                    {
+                                                        TotalAmount_Seat_discount += Convert.ToDecimal(amount);
+                                                    }
+                                                }
+                                            }
 
                                     }
                                 }
@@ -1093,47 +1096,47 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                                             if (fee.flightReference.ToString().Contains(oridest) == true)
                                             {
 
-                                                if ((serviceChargeCode.StartsWith("P") || serviceChargeCode.StartsWith("C")) && serviceCharge.type == "6" && TicketMealAmount.Count > 0)
+                                                    if ((serviceChargeCode.StartsWith("P") || serviceChargeCode.StartsWith("C")) && serviceCharge.type == "6" && TicketMealAmount.Count >= 0)
+                                                    {
+                                                        TotalAmount_Meals = amount;
+                                                        TicketMealAmount[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Meals;
+                                                    }
+                                                    else if (serviceCharge.type == "3")
+                                                    {
+                                                        TotalAmount_Meals_tax += Convert.ToDecimal(amount);
+                                                    }
+                                                    else if (serviceCharge.type == "1")
+                                                    {
+                                                        TotalAmount_Meals_discount += Convert.ToDecimal(amount);
+                                                    }
+                                                }
+
+                                        }
+
+                                        }
+                                    }
+                                    else if (fee.code.ToString().StartsWith("X"))
+                                    {
+                                        foreach (var serviceCharge in fee.serviceCharges)
+                                        {
+                                            string serviceChargeCode = serviceCharge.code?.ToString();
+                                            double amount = (serviceCharge.amount != null) ? Convert.ToDouble(serviceCharge.amount) : 0;
+                                            if (serviceChargeCode != null && isegment == 0)
+                                            {
+                                                if (serviceChargeCode.StartsWith("X") && serviceCharge.type == "6" && TicketCarryBagAMount.Count >= 0)
                                                 {
-                                                    TotalAmount_Meals = amount;
-                                                    TicketMealAmount[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Meals;
+                                                    TotalAmount_Baggage = amount;
+                                                    TicketCarryBagAMount[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Baggage;
                                                 }
                                                 else if (serviceCharge.type == "3")
                                                 {
-                                                    TotalAmount_Meals_tax += Convert.ToDecimal(amount);
+                                                    TotalAmount_Baggage_tax += Convert.ToDecimal(amount);
                                                 }
                                                 else if (serviceCharge.type == "1")
                                                 {
-                                                    TotalAmount_Meals_discount += Convert.ToDecimal(amount);
+                                                    TotalAmount_Baggage_discount += Convert.ToDecimal(amount);
                                                 }
                                             }
-
-                                        }
-
-                                    }
-                                }
-                                else if (fee.code.ToString().StartsWith("X"))
-                                {
-                                    foreach (var serviceCharge in fee.serviceCharges)
-                                    {
-                                        string serviceChargeCode = serviceCharge.code?.ToString();
-                                        double amount = (serviceCharge.amount != null) ? Convert.ToDouble(serviceCharge.amount) : 0;
-                                        if (serviceChargeCode != null && isegment == 0)
-                                        {
-                                            if (serviceChargeCode.StartsWith("X") && serviceCharge.type == "6" && TicketCarryBagAMount.Count > 0)
-                                            {
-                                                TotalAmount_Baggage = amount;
-                                                TicketCarryBagAMount[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Baggage;
-                                            }
-                                            else if (serviceCharge.type == "3")
-                                            {
-                                                TotalAmount_Baggage_tax += Convert.ToDecimal(amount);
-                                            }
-                                            else if (serviceCharge.type == "1")
-                                            {
-                                                TotalAmount_Baggage_discount += Convert.ToDecimal(amount);
-                                            }
-                                        }
 
                                     }
                                 }
@@ -1240,20 +1243,25 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
 
 
 
-                    airLineFlightTicketBooking.tb_Booking = tb_Booking;
-                    airLineFlightTicketBooking.GSTDetails = gSTDetails;
-                    airLineFlightTicketBooking.tb_Segments = segmentReturnsListt;
-                    airLineFlightTicketBooking.tb_AirCraft = tb_AirCraft;
-                    airLineFlightTicketBooking.tb_journeys = tb_JourneysList;
-                    airLineFlightTicketBooking.tb_PassengerTotal = tb_PassengerTotalobj;
-                    airLineFlightTicketBooking.tb_PassengerDetails = tb_PassengerDetailsList;
-                    airLineFlightTicketBooking.ContactDetail = contactDetail;
-                    //airLineFlightTicketBooking.tb_Trips = tb_Trips;
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.BaseURL + "api/AirLineTicketBooking/PostairlineTicketData", airLineFlightTicketBooking);
-                    if (responsePassengers.IsSuccessStatusCode)
+                        airLineFlightTicketBooking.tb_Booking = tb_Booking;
+                        airLineFlightTicketBooking.GSTDetails = gSTDetails;
+                        airLineFlightTicketBooking.tb_Segments = segmentReturnsListt;
+                        airLineFlightTicketBooking.tb_AirCraft = tb_AirCraft;
+                        airLineFlightTicketBooking.tb_journeys = tb_JourneysList;
+                        airLineFlightTicketBooking.tb_PassengerTotal = tb_PassengerTotalobj;
+                        airLineFlightTicketBooking.tb_PassengerDetails = tb_PassengerDetailsList;
+                        airLineFlightTicketBooking.ContactDetail = contactDetail;
+                        //airLineFlightTicketBooking.tb_Trips = tb_Trips;
+                        client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                        HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.BaseURL + "api/AirLineTicketBooking/PostairlineTicketData", airLineFlightTicketBooking);
+                        if (responsePassengers.IsSuccessStatusCode)
+                        {
+                            var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
+
                     }
                     #endregion
 

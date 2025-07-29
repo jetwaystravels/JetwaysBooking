@@ -348,136 +348,137 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
 
             string tokenview = tokenData.Token;
 
-            string[] dateStrings = JsonConvert.DeserializeObject<string[]>(formattedDates);
+            string passobj = objMongoHelper.Zip(JsonConvert.SerializeObject(passengerdetails));
+            _mongoDBHelper.UpdateFlightTokenPassengerGDS(GUID, "Akasa", passobj);
             using (HttpClient client = new HttpClient())
             {
-                if (!string.IsNullOrEmpty(tokenview))
-                {
-                    if (tokenview == null) { tokenview = ""; }
-                    token = tokenData.Token;
-                    PassengersModel _AkPassengersModel = new PassengersModel();
-                    string CountryCode = TempData["CountryCodeAK"].ToString();
-                    for (int i = 0; i < passengerdetails.Count; i++)
-                    {
-                        if (passengerdetails[i].passengertypecode == "INFT")
-                            continue;
-                        if (passengerdetails[i].passengertypecode != null)
-                        {
+       //         if (!string.IsNullOrEmpty(tokenview))
+       //         {
+       //             if (tokenview == null) { tokenview = ""; }
+       //             token = tokenData.Token;
+       //             PassengersModel _AkPassengersModel = new PassengersModel();
+       //             string CountryCode = TempData["CountryCodeAK"].ToString();
+       //             for (int i = 0; i < passengerdetails.Count; i++)
+       //             {
+       //                 if (passengerdetails[i].passengertypecode == "INFT")
+       //                     continue;
+       //                 if (passengerdetails[i].passengertypecode != null)
+       //                 {
 
-                            Name Akname = new Name();
-                            _Info AkInfo = new _Info();
-                            if (passengerdetails[i].title == "Mr" || passengerdetails[i].title == "MSTR")
-                            {
-                                AkInfo.gender = "Male";
-                            }
-                            else
-                            {
-                                AkInfo.gender = "Female";
-                            }
-                            Akname.title = passengerdetails[i].title;
-                            Akname.first = passengerdetails[i].first;
-                            Akname.last = passengerdetails[i].last;
-                            Akname.mobile = CountryCode + passengerdetails[i].mobile;
-                            Akname.middle = "";
-                            AkInfo.dateOfBirth = "";
-                            AkInfo.nationality = "IN";
-                            AkInfo.residentCountry = "IN";
-                            _AkPassengersModel.name = Akname;
-                            _AkPassengersModel.info = AkInfo;
-							// HttpContext.Session.SetString("AKPassengerName", JsonConvert.SerializeObject(passengerdetails));
+       //                     Name Akname = new Name();
+       //                     _Info AkInfo = new _Info();
+       //                     if (passengerdetails[i].title == "Mr" || passengerdetails[i].title == "MSTR")
+       //                     {
+       //                         AkInfo.gender = "Male";
+       //                     }
+       //                     else
+       //                     {
+       //                         AkInfo.gender = "Female";
+       //                     }
+       //                     Akname.title = passengerdetails[i].title;
+       //                     Akname.first = passengerdetails[i].first;
+       //                     Akname.last = passengerdetails[i].last;
+       //                     Akname.mobile = CountryCode + passengerdetails[i].mobile;
+       //                     Akname.middle = "";
+       //                     AkInfo.dateOfBirth = "";
+       //                     AkInfo.nationality = "IN";
+       //                     AkInfo.residentCountry = "IN";
+       //                     _AkPassengersModel.name = Akname;
+       //                     _AkPassengersModel.info = AkInfo;
+							//// HttpContext.Session.SetString("AKPassengerName", JsonConvert.SerializeObject(passengerdetails));
 
-							string passobj = objMongoHelper.Zip(JsonConvert.SerializeObject(passengerdetails));
-							_mongoDBHelper.UpdatePassengerMongoFlightToken(GUID, "Akasa", passobj);
+							//string passobj = objMongoHelper.Zip(JsonConvert.SerializeObject(passengerdetails));
+							//_mongoDBHelper.UpdatePassengerMongoFlightToken(GUID, "Akasa", passobj);
 
-							var jsonPassengers = JsonConvert.SerializeObject(_AkPassengersModel, Formatting.Indented);
-                            logs.WriteLogs(jsonPassengers, "9-ADDPassengerRequest" + i, "AkasaOneWay", "oneway");
-                            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                            HttpResponseMessage AkresponsePassengers = await client.PutAsJsonAsync(AppUrlConstant.AkasaAirPassengerDetails + passengerdetails[i].passengerkey, _AkPassengersModel);
-                            if (AkresponsePassengers.IsSuccessStatusCode)
-                            {
-                                var _responsePassengers = AkresponsePassengers.Content.ReadAsStringAsync().Result;
+							//var jsonPassengers = JsonConvert.SerializeObject(_AkPassengersModel, Formatting.Indented);
+       //                     logs.WriteLogs(jsonPassengers, "9-ADDPassengerRequest" + i, "AkasaOneWay", "oneway");
+       //                     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+       //                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+       //                     HttpResponseMessage AkresponsePassengers = await client.PutAsJsonAsync(AppUrlConstant.AkasaAirPassengerDetails + passengerdetails[i].passengerkey, _AkPassengersModel);
+       //                     if (AkresponsePassengers.IsSuccessStatusCode)
+       //                     {
+       //                         var _responsePassengers = AkresponsePassengers.Content.ReadAsStringAsync().Result;
                                 
-                                logs.WriteLogs(_responsePassengers, "9-ADDPassengerResponse" + i, "AkasaOneWay", "oneway");
-                                //var JsonObjPassengers = JsonConvert.DeserializeObject<dynamic>(_responsePassengers);
-                            }
-                            else
-                            {
-                                var _responsePassengersexpetion = AkresponsePassengers.Content.ReadAsStringAsync().Result;
-                                logs.WriteLogs(_responsePassengersexpetion, "9-ADDPassengerResponse" + i, "AkasaOneWay", "oneway");
+       //                         logs.WriteLogs(_responsePassengers, "9-ADDPassengerResponse" + i, "AkasaOneWay", "oneway");
+       //                         //var JsonObjPassengers = JsonConvert.DeserializeObject<dynamic>(_responsePassengers);
+       //                     }
+       //                     else
+       //                     {
+       //                         var _responsePassengersexpetion = AkresponsePassengers.Content.ReadAsStringAsync().Result;
+       //                         logs.WriteLogs(_responsePassengersexpetion, "9-ADDPassengerResponse" + i, "AkasaOneWay", "oneway");
 
-                            }
-                        }
-                    }
+       //                     }
+       //                 }
+       //             }
 
-                    int infantcount = 0;
-                    for (int k = 0; k < passengerdetails.Count; k++)
-                    {
-                        if (passengerdetails[k].passengertypecode == "INFT")
-                            infantcount++;
+       //             int infantcount = 0;
+       //             for (int k = 0; k < passengerdetails.Count; k++)
+       //             {
+       //                 if (passengerdetails[k].passengertypecode == "INFT")
+       //                     infantcount++;
 
-                    }
-                    AddInFantModel _AkPassengersModel1 = new AddInFantModel();
-                    for (int i = 0; i < passengerdetails.Count; i++)
-                    {
-                        if (passengerdetails[i].passengertypecode == "ADT" || passengerdetails[i].passengertypecode == "CHD")
-                            continue;
-                        if (passengerdetails[i].passengertypecode == "INFT")
-                        {
-                            for (int k = 0; k < infantcount; k++)
-                            {
-                                _AkPassengersModel1.nationality = "IN";
-                                //_PassengersModel1.dateOfBirth = "2023-10-01";
-                                _AkPassengersModel1.dateOfBirth = dateStrings[k];
-                                _AkPassengersModel1.residentCountry = "IN";
-                                _Info Info = new _Info();
-                                if (passengerdetails[i].title == "MSTR")
-                                {
-                                    Info.gender = "Male";
-                                }
-                                else
-                                {
-                                    Info.gender = "Female";
-                                }
-                                _AkPassengersModel1.gender = Info.gender;
+       //             }
+       //             AddInFantModel _AkPassengersModel1 = new AddInFantModel();
+       //             for (int i = 0; i < passengerdetails.Count; i++)
+       //             {
+       //                 if (passengerdetails[i].passengertypecode == "ADT" || passengerdetails[i].passengertypecode == "CHD")
+       //                     continue;
+       //                 if (passengerdetails[i].passengertypecode == "INFT")
+       //                 {
+       //                     for (int k = 0; k < infantcount; k++)
+       //                     {
+       //                         _AkPassengersModel1.nationality = "IN";
+       //                         //_PassengersModel1.dateOfBirth = "2023-10-01";
+       //                         _AkPassengersModel1.dateOfBirth = dateStrings[k];
+       //                         _AkPassengersModel1.residentCountry = "IN";
+       //                         _Info Info = new _Info();
+       //                         if (passengerdetails[i].title == "MSTR")
+       //                         {
+       //                             Info.gender = "Male";
+       //                         }
+       //                         else
+       //                         {
+       //                             Info.gender = "Female";
+       //                         }
+       //                         _AkPassengersModel1.gender = Info.gender;
 
-                                InfantName AknameINF = new InfantName();
-                                AknameINF.first = passengerdetails[i].first;
-                                AknameINF.middle = "";
-                                AknameINF.last = passengerdetails[i].last;
-                                AknameINF.title = passengerdetails[i].title;
-                                AknameINF.suffix = "";
-                                _AkPassengersModel1.name = AknameINF;
+       //                         InfantName AknameINF = new InfantName();
+       //                         AknameINF.first = passengerdetails[i].first;
+       //                         AknameINF.middle = "";
+       //                         AknameINF.last = passengerdetails[i].last;
+       //                         AknameINF.title = passengerdetails[i].title;
+       //                         AknameINF.suffix = "";
+       //                         _AkPassengersModel1.name = AknameINF;
 
 
-                                var jsonPassengers = JsonConvert.SerializeObject(_AkPassengersModel1, Formatting.Indented);
-                                logs.WriteLogs(jsonPassengers, "10-ADD_InfantRequest" + k, "AkasaOneWay", "oneway");
-                                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                                HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.AkasaAirInfantDetails + passengerdetails[k].passengerkey + "/infant", _AkPassengersModel1);
-                                //HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.AkasaAirInfantDetails , _AkPassengersModel1);
-                                if (responsePassengers.IsSuccessStatusCode)
-                                {
-                                    var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
-                                    //Logs logs = new Logs();
-                                    //logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_AkPassengersModel1) + "Url: " + AppUrlConstant.URLAirasia + "/api/nsk/v3/booking/passengers/" + passengerdetails[k].passengerkey + "/infant" + "\n Response: " + JsonConvert.SerializeObject(_responsePassengers), "Update passenger_Infant", "AkasaOneWay", "oneway");
+       //                         var jsonPassengers = JsonConvert.SerializeObject(_AkPassengersModel1, Formatting.Indented);
+       //                         logs.WriteLogs(jsonPassengers, "10-ADD_InfantRequest" + k, "AkasaOneWay", "oneway");
+       //                         client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+       //                         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+       //                         HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.AkasaAirInfantDetails + passengerdetails[k].passengerkey + "/infant", _AkPassengersModel1);
+       //                         //HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.AkasaAirInfantDetails , _AkPassengersModel1);
+       //                         if (responsePassengers.IsSuccessStatusCode)
+       //                         {
+       //                             var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
+       //                             //Logs logs = new Logs();
+       //                             //logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_AkPassengersModel1) + "Url: " + AppUrlConstant.URLAirasia + "/api/nsk/v3/booking/passengers/" + passengerdetails[k].passengerkey + "/infant" + "\n Response: " + JsonConvert.SerializeObject(_responsePassengers), "Update passenger_Infant", "AkasaOneWay", "oneway");
                                    
-                                    logs.WriteLogs(_responsePassengers, "10-ADD_InfantResponse" + k, "AkasaOneWay", "oneway");
+       //                             logs.WriteLogs(_responsePassengers, "10-ADD_InfantResponse" + k, "AkasaOneWay", "oneway");
 
-                                    //var JsonObjPassengers = JsonConvert.DeserializeObject<dynamic>(_responsePassengers);
-                                }
-                                else
-                                {
-                                    var _responsePassengersexception = responsePassengers.Content.ReadAsStringAsync().Result;
-                                    logs.WriteLogs(_responsePassengersexception, "10-ADD_InfantResponse" + k, "AkasaOneWay", "oneway");
+       //                             //var JsonObjPassengers = JsonConvert.DeserializeObject<dynamic>(_responsePassengers);
+       //                         }
+       //                         else
+       //                         {
+       //                             var _responsePassengersexception = responsePassengers.Content.ReadAsStringAsync().Result;
+       //                             logs.WriteLogs(_responsePassengersexception, "10-ADD_InfantResponse" + k, "AkasaOneWay", "oneway");
 
-                                }
-                                i++;
-                            }
+       //                         }
+       //                         i++;
+       //                     }
 
-                        }
-                    }
-                }
+       //                 }
+       //             }
+       //         }
 
 				#region post data 
 
@@ -485,14 +486,7 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
 				seatMealdetail = _mongoDBHelper.GetSuppSeatMealByGUID(GUID, "Akasa").Result;
 
 				ViewModel vm = new ViewModel();
-                //var AKpassenger = HttpContext.Session.GetString("ResultFlightPassenger");
-                //var AkMeals = HttpContext.Session.GetString("AKMealsBaggage");
-                //var Akbaggage = HttpContext.Session.GetString("AKBaggageDetails");
-                //var AkSeatMap = HttpContext.Session.GetString("AKSeatmap");
-                //var AkpassengerDetails = HttpContext.Session.GetString("AKPassengerName");
-
                 var AkpassengerDetails = JsonConvert.SerializeObject(passengerdetails);
-
 				if (!string.IsNullOrEmpty(seatMealdetail.ResultRequest))
                 {
                     AirAsiaTripResponceModel AkPassenger = (AirAsiaTripResponceModel)JsonConvert.DeserializeObject(objMongoHelper.UnZip(seatMealdetail.ResultRequest), typeof(AirAsiaTripResponceModel));
@@ -519,9 +513,7 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                     vm.passkeytype = passkeytypesDetails;
                 }
 
-
                 #endregion
-
                 return PartialView("_AkServiceRequestsPartialView", vm);
 
             }
@@ -581,19 +573,145 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
             }
             using (HttpClient client = new HttpClient())
             {
+                #region Update Pax
 
-				MongoSeatMealdetail seatMealdetail = new MongoSeatMealdetail();
+                if (!string.IsNullOrEmpty(token))
+                {
+
+                    string _AkpassengerDetails = objMongoHelper.UnZip(tokenData.PassengerRequest);
+                    List<passkeytype> passengerdetails = JsonConvert.DeserializeObject<List<passkeytype>>(_AkpassengerDetails);
+                    if (token == null) { token = ""; }
+                    token = tokenData.Token;
+                    PassengersModel _AkPassengersModel = new PassengersModel();
+                    string CountryCode = "+91";// TempData["CountryCodeAK"].ToString();
+                    for (int i = 0; i < passengerdetails.Count; i++)
+                    {
+                        if (passengerdetails[i].passengertypecode == "INFT")
+                            continue;
+                        if (passengerdetails[i].passengertypecode != null)
+                        {
+
+                            Name Akname = new Name();
+                            _Info AkInfo = new _Info();
+                            if (passengerdetails[i].title == "Mr" || passengerdetails[i].title == "MSTR")
+                            {
+                                AkInfo.gender = "Male";
+                            }
+                            else
+                            {
+                                AkInfo.gender = "Female";
+                            }
+                            Akname.title = passengerdetails[i].title;
+                            Akname.first = passengerdetails[i].first;
+                            Akname.last = passengerdetails[i].last;
+                            Akname.mobile = CountryCode + passengerdetails[i].mobile;
+                            Akname.middle = "";
+                            AkInfo.dateOfBirth = "";
+                            AkInfo.nationality = "IN";
+                            AkInfo.residentCountry = "IN";
+                            _AkPassengersModel.name = Akname;
+                            _AkPassengersModel.info = AkInfo;
+                            // HttpContext.Session.SetString("AKPassengerName", JsonConvert.SerializeObject(passengerdetails));
+
+                            string passobj = objMongoHelper.Zip(JsonConvert.SerializeObject(passengerdetails));
+                            _mongoDBHelper.UpdatePassengerMongoFlightToken(Guid, "Akasa", passobj);
+
+                            var jsonPassengers = JsonConvert.SerializeObject(_AkPassengersModel, Formatting.Indented);
+                            logs.WriteLogs(jsonPassengers, "9-ADDPassengerRequest" + i, "AkasaOneWay", "oneway");
+                            client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                            HttpResponseMessage AkresponsePassengers = await client.PutAsJsonAsync(AppUrlConstant.AkasaAirPassengerDetails + passengerdetails[i].passengerkey, _AkPassengersModel);
+                            if (AkresponsePassengers.IsSuccessStatusCode)
+                            {
+                                var _responsePassengers = AkresponsePassengers.Content.ReadAsStringAsync().Result;
+
+                                logs.WriteLogs(_responsePassengers, "9-ADDPassengerResponse" + i, "AkasaOneWay", "oneway");
+                                //var JsonObjPassengers = JsonConvert.DeserializeObject<dynamic>(_responsePassengers);
+                            }
+                            else
+                            {
+                                var _responsePassengersexpetion = AkresponsePassengers.Content.ReadAsStringAsync().Result;
+                                logs.WriteLogs(_responsePassengersexpetion, "9-ADDPassengerResponse" + i, "AkasaOneWay", "oneway");
+
+                            }
+                        }
+                    }
+
+                    int infantcount = 0;
+                    for (int k = 0; k < passengerdetails.Count; k++)
+                    {
+                        if (passengerdetails[k].passengertypecode == "INFT")
+                            infantcount++;
+
+                    }
+                    string formattedDates = "[]";
+                    string[] dateStrings = JsonConvert.DeserializeObject<string[]>(formattedDates);
+                    AddInFantModel _AkPassengersModel1 = new AddInFantModel();
+                    for (int i = 0; i < passengerdetails.Count; i++)
+                    {
+                        if (passengerdetails[i].passengertypecode == "ADT" || passengerdetails[i].passengertypecode == "CHD")
+                            continue;
+                        if (passengerdetails[i].passengertypecode == "INFT")
+                        {
+                            for (int k = 0; k < infantcount; k++)
+                            {
+                                _AkPassengersModel1.nationality = "IN";
+                                //_PassengersModel1.dateOfBirth = "2023-10-01";
+                                _AkPassengersModel1.dateOfBirth = passengerdetails[i].dateOfBirth;
+                                _AkPassengersModel1.residentCountry = "IN";
+                                _Info Info = new _Info();
+                                if (passengerdetails[i].title == "MSTR")
+                                {
+                                    Info.gender = "Male";
+                                }
+                                else
+                                {
+                                    Info.gender = "Female";
+                                }
+                                _AkPassengersModel1.gender = Info.gender;
+
+                                InfantName AknameINF = new InfantName();
+                                AknameINF.first = passengerdetails[i].first;
+                                AknameINF.middle = "";
+                                AknameINF.last = passengerdetails[i].last;
+                                AknameINF.title = passengerdetails[i].title;
+                                AknameINF.suffix = "";
+                                _AkPassengersModel1.name = AknameINF;
+
+
+                                var jsonPassengers = JsonConvert.SerializeObject(_AkPassengersModel1, Formatting.Indented);
+                                logs.WriteLogs(jsonPassengers, "10-ADD_InfantRequest" + k, "AkasaOneWay", "oneway");
+                                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                                HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.AkasaAirInfantDetails + passengerdetails[k].passengerkey + "/infant", _AkPassengersModel1);
+                                //HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.AkasaAirInfantDetails , _AkPassengersModel1);
+                                if (responsePassengers.IsSuccessStatusCode)
+                                {
+                                    var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
+                                    //Logs logs = new Logs();
+                                    //logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_AkPassengersModel1) + "Url: " + AppUrlConstant.URLAirasia + "/api/nsk/v3/booking/passengers/" + passengerdetails[k].passengerkey + "/infant" + "\n Response: " + JsonConvert.SerializeObject(_responsePassengers), "Update passenger_Infant", "AkasaOneWay", "oneway");
+
+                                    logs.WriteLogs(_responsePassengers, "10-ADD_InfantResponse" + k, "AkasaOneWay", "oneway");
+
+                                    //var JsonObjPassengers = JsonConvert.DeserializeObject<dynamic>(_responsePassengers);
+                                }
+                                else
+                                {
+                                    var _responsePassengersexception = responsePassengers.Content.ReadAsStringAsync().Result;
+                                    logs.WriteLogs(_responsePassengersexception, "10-ADD_InfantResponse" + k, "AkasaOneWay", "oneway");
+
+                                }
+                                i++;
+                            }
+
+                        }
+                    }
+                }
+                #endregion
+
+                MongoSeatMealdetail seatMealdetail = new MongoSeatMealdetail();
 				seatMealdetail = _mongoDBHelper.GetSuppSeatMealByGUID(Guid, "Akasa").Result;
-
-				
-
-				//var AKpassenger = HttpContext.Session.GetString("ResultFlightPassenger");
-    //            var AkMeals = HttpContext.Session.GetString("AKMealsBaggage");
-    //            var Akbaggage = HttpContext.Session.GetString("AKBaggageDetails");
-    //            var AkSeatMap = HttpContext.Session.GetString("AKSeatmap");
-				//  var AkpassengerDetails = HttpContext.Session.GetString("AKPassengerName");
 				var AkpassengerDetails = objMongoHelper.UnZip(tokenData.PassengerRequest);
-
 				AirAsiaTripResponceModel AkPassenger = null;
                 SSRAvailabiltyResponceModel AkBaggageDetails = null;
                 SeatMapResponceModel AkSeatmaplist = null;
@@ -632,15 +750,12 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                             var jsonSeatAssignmentRequest = JsonConvert.SerializeObject(_SeatAssignmentModel, Formatting.Indented);
                             client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                            //HttpResponseMessage responceSeatAssignment = await client.PostAsJsonAsync(BaseURL + "/api/nsk/v2/booking/passengers/" + passengerkey + "/seats/" + pas_unitKey, _SeatAssignmentModel);
                             HttpResponseMessage responceSeatAssignment = await client.PostAsJsonAsync(AppUrlConstant.AirasiaAutoSeat + passengerkey, _SeatAssignmentModel);
                             if (responceSeatAssignment.IsSuccessStatusCode)
                             {
                                 var _responseSeatAssignment = responceSeatAssignment.Content.ReadAsStringAsync().Result;
                                 logs.WriteLogs(jsonSeatAssignmentRequest, "11-AutoSeatReq" + j, "AkasaOneWay", "oneway");
                                 logs.WriteLogs(_responseSeatAssignment, "11-AutoSeatRes" + j, "AkasaOneWay", "oneway");
-
-                                //var JsonObjSeatAssignment = JsonConvert.DeserializeObject<dynamic>(_responseSeatAssignment);
                             }
                         }
                     }
@@ -663,9 +778,7 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                                     SellSSRModel _sellSSRModel = new SellSSRModel();
                                     _sellSSRModel.count = 1;
                                     _sellSSRModel.note = "PYOG";
-                                    // _sellSSRModel.forceWaveOnSell = false;
                                     _sellSSRModel.currencyCode = "INR";
-                                    // _sellSSRModel.ssrSellMode = 2;
 
                                     var jsonSellSSR = JsonConvert.SerializeObject(_sellSSRModel, Formatting.Indented);
                                     logs.WriteLogs(jsonSellSSR, "12-SellSSRReq" + l, "AkasaOneWay", "oneway");
@@ -674,19 +787,13 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                                     HttpResponseMessage responseSellSSR = await client.PostAsJsonAsync(AppUrlConstant.AkasaAirMealBaggagePost + pas_SsrKey, _sellSSRModel);
                                     if (responseSellSSR.IsSuccessStatusCode)
                                     {
-                                        //Logs logs = new Logs();
                                         var _responseresponseSellSSR = responseSellSSR.Content.ReadAsStringAsync().Result;
-                                        //logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_sellSSRModel) + "Url: " + AppUrlConstant.AkasaAirMealBaggagePost + "\n Response: " + JsonConvert.SerializeObject(_responseresponseSellSSR), "SellSSR", "AkasaOneWay", "oneway");
-                                       
                                         logs.WriteLogs(_responseresponseSellSSR, "12-SellSSRRes" + l, "AkasaOneWay", "oneway");
-
-                                        //var JsonObjresponseresponseSellSSR = JsonConvert.DeserializeObject<dynamic>(_responseresponseSellSSR);
                                     }
                                     else
                                     {
                                         var _responseresponseSellSSRexception = responseSellSSR.Content.ReadAsStringAsync().Result;
                                         logs.WriteLogs(_responseresponseSellSSRexception, "12-SellSSRRes" + l, "AkasaOneWay", "oneway");
-
                                     }
                                     mealid++;
                                 }
@@ -727,11 +834,7 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                                 if (responceSeatAssignment.IsSuccessStatusCode)
                                 {
                                     var _responseSeatAssignment = responceSeatAssignment.Content.ReadAsStringAsync().Result;
-                                    //logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_SeatAssignmentModel) + "Url: " + AppUrlConstant.AkasaAirMealSeatAssign + passengerkey + "/seats/" + pas_unitKey + "\n Response: " + JsonConvert.SerializeObject(_responseSeatAssignment), "SeatAssign", "AkasaOneWay", "oneway");
-                                   
                                     logs.WriteLogs(_responseSeatAssignment, "13-SeatAssignRes" + j, "AkasaOneWay", "oneway");
-
-                                    //var JsonObjSeatAssignment = JsonConvert.DeserializeObject<dynamic>(_responseSeatAssignment);
                                 }
                                 else
                                 {
@@ -766,10 +869,7 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                                     SellSSRModel _sellSSRModel = new SellSSRModel();
                                     _sellSSRModel.count = 1;
                                     _sellSSRModel.note = "PYOG";
-                                    //_sellSSRModel.forceWaveOnSell = false;
                                     _sellSSRModel.currencyCode = "INR";
-                                    //_sellSSRModel.ssrSellMode = 2;
-
                                     var jsonSellSSR = JsonConvert.SerializeObject(_sellSSRModel, Formatting.Indented);
                                     logs.WriteLogs(jsonSellSSR, "12-SellSSRReq" + l, "AkasaOneWay", "oneway");
                                     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
@@ -778,8 +878,6 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                                     if (responseSellSSR.IsSuccessStatusCode)
                                     {
                                         var _responseresponseSellSSR = responseSellSSR.Content.ReadAsStringAsync().Result;
-                                        //logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_sellSSRModel) + "Url: " + AppUrlConstant.AkasaAirMealBaggagePost + pas_SsrKey + "\n Response: " + JsonConvert.SerializeObject(_responseresponseSellSSR), "SellSSr", "AkasaOneWay", "oneway");
-                                       
                                         logs.WriteLogs(_responseresponseSellSSR, "12-SellSSRRes" + l, "AkasaOneWay", "oneway");
 
 
@@ -805,6 +903,7 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
 
 
                 }
+
                 #region Baggage
                 //var baggagecount = BaggageSSrkey.Count;
                 //int baggageSsr = BaggageDetails.journeySsrsBaggage.Count;
@@ -861,6 +960,7 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                     }
                 }
                 #endregion
+
             }
             return RedirectToAction("AkasaAirPaymentView", "AkasaAirPayment");
 

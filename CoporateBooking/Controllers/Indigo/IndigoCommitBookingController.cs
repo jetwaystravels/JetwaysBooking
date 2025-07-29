@@ -687,40 +687,41 @@ namespace OnionConsumeWebAPI.Controllers.Indigo
                             _AirLinePNRTicket.AirlinePNR.Add(returnTicketBooking);
 
                             #region DB Save
-
-                            AirLineFlightTicketBooking airLineFlightTicketBooking = new AirLineFlightTicketBooking();
-                            airLineFlightTicketBooking.BookingID = _getBookingResponse.Booking.BookingID.ToString();
-                            tb_Booking tb_Booking = new tb_Booking();
-                            tb_Booking.AirLineID = 4;
-                            string productcode = _getBookingResponse.Booking.Journeys[0].Segments[0].Fares[0].ProductClass;
-                            var fareName = FareList.GetAllfare().Where(x => ((string)productcode).Equals(x.ProductCode)).FirstOrDefault();
-                            tb_Booking.BookingType = "Corporate-" + _getBookingResponse.Booking.Journeys[0].Segments[0].Fares[0].ProductClass + " (" + fareName.Faredesc + ")";
-                            LegalEntity legal = new LegalEntity();
-                            legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
-                            tb_Booking.CompanyName = legal.BillingEntityFullName;
-                            tb_Booking.TripType = "OneWay";
-                            tb_Booking.BookingRelationId = Guid;
-                            tb_Booking.BookingID = _getBookingResponse.Booking.BookingID.ToString();
-                            tb_Booking.RecordLocator = _getBookingResponse.Booking.RecordLocator;
-                            tb_Booking.CurrencyCode = _getBookingResponse.Booking.CurrencyCode;
-                            tb_Booking.Origin = _getBookingResponse.Booking.Journeys[0].Segments[0].Legs[0].DepartureStation;
-                            int segmentcount = _getBookingResponse.Booking.Journeys[0].Segments.Length;
-                            tb_Booking.Destination = _getBookingResponse.Booking.Journeys[0].Segments[segmentcount - 1].Legs[0].ArrivalStation;
-                            tb_Booking.BookedDate = _getBookingResponse.Booking.BookingInfo.BookingDate;
-                            tb_Booking.TotalAmount = (double)_getBookingResponse.Booking.BookingSum.TotalCost;
-                            tb_Booking.SpecialServicesTotal = (double)Totatamountmb;
-                            tb_Booking.SpecialServicesTotal_Tax = (double)TotalBagtax;
-                            tb_Booking.SpecialServicesTotal -= tb_Booking.SpecialServicesTotal_Tax;
-                            tb_Booking.SeatTotalAmount = returnSeats.total;
-                            tb_Booking.SeatTotalAmount_Tax = returnSeats.taxes;
-                            tb_Booking.SeatTotalAmount -= tb_Booking.SeatTotalAmount_Tax;
-                            tb_Booking.ExpirationDate = _getBookingResponse.Booking.BookingInfo.ExpiredDate;
-                            //tb_Booking.ArrivalDate = _getBookingResponse.Booking.Journeys[0].Segments[segmentcount - 1].STA.ToString().Replace('T',' ');//DateTime.Now;
-                            //tb_Booking.DepartureDate = _getBookingResponse.Booking.Journeys[0].Segments[0].Legs[0].STD.ToString().Replace('T', ' ');//DateTime.Now;
-                            DateTime parsedDate = DateTime.ParseExact(_getBookingResponse.Booking.Journeys[0].Segments[segmentcount - 1].Legs[0].STA.ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                            tb_Booking.ArrivalDate = parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
-                            parsedDate = DateTime.ParseExact(_getBookingResponse.Booking.Journeys[0].Segments[0].Legs[0].STD.ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
-                            tb_Booking.DepartureDate = parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
+                            try
+                            {
+                                AirLineFlightTicketBooking airLineFlightTicketBooking = new AirLineFlightTicketBooking();
+                                airLineFlightTicketBooking.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                tb_Booking tb_Booking = new tb_Booking();
+                                tb_Booking.AirLineID = 4;
+                                string productcode = _getBookingResponse.Booking.Journeys[0].Segments[0].Fares[0].ProductClass;
+                                var fareName = FareList.GetAllfare().Where(x => ((string)productcode).Equals(x.ProductCode)).FirstOrDefault();
+                                tb_Booking.BookingType = "Corporate-" + _getBookingResponse.Booking.Journeys[0].Segments[0].Fares[0].ProductClass + " (" + fareName.Faredesc + ")";
+                                LegalEntity legal = new LegalEntity();
+                                legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
+                                tb_Booking.CompanyName = legal.BillingEntityFullName;
+                                tb_Booking.TripType = "OneWay";
+                                tb_Booking.BookingRelationId = Guid;
+                                tb_Booking.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                tb_Booking.RecordLocator = _getBookingResponse.Booking.RecordLocator;
+                                tb_Booking.CurrencyCode = _getBookingResponse.Booking.CurrencyCode;
+                                tb_Booking.Origin = _getBookingResponse.Booking.Journeys[0].Segments[0].Legs[0].DepartureStation;
+                                int segmentcount = _getBookingResponse.Booking.Journeys[0].Segments.Length;
+                                tb_Booking.Destination = _getBookingResponse.Booking.Journeys[0].Segments[segmentcount - 1].Legs[0].ArrivalStation;
+                                tb_Booking.BookedDate = _getBookingResponse.Booking.BookingInfo.BookingDate;
+                                tb_Booking.TotalAmount = (double)_getBookingResponse.Booking.BookingSum.TotalCost;
+                                tb_Booking.SpecialServicesTotal = (double)Totatamountmb;
+                                tb_Booking.SpecialServicesTotal_Tax = (double)TotalBagtax;
+                                tb_Booking.SpecialServicesTotal -= tb_Booking.SpecialServicesTotal_Tax;
+                                tb_Booking.SeatTotalAmount = returnSeats.total;
+                                tb_Booking.SeatTotalAmount_Tax = returnSeats.taxes;
+                                tb_Booking.SeatTotalAmount -= tb_Booking.SeatTotalAmount_Tax;
+                                tb_Booking.ExpirationDate = _getBookingResponse.Booking.BookingInfo.ExpiredDate;
+                                //tb_Booking.ArrivalDate = _getBookingResponse.Booking.Journeys[0].Segments[segmentcount - 1].STA.ToString().Replace('T',' ');//DateTime.Now;
+                                //tb_Booking.DepartureDate = _getBookingResponse.Booking.Journeys[0].Segments[0].Legs[0].STD.ToString().Replace('T', ' ');//DateTime.Now;
+                                DateTime parsedDate = DateTime.ParseExact(_getBookingResponse.Booking.Journeys[0].Segments[segmentcount - 1].Legs[0].STA.ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                                tb_Booking.ArrivalDate = parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
+                                parsedDate = DateTime.ParseExact(_getBookingResponse.Booking.Journeys[0].Segments[0].Legs[0].STD.ToString(), "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                                tb_Booking.DepartureDate = parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
 
                             tb_Booking.CreatedDate = _getBookingResponse.Booking.BookingInfo.CreatedDate;
                             if (HttpContext.User.Identity.IsAuthenticated)
@@ -964,45 +965,45 @@ namespace OnionConsumeWebAPI.Controllers.Indigo
                                         Hashtable TicketCarryBagAMountTax = new Hashtable();
 
                                         // Iterate through service charges
-                                        int ServiceCount = fee.ServiceCharges.Length;
-                                        if (fee.FeeCode.ToString().StartsWith("SE"))
-                                        {
-                                            foreach (var serviceCharge in fee.ServiceCharges)
+                                            int ServiceCount = fee.ServiceCharges.Length;
+                                            if (fee.FeeType.ToString().StartsWith("SeatFee"))
                                             {
-                                                string serviceChargeCode = serviceCharge.ChargeCode?.ToString();
-                                                double amount = (serviceCharge.Amount != null) ? Convert.ToDouble(serviceCharge.Amount) : 0;
-                                                if (serviceChargeCode != null)
+                                                foreach (var serviceCharge in fee.ServiceCharges)
                                                 {
-                                                    if (fee.FlightReference.ToString().Contains(oridest) == true)
+                                                    string serviceChargeCode = serviceCharge.ChargeCode?.ToString();
+                                                    double amount = (serviceCharge.Amount != null) ? Convert.ToDouble(serviceCharge.Amount) : 0;
+                                                    if (serviceChargeCode != null)
                                                     {
-                                                        if (serviceChargeCode.StartsWith("SE") && serviceCharge.ChargeType.ToString() == "ServiceCharge")
+                                                        if (fee.FlightReference.ToString().Contains(oridest) == true)
                                                         {
-                                                            TotalAmount_Seat = amount;
-                                                            //TicketSeat[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Seat;
-                                                        }
-                                                        else if (serviceCharge.ChargeType.ToString() == "IncludedTax")
-                                                        {
-                                                            TotalAmount_Seat_tax += Convert.ToDecimal(amount);
-                                                        }
-                                                        else if (serviceCharge.ChargeType.ToString() == "Discount")
-                                                        {
-                                                            TotalAmount_Seat_discount += Convert.ToDecimal(amount);
+                                                            if (serviceCharge.ChargeType.ToString() == "ServiceCharge")
+                                                            {
+                                                                TotalAmount_Seat = amount;
+                                                                //TicketSeat[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Seat;
+                                                            }
+                                                            else if (serviceCharge.ChargeType.ToString() == "IncludedTax")
+                                                            {
+                                                                TotalAmount_Seat_tax += Convert.ToDecimal(amount);
+                                                            }
+                                                            else if (serviceCharge.ChargeType.ToString() == "Discount")
+                                                            {
+                                                                TotalAmount_Seat_discount += Convert.ToDecimal(amount);
+                                                            }
                                                         }
                                                     }
-                                                }
 
+                                                }
                                             }
-                                        }
-                                        else if (!ssrCode.Equals("SEAT") && !ssrCode.Equals("INFT") && !ssrCode.Equals("FFWD") && ssrCode.StartsWith("X", StringComparison.OrdinalIgnoreCase) == false)
-                                        {
-                                            foreach (var serviceCharge in fee.ServiceCharges)
+                                            else if (!fee.FeeType.ToString().StartsWith("SeatFee") && !ssrCode.Equals("INFT") && !ssrCode.Equals("FFWD") && ssrCode.StartsWith("X", StringComparison.OrdinalIgnoreCase) == false)
                                             {
-                                                string serviceChargeCode = serviceCharge.ChargeCode?.ToString();
-                                                double amount = (serviceCharge.Amount != null) ? Convert.ToDouble(serviceCharge.Amount) : 0;
-                                                if (serviceChargeCode != null)
+                                                foreach (var serviceCharge in fee.ServiceCharges)
                                                 {
-                                                    if (fee.FlightReference.ToString().Contains(oridest) == true)
+                                                    string serviceChargeCode = serviceCharge.ChargeCode?.ToString();
+                                                    double amount = (serviceCharge.Amount != null) ? Convert.ToDouble(serviceCharge.Amount) : 0;
+                                                    if (serviceChargeCode != null)
                                                     {
+                                                        if (fee.FlightReference.ToString().Contains(oridest) == true)
+                                                        {
 
                                                         if (serviceCharge.ChargeType.ToString() == "ServiceCharge")
                                                         {
@@ -1197,11 +1198,16 @@ namespace OnionConsumeWebAPI.Controllers.Indigo
                             airLineFlightTicketBooking.ContactDetail = contactDetail;
                             //airLineFlightTicketBooking.tb_Trips = tb_Trips;
 
-                            client1.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                            HttpResponseMessage responsePassengers = await client1.PostAsJsonAsync(AppUrlConstant.BaseURL + "api/AirLineTicketBooking/PostairlineTicketData", airLineFlightTicketBooking);
-                            if (responsePassengers.IsSuccessStatusCode)
+                                client1.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                                HttpResponseMessage responsePassengers = await client1.PostAsJsonAsync(AppUrlConstant.BaseURL + "api/AirLineTicketBooking/PostairlineTicketData", airLineFlightTicketBooking);
+                                if (responsePassengers.IsSuccessStatusCode)
+                                {
+                                    var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
+                                }
+                            }
+                            catch (Exception ex)
                             {
-                                var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
+
                             }
                             #endregion
 

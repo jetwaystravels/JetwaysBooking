@@ -937,11 +937,8 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     tb_Passengerobj.FirstName = items.Value.name.first;
                                     tb_Passengerobj.Title = items.Value.name.title;
                                     tb_Passengerobj.LastName = items.Value.name.last;
-                                    //tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).Email;
-                                    //tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).mobile;
-                                    tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.Email ?? string.Empty;
-                                    tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.mobile ?? string.Empty;
-
+                                    tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).Email;
+                                    tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).mobile;
                                     tb_Passengerobj.FastForwardService = 'N';
                                     //tb_Passengerobj.FrequentFlyerNumber = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).FrequentFlyer;
                                     tb_Passengerobj.FrequentFlyerNumber = "";
@@ -2088,11 +2085,8 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     tb_Passengerobj.Title = items.Value.name.title;
                                     tb_Passengerobj.LastName = items.Value.name.last;
 
-                                    //tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).Email;
-                                    //tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).mobile;
-                                    tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.Email ?? string.Empty;
-                                    tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.mobile ?? string.Empty;
-
+                                    tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).Email;
+                                    tb_Passengerobj.contact_Mobileno = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).mobile;
                                     tb_Passengerobj.FastForwardService = 'N';
                                     //tb_Passengerobj.FrequentFlyerNumber = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).FrequentFlyer;
                                     tb_Passengerobj.FrequentFlyerNumber = "";
@@ -3056,8 +3050,8 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 passkeytypeobj = new ReturnPassengers();
                                                 passkeytypeobj.name = new Name();
                                                 passkeytypeobj.passengerTypeCode = "INFT";
-                                                passkeytypeobj.name.first = item.Names[0].FirstName;
-                                                passkeytypeobj.name.last = item.Names[0].LastName;
+                                                passkeytypeobj.name.first = item.Infant.Names[0].FirstName;
+                                                passkeytypeobj.name.last = item.Infant.Names[0].LastName;
                                                 for (int i = 0; i < passeengerlist.Count; i++)
                                                 {
                                                     if (passkeytypeobj.passengerTypeCode == passeengerlist[i].passengertypecode && passkeytypeobj.name.first.ToLower().Trim() == passeengerlist[i].first.ToLower().Trim() && passkeytypeobj.name.last.ToLower().Trim() == passeengerlist[i].last.ToLower().Trim())
@@ -3256,11 +3250,8 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 tb_Passengerobj.Title = items.Names[0].Title;
                                                 tb_Passengerobj.Dob = DateTime.Now;
                                                 tb_Passengerobj.LastName = items.Names[0].LastName;
-                                                //tb_Passengerobj.contact_Emailid = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).Email;
-                                                //tb_Passengerobj.contact_Mobileno = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).mobile;
-                                                tb_Passengerobj.contact_Emailid = passeengerlist.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.Email ?? string.Empty;
-                                                tb_Passengerobj.contact_Mobileno = passeengerlist.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.mobile ?? string.Empty;
-
+                                                tb_Passengerobj.contact_Emailid = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).Email;
+                                                tb_Passengerobj.contact_Mobileno = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).mobile;
                                                 tb_Passengerobj.FastForwardService = 'N';
                                                 tb_Passengerobj.FrequentFlyerNumber = "";// passeengerlist.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).FrequentFlyer;
                                                 if (tb_Passengerobj.Title == "MR" || tb_Passengerobj.Title == "Master" || tb_Passengerobj.Title == "MSTR")
@@ -4108,8 +4099,8 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 passkeytypeobj.name = new Name();
                                                 passkeytypeobj.passengerTypeCode = "INFT";
                                                 //passkeytypeobj.name.first = item.Infant.Names[0].FirstName + " " + item.Infant.Names[0].LastName;
-                                                passkeytypeobj.name.first = item.Names[0].FirstName;
-                                                passkeytypeobj.name.last = item.Names[0].LastName;
+                                                passkeytypeobj.name.first = item.Infant.Names[0].FirstName;
+                                                passkeytypeobj.name.last = item.Infant.Names[0].LastName;
                                                 for (int i = 0; i < passeengerlist.Count; i++)
                                                 {
                                                     if (passkeytypeobj.passengerTypeCode == passeengerlist[i].passengertypecode && passkeytypeobj.name.first.ToLower() == passeengerlist[i].first.ToLower() && passkeytypeobj.name.last.ToLower() == passeengerlist[i].last.ToLower())
@@ -4309,11 +4300,8 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 tb_Passengerobj.Title = items.Names[0].Title;
                                                 tb_Passengerobj.Dob = DateTime.Now;
                                                 tb_Passengerobj.LastName = items.Names[0].LastName;
-                                                //tb_Passengerobj.contact_Emailid = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).Email;
-                                                //tb_Passengerobj.contact_Mobileno = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).mobile;
-                                                tb_Passengerobj.contact_Emailid = passeengerlist.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.Email ?? string.Empty;
-                                                tb_Passengerobj.contact_Mobileno = passeengerlist.FirstOrDefault(x => x.first?.ToUpper() == tb_Passengerobj.FirstName.ToUpper() && x.last?.ToUpper() == tb_Passengerobj.LastName.ToUpper())?.mobile ?? string.Empty;
-
+                                                tb_Passengerobj.contact_Emailid = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).Email;
+                                                tb_Passengerobj.contact_Mobileno = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).mobile;
                                                 tb_Passengerobj.FastForwardService = 'N';
                                                 tb_Passengerobj.FrequentFlyerNumber = "";// passeengerlist.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).FrequentFlyer;
                                                 if (tb_Passengerobj.Title == "MR" || tb_Passengerobj.Title == "Master" || tb_Passengerobj.Title == "MSTR")
@@ -4454,7 +4442,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                                     // Iterate through service charges
                                                     int ServiceCount = fee.ServiceCharges.Length;
-                                                    if (fee.FeeCode.ToString().StartsWith("SE"))
+                                                    if (fee.FeeType.ToString().StartsWith("SeatFee"))
                                                     {
                                                         foreach (var serviceCharge in fee.ServiceCharges)
                                                         {
@@ -4464,7 +4452,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                             {
                                                                 if (fee.FlightReference.ToString().Contains(oridest) == true)
                                                                 {
-                                                                    if (serviceChargeCode.StartsWith("SE") && serviceCharge.ChargeType.ToString() == "ServiceCharge")
+                                                                    if (serviceCharge.ChargeType.ToString() == "ServiceCharge")
                                                                     {
                                                                         TotalAmount_Seat = amount;
                                                                         //TicketSeat[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Seat;
@@ -4482,7 +4470,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                                         }
                                                     }
-                                                    else if (!ssrCode.Equals("SEAT") && !ssrCode.Equals("INFT") && !ssrCode.Equals("FFWD") && ssrCode.StartsWith("X", StringComparison.OrdinalIgnoreCase) == false)
+                                                    else if (!fee.FeeType.ToString().StartsWith("SeatFee") && !ssrCode.Equals("INFT") && !ssrCode.Equals("FFWD") && ssrCode.StartsWith("X", StringComparison.OrdinalIgnoreCase) == false)
                                                     {
                                                         foreach (var serviceCharge in fee.ServiceCharges)
                                                         {
