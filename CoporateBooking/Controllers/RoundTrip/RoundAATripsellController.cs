@@ -1091,79 +1091,34 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         //if (tokenview == null) { tokenview = ""; }
                         //token = tokenview.Replace(@"""", string.Empty);
                         //PassengersModel _PassengersModel = new PassengersModel();
-                        //for (int i = 0; i < passengerdetails.Count; i++)
-                        //{
-                        //    string _airlinename = string.Empty;
-                        //    string[] arraypaxkey = passengerdetails[i].passengerkey.Split('@');
-                        //    if (arraypaxkey.Length > 1)
-                        //    {
-                        //        string[] arraypaxdata = arraypaxkey[0].Split('^');
-                        //        if (arraypaxdata.Length > 1)
-                        //        {
-                        //            _airlinename = arraypaxdata[1];
-                        //        }
-                        //        if (dataArray[i1].ToLower() == _airlinename.ToLower())
-                        //        {
-                        //            passengerdetails[i].passengerkey = arraypaxdata[0];
-                        //        }
-                        //        else
-                        //        {
-                        //            arraypaxdata = arraypaxkey[1].Split('^');
-                        //            _airlinename = arraypaxdata[1];
-                        //            if (dataArray[i1].ToLower() == _airlinename.ToLower())
-                        //            {
-                        //                passengerdetails[i].passengerkey = arraypaxdata[0];
-                        //            }
+                        for (int i = 0; i < passengerdetails.Count; i++)
+                        {
+                            string _airlinename = string.Empty;
+                            string[] arraypaxkey = passengerdetails[i].passengerkey.Split('@');
+                            if (arraypaxkey.Length > 1)
+                            {
+                                string[] arraypaxdata = arraypaxkey[0].Split('^');
+                                if (arraypaxdata.Length > 1)
+                                {
+                                    _airlinename = arraypaxdata[1];
+                                }
+                                if (dataArray[i1].ToLower() == _airlinename.ToLower())
+                                {
+                                    passengerdetails[i].passengerkey = arraypaxdata[0];
+                                }
+                                else
+                                {
+                                    arraypaxdata = arraypaxkey[1].Split('^');
+                                    _airlinename = arraypaxdata[1];
+                                    if (dataArray[i1].ToLower() == _airlinename.ToLower())
+                                    {
+                                        passengerdetails[i].passengerkey = arraypaxdata[0];
+                                    }
 
-                        //        }
-                        //    }
-                        //    if (passengerdetails[i].passengertypecode == "INFT" || passengerdetails[i].passengertypecode == "INF")
-                        //        continue;
-                        //    if (passengerdetails[i].passengertypecode != null)
-                        //    {
-                        //        DomainLayer.Model.PassengersModel.Name name = new DomainLayer.Model.PassengersModel.Name();
-                        //        _Info Info = new _Info();
-                        //        if (passengerdetails[i].title == "Mr" || passengerdetails[i].title == "MSTR")
-                        //        {
-                        //            Info.gender = "Male";
-                        //        }
-                        //        else
-                        //        {
-                        //            Info.gender = "Female";
-                        //        }
+                                }
+                            }
 
-                        //        name.title = passengerdetails[i].title;
-                        //        name.first = passengerdetails[i].first;
-                        //        name.last = passengerdetails[i].last;
-                        //        name.middle = "";
-                        //        Info.dateOfBirth = "";
-                        //        Info.nationality = "IN";
-                        //        Info.residentCountry = "IN";
-                        //        _PassengersModel.name = name;
-                        //        _PassengersModel.info = Info;
-                        //        var jsonPassengers = JsonConvert.SerializeObject(_PassengersModel, Formatting.Indented);
-                        //        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        //        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                        //        HttpResponseMessage responsePassengers = await client.PutAsJsonAsync(AppUrlConstant.AkasaAirPassengerDetails + passengerdetails[i].passengerkey, _PassengersModel);
-                        //        if (responsePassengers.IsSuccessStatusCode)
-                        //        {
-                        //            var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
-                        //            if (i == 0)
-                        //            {
-                        //                logs.WriteLogsR(jsonPassengers, "9-UpdatepassengerRequest_Left", "AkasaRT");
-                        //                logs.WriteLogsR(_responsePassengers, "9-UpdatepassengerResponse_Left", "AkasaRT");
-
-                        //            }
-                        //            else
-                        //            {
-                        //                logs.WriteLogsR(jsonPassengers, "9-UpdatepassengerRequest_Right", "AkasaRT");
-                        //                logs.WriteLogsR(_responsePassengers, "9-UpdatepassengerResponse_Right", "AkasaRT");
-                        //            }
-
-                        //            var JsonObjPassengers = JsonConvert.DeserializeObject<dynamic>(_responsePassengers);
-                        //        }
-                        //    }
-                        //}
+                        }
 
                         //int infantcount = 0;
                         //for (int k = 0; k < passengerdetails.Count; k++)
@@ -1298,7 +1253,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                     if (string.IsNullOrEmpty(Signature) && dataArray[i1].ToLower() == "indigo")
                     {
-                        var data=GetPassenger(passengerdetails);
+                        var data = GetPassenger(passengerdetails);
                         //    tokenData = _mongoDBHelper.GetSuppFlightTokenByGUID(Guid, "Indigo").Result;
                         //    if (i1 == 0)
                         //    {

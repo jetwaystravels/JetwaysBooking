@@ -946,6 +946,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                                             tb_Passengerobj.Seatnumber = flightseatnumber1 + ",";
                                         }
                                     }
+                                    double percentagechd = 0.0;
                                     tb_Passengerobj.SegmentsKey = _getBookingResponse.Booking.Journeys[0].Segments[isegment].SegmentSellKey;
                                     int fareCount = _getBookingResponse.Booking.Journeys[0].Segments[isegment].Fares.Length;
                                     for (int k = 0; k < fareCount; k++)
@@ -970,7 +971,13 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                                                         }
                                                         else
                                                         {
-                                                            AdtTtaxAmount += Convert.ToInt32(_getBookingResponse.Booking.Journeys[0].Segments[isegment].Fares[k].PaxFares[l].ServiceCharges[m].Amount);
+                                                            if (_getBookingResponse.Booking.Journeys[0].Segments[isegment].Fares[k].PaxFares[l].PaxType.Equals("CHD") && _getBookingResponse.Booking.Journeys[0].Segments[isegment].Fares[k].PaxFares[l].ServiceCharges[m].ChargeCode.Contains("PRCT"))
+                                                            {
+                                                                percentagechd = Convert.ToInt32(_getBookingResponse.Booking.Journeys[0].Segments[isegment].Fares[k].PaxFares[l].ServiceCharges[m].Amount);
+                                                            }
+                                                            else
+                                                                AdtTtaxAmount += Convert.ToInt32(_getBookingResponse.Booking.Journeys[0].Segments[isegment].Fares[k].PaxFares[l].ServiceCharges[m].Amount);
+
                                                         }
                                                     }
 
@@ -983,7 +990,8 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                                     }
                                     //}
 
-
+                                    if (percentagechd > 0)
+                                        AdtTAmount = AdtTAmount - percentagechd;
                                     tb_Passengerobj.TotalAmount = (decimal)AdtTAmount;
                                     tb_Passengerobj.TotalAmount_tax = (decimal)AdtTtaxAmount;
                                     tb_Passengerobj.CreatedDate = Convert.ToDateTime(_getBookingResponse.Booking.BookingInfo.CreatedDate);
