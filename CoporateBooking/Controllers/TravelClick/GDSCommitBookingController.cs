@@ -218,6 +218,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                             Hashtable htnameempty = new Hashtable();
                             Hashtable htpax = new Hashtable();
                             Hashtable htPaxbag = new Hashtable();
+                            Hashtable htpaxdetails = new Hashtable();
 
                             Hashtable htseatdata = new Hashtable();
                             Hashtable htmealdata = new Hashtable();
@@ -575,18 +576,36 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         }
 
                                     }
+                                    //To do
+                                    
+                                    foreach (Match item in Regex.Matches(strResponseretriv, @"<air:TicketInfo[\s\S]*?BookingTravelerRef=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                    {
+                                        if (!htpaxdetails.Contains(item.Groups["paxid"].Value))
+                                        {
+                                            htpaxdetails.Add(item.Groups["paxid"].Value, item.Groups["FName"].Value + "_" + item.Groups["LName"].Value);
+                                        }
+                                    }
+
+                                    if (htpaxdetails.Count == 0)
+                                    {
+                                        foreach (Match item in Regex.Matches(strResponseretriv, @"BookingTraveler\s*Key=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                        {
+                                            if (!htpaxdetails.Contains(item.Groups["paxid"].Value))
+                                            {
+                                                htpaxdetails.Add(item.Groups["paxid"].Value, item.Groups["FName"].Value + "_" + item.Groups["LName"].Value);
+                                            }
+                                        }
+                                    }
 
                                     //baggage
 
-                                    foreach (Match mitem in Regex.Matches(strResponse, @"common_v52_0:BookingTraveler Key=""(?<passengerKey>[\s\S]*?)""[\s\S]*?BookingTravelerName[\s\S]*?First=""(?<First>[\s\S]*?)""\s*Last=""(?<Last>[\s\S]*?)""(?<data>[\s\S]*?)</common_v52_0:BookingTraveler>", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                    foreach (Match mitem in Regex.Matches(strResponse, @"OptionalService Type=""Baggage""[\s\S]*?SSRCode=""XBAG""[\s\S]*?FreeText=""TTL(?<BagWeight>[\s\S]*?)KG[\s\S]*?BookingTravelerRef=""(?<Travellerref>[\s\S]*?)""[\s\S]*?AirSegmentRef=""(?<SegmentRef>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                     {
-                                        foreach (Match item in Regex.Matches(mitem.Groups["data"].Value, @"SegmentRef=""(?<segmentkey>[\s\S]*?)""[\s\S]*?Type=""XBAG"" FreeText=""TTL(?<BagWeight>[\s\S]*?)KG", RegexOptions.IgnoreCase | RegexOptions.Multiline))
-                                        {
                                             try
                                             {
-                                                if (!htbagdata.Contains(mitem.Groups["First"].Value.Trim() + "_" + mitem.Groups["Last"].Value.Trim() + "_" + htsegmentdetails[item.Groups["segmentkey"].Value.Trim()].ToString()))
+                                                if (!htbagdata.Contains(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString()))
                                                 {
-                                                    htbagdata.Add(mitem.Groups["First"].Value.Trim() + "_" + mitem.Groups["Last"].Value.Trim() + "_" + htsegmentdetails[item.Groups["segmentkey"].Value.Trim()].ToString(), item.Groups["BagWeight"].Value.Trim());
+                                                    htbagdata.Add(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString(), mitem.Groups["BagWeight"].Value.Trim());
 
                                                 }
 
@@ -595,8 +614,29 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                             {
 
                                             }
+                                    }
+
+                                    //Free seat
+
+                                    foreach (Match mitem in Regex.Matches(strResponse, @"OptionalService Type=""PreReservedSeatAssignment""[\s\S]*?SSRCode=""SEAT""[\s\S]*?ServiceData\s*Data=""(?<Seat>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Travellerref>[\s\S]*?)""[\s\S]*?AirSegmentRef=""(?<SegmentRef>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                    {
+                                        try
+                                        {
+                                            if (!htseatdata.Contains(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString()))
+                                            {
+                                                htseatdata.Add(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString(), "0"+mitem.Groups["Seat"].Value.Trim());
+
+                                            }
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+
                                         }
                                     }
+
+
+
                                     AASegmentobj.unitdesignator = returnSeats.unitDesignator;
                                     AASegmentobj.SSRCode = returnSeats.SSRCode;
                                     AASegmentobj.legs = AALeglist;
@@ -919,26 +959,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
 
 
-                                //To do
-                                Hashtable htpaxdetails = new Hashtable();
-                                foreach (Match item in Regex.Matches(strResponseretriv, @"<air:TicketInfo[\s\S]*?BookingTravelerRef=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
-                                {
-                                    if (!htpaxdetails.Contains(item.Groups["paxid"].Value))
-                                    {
-                                        htpaxdetails.Add(item.Groups["paxid"].Value, item.Groups["FName"].Value + "_" + item.Groups["LName"].Value);
-                                    }
-                                }
-
-                                if (htpaxdetails.Count == 0)
-                                {
-                                    foreach (Match item in Regex.Matches(strResponseretriv, @"BookingTraveler\s*Key=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
-                                    {
-                                        if (!htpaxdetails.Contains(item.Groups["paxid"].Value))
-                                        {
-                                            htpaxdetails.Add(item.Groups["paxid"].Value, item.Groups["FName"].Value + "_" + item.Groups["LName"].Value);
-                                        }
-                                    }
-                                }
+                                
 
                                 Hashtable htpassenegerdata = new Hashtable();
                                 foreach (Match item in Regex.Matches(strResponseretriv, @"air:AirPricingInfo[\s\S]*?BasePrice=""INR(?<Amount>[\s\S]*?)""[\s\S]*?Taxes=""INR(?<Tax>[\s\S]*?)""[\s\S]*?SegmentRef=""(?<segment>[\s\S]*?)""[\s\S]*?</air:AirPricingInfo>", RegexOptions.IgnoreCase | RegexOptions.Multiline))

@@ -838,38 +838,45 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                             if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments != null)
                                 tb_PassengerTotalobj.SeatAdjustment = JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments;
 
+                            }
                         }
-                    }
+                        double inftAmt = 0;
+                        double infttax = 0;
+                        if (JsonObjPNRBooking.data.breakdown.passengerTotals.infant != null)
+                        {
+                            inftAmt = JsonObjPNRBooking.data.breakdown.passengerTotals.infant.total;
+                            infttax = JsonObjPNRBooking.data.breakdown.passengerTotals.infant.taxes;
 
-                    tb_PassengerTotalobj.TotalBookingAmount = JsonObjPNRBooking.data.breakdown.journeyTotals.totalAmount;
-                    tb_PassengerTotalobj.totalBookingAmount_Tax = JsonObjPNRBooking.data.breakdown.journeyTotals.totalTax;
-                    tb_PassengerTotalobj.Modifyby = JsonObjPNRBooking.data.info.createdDate;// "Online";
-                    tb_PassengerTotalobj.Createdby = JsonObjPNRBooking.data.info.createdAgentId; //"Online";
-                    tb_PassengerTotalobj.Status = JsonObjPNRBooking.data.info.status; //"0";
-                    if (JsonObjPNRBooking.data.info.createdDate != null)
-                        tb_PassengerTotalobj.CreatedDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.createdDate);// DateTime.Now;
-                    if (JsonObjPNRBooking.data.info.modifiedDate != null)
-                        tb_PassengerTotalobj.ModifiedDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.modifiedDate); //DateTime.Now;
-                    var passangerCount = JsonObjPNRBooking.data.passengers;
-                    int PassengerDataCount = ((Newtonsoft.Json.Linq.JContainer)passangerCount).Count;
+                        }
+                        tb_PassengerTotalobj.TotalBookingAmount = JsonObjPNRBooking.data.breakdown.journeyTotals.totalAmount + inftAmt;
+                        tb_PassengerTotalobj.totalBookingAmount_Tax = JsonObjPNRBooking.data.breakdown.journeyTotals.totalTax + infttax;
+                        tb_PassengerTotalobj.Modifyby = JsonObjPNRBooking.data.info.createdDate;// "Online";
+                        tb_PassengerTotalobj.Createdby = JsonObjPNRBooking.data.info.createdAgentId; //"Online";
+                        tb_PassengerTotalobj.Status = JsonObjPNRBooking.data.info.status; //"0";
+                        if (JsonObjPNRBooking.data.info.createdDate != null)
+                            tb_PassengerTotalobj.CreatedDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.createdDate);// DateTime.Now;
+                        if (JsonObjPNRBooking.data.info.modifiedDate != null)
+                            tb_PassengerTotalobj.ModifiedDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.modifiedDate); //DateTime.Now;
+                        var passangerCount = JsonObjPNRBooking.data.passengers;
+                        int PassengerDataCount = ((Newtonsoft.Json.Linq.JContainer)passangerCount).Count;
 
-                    int Adult = 0;
-                    int child = 0;
-                    int Infant = 0;
-                    for (int i = 0; i < PassengerDataDetailsList.Count; i++)
-                    {
-                        if (PassengerDataDetailsList[i].passengertypecode == "ADT")
+                        int Adult = 0;
+                        int child = 0;
+                        int Infant = 0;
+                        for (int i = 0; i < PassengerDataDetailsList.Count; i++)
                         {
-                            Adult++;
-                        }
-                        else if (PassengerDataDetailsList[i].passengertypecode == "CHD" || PassengerDataDetailsList[i].passengertypecode == "CNN")
-                        {
-                            child++;
-                        }
-                        else if (PassengerDataDetailsList[i].passengertypecode == "INFT" || PassengerDataDetailsList[i].passengertypecode == "INF")
-                        {
-                            Infant++;
-                        }
+                            if (PassengerDataDetailsList[i].passengertypecode == "ADT")
+                            {
+                                Adult++;
+                            }
+                            else if (PassengerDataDetailsList[i].passengertypecode == "CHD" || PassengerDataDetailsList[i].passengertypecode == "CNN")
+                            {
+                                child++;
+                            }
+                            else if (PassengerDataDetailsList[i].passengertypecode == "INFT" || PassengerDataDetailsList[i].passengertypecode == "INF")
+                            {
+                                Infant++;
+                            }
 
                     }
                     tb_PassengerTotalobj.AdultCount = Adult;

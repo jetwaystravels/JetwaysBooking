@@ -692,6 +692,10 @@ namespace OnionConsumeWebAPI.Controllers
                     tb_Booking.TripType = "OneWay";
                     tb_Booking.BookingID = JsonObjPNRBooking.data.bookingKey;
                     tb_Booking.RecordLocator = JsonObjPNRBooking.data.recordLocator;
+                    if (JsonObjPNRBooking.data.recordLocator == null)
+                    {
+                        return View("service-error-msg");
+                    }
                     tb_Booking.CurrencyCode = JsonObjPNRBooking.data.currencyCode;
                     tb_Booking.Origin = JsonObjPNRBooking.data.journeys[0].designator.origin;
                     tb_Booking.Destination = JsonObjPNRBooking.data.journeys[0].designator.destination;
@@ -819,9 +823,16 @@ namespace OnionConsumeWebAPI.Controllers
 
                         }
                     }
+                    double inftAmt = 0;
+                    double infttax = 0;
+                    if (JsonObjPNRBooking.data.breakdown.passengerTotals.infant != null)
+                    {
+                        inftAmt = JsonObjPNRBooking.data.breakdown.passengerTotals.infant.total;
+                        infttax = JsonObjPNRBooking.data.breakdown.passengerTotals.infant.taxes;
 
-                    tb_PassengerTotalobj.TotalBookingAmount = JsonObjPNRBooking.data.breakdown.journeyTotals.totalAmount;
-                    tb_PassengerTotalobj.totalBookingAmount_Tax = JsonObjPNRBooking.data.breakdown.journeyTotals.totalTax;
+                    }
+                    tb_PassengerTotalobj.TotalBookingAmount = JsonObjPNRBooking.data.breakdown.journeyTotals.totalAmount + inftAmt;
+                    tb_PassengerTotalobj.totalBookingAmount_Tax = JsonObjPNRBooking.data.breakdown.journeyTotals.totalTax + infttax;
                     tb_PassengerTotalobj.Modifyby = JsonObjPNRBooking.data.info.createdDate;// "Online";
                     tb_PassengerTotalobj.Createdby = JsonObjPNRBooking.data.info.createdAgentId; //"Online";
                     tb_PassengerTotalobj.Status = JsonObjPNRBooking.data.info.status; //"0";

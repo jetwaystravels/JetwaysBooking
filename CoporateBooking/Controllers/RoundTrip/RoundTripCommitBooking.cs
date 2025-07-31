@@ -746,6 +746,10 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             }
                             tb_Booking.BookingID = JsonObjPNRBooking.data.bookingKey;
                             tb_Booking.RecordLocator = JsonObjPNRBooking.data.recordLocator;
+                            if (JsonObjPNRBooking.data.recordLocator == null)
+                            {
+                                return View("service-error-msg");
+                            }
                             tb_Booking.CurrencyCode = JsonObjPNRBooking.data.currencyCode;
                             tb_Booking.Origin = JsonObjPNRBooking.data.journeys[0].designator.origin;
                             tb_Booking.Destination = JsonObjPNRBooking.data.journeys[0].designator.destination;
@@ -864,8 +868,16 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         tb_PassengerTotalobj.SeatAdjustment = JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments;
                                 }
                             }
-                            tb_PassengerTotalobj.TotalBookingAmount = JsonObjPNRBooking.data.breakdown.journeyTotals.totalAmount;
-                            tb_PassengerTotalobj.totalBookingAmount_Tax = JsonObjPNRBooking.data.breakdown.journeyTotals.totalTax;
+                            double inftAmt = 0;
+                            double infttax = 0;
+                            if (JsonObjPNRBooking.data.breakdown.passengerTotals.infant != null)
+                            {
+                                inftAmt = JsonObjPNRBooking.data.breakdown.passengerTotals.infant.total;
+                                infttax = JsonObjPNRBooking.data.breakdown.passengerTotals.infant.taxes;
+
+                            }
+                            tb_PassengerTotalobj.TotalBookingAmount = JsonObjPNRBooking.data.breakdown.journeyTotals.totalAmount + inftAmt;
+                            tb_PassengerTotalobj.totalBookingAmount_Tax = JsonObjPNRBooking.data.breakdown.journeyTotals.totalTax + infttax;
                             tb_PassengerTotalobj.Modifyby = JsonObjPNRBooking.data.info.createdDate;// "Online";
                             tb_PassengerTotalobj.Createdby = JsonObjPNRBooking.data.info.createdAgentId; //"Online";
                             tb_PassengerTotalobj.Status = JsonObjPNRBooking.data.info.status; //"0";
@@ -1216,7 +1228,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     segmentReturnsListt.Add(segmentReturnobj);
                                 }
                             }
-                            
+
                             #endregion
                         }
                         else
@@ -2004,9 +2016,16 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                 }
                             }
+                            double inftAmt = 0;
+                            double infttax = 0;
+                            if (JsonObjPNRBooking.data.breakdown.passengerTotals.infant != null)
+                            {
+                                inftAmt = JsonObjPNRBooking.data.breakdown.passengerTotals.infant.total;
+                                infttax = JsonObjPNRBooking.data.breakdown.passengerTotals.infant.taxes;
 
-                            tb_PassengerTotalobj.TotalBookingAmount = JsonObjPNRBooking.data.breakdown.journeyTotals.totalAmount;
-                            tb_PassengerTotalobj.totalBookingAmount_Tax = JsonObjPNRBooking.data.breakdown.journeyTotals.totalTax;
+                            }
+                            tb_PassengerTotalobj.TotalBookingAmount = JsonObjPNRBooking.data.breakdown.journeyTotals.totalAmount + inftAmt;
+                            tb_PassengerTotalobj.totalBookingAmount_Tax = JsonObjPNRBooking.data.breakdown.journeyTotals.totalTax + infttax;
                             tb_PassengerTotalobj.Modifyby = JsonObjPNRBooking.data.info.createdDate;// "Online";
                             tb_PassengerTotalobj.Createdby = JsonObjPNRBooking.data.info.createdAgentId; //"Online";
                             tb_PassengerTotalobj.Status = JsonObjPNRBooking.data.info.status; //"0";
@@ -5275,7 +5294,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             airLineFlightTicketBooking = new AirLineFlightTicketBooking();
                                             string Bookingid = Regex.Match(strResponseretriv, "TransactionId=\"(?<Tid>[\\s\\S]*?)\"").Groups["Tid"].Value.Trim();
                                             airLineFlightTicketBooking.BookingID = Bookingid;
-                                             tb_Booking = new tb_Booking();
+                                            tb_Booking = new tb_Booking();
                                             tb_Booking.AirLineID = 5;
                                             tb_Booking.BookingType = "Corporate-" + Regex.Match(strResponseretriv, "BrandID=\"[\\s\\S]*?Name=\"(?<fareName>[\\s\\S]*?)\"").Groups["fareName"].Value.Trim();
                                             LegalEntity legal = new LegalEntity();
@@ -5377,7 +5396,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             tb_Booking.PaidStatus = 0;// "0";
 
                                             // It  will maintained by manually as Airline Code and description 6E-Indigo
-                                             tb_Airlines = new tb_Airlines();
+                                            tb_Airlines = new tb_Airlines();
                                             tb_Airlines.AirlineID = 5;
                                             tb_Airlines.AirlneName = "1G";// "Boing";
                                             tb_Airlines.AirlineDescription = "AirIndia";
@@ -5554,7 +5573,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     tb_Passengerobj.Seatnumber = "";
                                                     //}
 
-                                                    string data5=string.Empty;
+                                                    string data5 = string.Empty;
                                                     string combinedName = (tb_Passengerobj.FirstName + "_" + tb_Passengerobj.LastName).ToUpper() + "_" + pnrResDetail.Bonds.Legs[isegment].AircraftCode;
                                                     if (htpassenegerdata.Contains(combinedName))
                                                     {
