@@ -39,14 +39,10 @@ using CoporateBooking.Models;
 
 namespace OnionConsumeWebAPI.Controllers.TravelClick
 {
-
     public class GDSCommitBookingController : Controller
     {
-
         Logs logs = new Logs();
         string BaseURL = "https://dotrezapi.test.I5.navitaire.com";
-
-
         string token = string.Empty;
         String BarcodePNR = string.Empty;
         string ssrKey = string.Empty;
@@ -66,12 +62,10 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
         DateTime Journeydatetime = new DateTime();
         string bookingKey = string.Empty;
         private readonly IConfiguration _configuration;
-
         public GDSCommitBookingController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
-
         public async Task<IActionResult> booking(string Guid)
         {
             AirLinePNRTicket _AirLinePNRTicket = new AirLinePNRTicket();
@@ -82,16 +76,9 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             MongoSuppFlightToken tokenData = new MongoSuppFlightToken();
             SearchLog searchLog = new SearchLog();
             searchLog = _mongoDBHelper.GetFlightSearchLog(Guid).Result;
-
             tokenData = _mongoDBHelper.GetSuppFlightTokenByGUID(Guid, "GDS").Result;
-
-
-
-            //string tokenview = HttpContext.Session.GetString("GDSTraceid");
             string _pricesolution = string.Empty;
             _pricesolution = HttpContext.Session.GetString("PricingSolutionValue_0");
-            //if (tokenview == null) { tokenview = ""; }
-            //token = string.Empty;
             string newGuid = tokenData.Token;
             if (newGuid == "" || newGuid == null)
             {
@@ -99,41 +86,15 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             }
             if (!string.IsNullOrEmpty(newGuid))
             {
-
-                // token = tokenview.Replace(@"""", string.Empty);
-                // string passengernamedetails = HttpContext.Session.GetString("PassengerNameDetails");
-
                 string passengernamedetails = objMongoHelper.UnZip(tokenData.PassengerRequest);
-
                 List<passkeytype> passeengerlist = (List<passkeytype>)JsonConvert.DeserializeObject(passengernamedetails, typeof(List<passkeytype>));
-                // string contactdata = HttpContext.Session.GetString("GDSContactdetails");
-
                 string contactdata = objMongoHelper.UnZip(tokenData.ContactRequest);
-
                 ContactModel contactList = (ContactModel)JsonConvert.DeserializeObject(contactdata, typeof(ContactModel));
                 using (HttpClient client1 = new HttpClient())
                 {
 
-                    //_commit objcommit = new _commit();
-                    #region GetState
-                    //_sell objsell = new _sell();
-                    //IndigoBookingManager_.GetBookingFromStateResponse _GetBookingFromStateRS1 = await objsell.GetBookingFromState(token, "");
-
-                    //string strdata = JsonConvert.SerializeObject(_GetBookingFromStateRS1);
-                    //decimal Totalpayment = 0M;
-                    //if (_GetBookingFromStateRS1 != null)
-                    //{
-                    //    Totalpayment = _GetBookingFromStateRS1.BookingData.BookingSum.TotalCost;
-                    //}
-                    #endregion
-                    #region Addpayment Commneted For Api Payment deduction
-                    //IndigoBookingManager_.AddPaymentToBookingResponse _BookingPaymentResponse = await objcommit.AddpaymenttoBook(token, Totalpayment, "OneWay");
-
-                    #endregion
-
                     #region Commit Booking
                     TravelPort _objAvail = null;
-
                     HttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
                     _objAvail = new TravelPort(httpContextAccessorInstance);
                     string _UniversalRecordURL = AppUrlConstant.GDSUniversalRecordURL;
@@ -147,12 +108,9 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                     StringBuilder createPNRReq = new StringBuilder();
                     string AdultTraveller = passengernamedetails;
                     string strResponse = HttpContext.Session.GetString("PNR").Split("@@")[0];
-
                     string _TicketRecordLocator = Regex.Match(strResponse, @"AirReservation[\s\S]*?LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
                     //GetAirTicket
-
                     string strAirTicket = _objAvail.GetTicketdata(_TicketRecordLocator, _testURL, newGuid.ToString(), _targetBranch, _userName, _password, "GDSOneWay");
-
                     string strTicketno = string.Empty;
                     Hashtable htTicketdata = new Hashtable();
                     foreach (Match mitem in Regex.Matches(strAirTicket, @"BookingTraveler Key=""[\s\S]*?First=""(?<First>[\s\S]*?)""[\s\S]*?Last=""(?<Last>[\s\S]*?)""[\s\S]*?TicketNumber=""(?<TicketNum>[\s\S]*?)""[\s\S]*?Origin=""(?<Origin>[\s\S]*?)""[\s\S]*?Destination=""(?<destination>[\s\S]*?)""[\s\S]*?</air:Ticket>", RegexOptions.IgnoreCase | RegexOptions.Multiline))
@@ -166,47 +124,17 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                         }
                         catch (Exception ex)
                         {
-
                         }
-
                     }
                     //getdetails
                     string RecordLocator = HttpContext.Session.GetString("PNR").Split("@@")[1];
                     string strResponseretriv = _objAvail.RetrivePnr(RecordLocator, _UniversalRecordURL, newGuid.ToString(), _targetBranch, _userName, _password, "GDSOneWay");
-
-                    /*
-		            string EmdBagResponsedata = string.Empty;
-                    string EmdSeatResponsedata = string.Empty;
-                    string ProviderLocatorCode = Regex.Match(strResponse, "ProviderReservationInfo\\s*Key=\"[\\s\\S]*?LocatorCode=\"(?<LocatorCode>[\\s\\S]*?)\"").Groups["LocatorCode"].Value.Trim();
-                    string UniversalLocatorCode = Regex.Match(strResponse, "UniversalRecord LocatorCode=\"(?<UniLocatorCode>[\\s\\S]*?)\"").Groups["UniLocatorCode"].Value.Trim();
-                    string Segmentkey = string.Empty;
-                    foreach (Match mitem in Regex.Matches(strResponse, "AirSegment Key=\"(?<Segmentkey>[\\s\\S]*?)\""))
-                    {
-                        Segmentkey += " " + mitem.Groups["Segmentkey"].Value.Trim();
-                    }
-                    string Ticketnum = string.Empty;
-                    string EndUrl= AppUrlConstant.GDSEmdURL;
-                    string strEmdBagResponse = string.Empty;
-                    string strEmdSeatResponse = string.Empty;
-                    foreach (DictionaryEntry entry in htTicketdata)
-                    {
-                        Ticketnum = entry.Value.ToString();
-                        strEmdBagResponse = _objAvail.RetriveEmdIssuranceBag(EndUrl, newGuid.ToString(), _targetBranch, _userName, _password, ProviderLocatorCode, UniversalLocatorCode, Ticketnum, Segmentkey, "GDSOneWay");
-                        EmdBagResponsedata += "\n" + strEmdBagResponse;
-                        strEmdSeatResponse = _objAvail.RetriveEmdIssuranceSeat(EndUrl, newGuid.ToString(), _targetBranch, _userName, _password, ProviderLocatorCode, UniversalLocatorCode, Ticketnum, Segmentkey, "GDSOneWay");
-                        EmdBagResponsedata += "\n" + strEmdSeatResponse;
-
-                    } */
-
-
                     GDSResModel.PnrResponseDetails pnrResDetail = new GDSResModel.PnrResponseDetails();
                     if (!string.IsNullOrEmpty(strResponse) && !string.IsNullOrEmpty(RecordLocator))
                     {
-                        //IndigoBookingManager_.GetBookingResponse _getBookingResponse = await objcommit.GetBookingdetails(token, _BookingCommitResponse, "OneWay");
                         TravelPortParsing _objP = new TravelPortParsing();
                         string stravailibitilityrequest = HttpContext.Session.GetString("GDSAvailibilityRequest");
                         SimpleAvailabilityRequestModel availibiltyRQGDS = Newtonsoft.Json.JsonConvert.DeserializeObject<SimpleAvailabilityRequestModel>(stravailibitilityrequest);
-
                         List<GDSResModel.Segment> getPnrPriceRes = new List<GDSResModel.Segment>();
                         if (strResponseretriv != null && !strResponseretriv.Contains("Bad Request") && !strResponseretriv.Contains("Internal Server Error"))
                         {
@@ -223,40 +151,21 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                             Hashtable htseatdata = new Hashtable();
                             Hashtable htmealdata = new Hashtable();
                             Hashtable htbagdata = new Hashtable();
-                            //int adultcount = Convert.ToInt32(HttpContext.Session.GetString("adultCount"));
-                            //int childcount = Convert.ToInt32(HttpContext.Session.GetString("childCount"));
-                            //int infantcount = Convert.ToInt32(HttpContext.Session.GetString("infantCount"));
                             int adultcount = searchLog.Adults;
                             int childcount = searchLog.Children;
                             int infantcount = searchLog.Infants;
                             int TotalCount = adultcount + childcount;
-                            //string _responceGetBooking = JsonConvert.SerializeObject(_getBookingResponse);
                             ReturnTicketBooking returnTicketBooking = new ReturnTicketBooking();
-
-
-                            var resultsTripsell = "";// responseTripsell.Content.ReadAsStringAsync().Result;
-                            var JsonObjTripsell = "";// JsonConvert.DeserializeObject<dynamic>(resultsTripsell);
-                            var totalAmount = "";// _getBookingResponse.Booking.BookingSum.TotalCost;
-                            returnTicketBooking.bookingKey = "";// _getBookingResponse.Booking.BookingID.ToString();
+                            returnTicketBooking.bookingKey = "";
                             ReturnPaxSeats _unitdesinator = new ReturnPaxSeats();
-                            //if (_getBookingResponse.Booking.Journeys[0].Segments[0].PaxSeats.Length > 0)
-                            _unitdesinator.unitDesignatorPax = "";// _getBookingResponse.Booking.Journeys[0].Segments[0].PaxSeats[0].UnitDesignator;
-
-                            //    //GST Number
-                            //    if (_getBookingResponse.Booking.BookingContacts[0].TypeCode == "I")
-                            //    {
-                            //        returnTicketBooking.customerNumber = _getBookingResponse.Booking.BookingContacts[0].CustomerNumber;
-                            //        returnTicketBooking.companyName = _getBookingResponse.Booking.BookingContacts[0].CompanyName;
-                            //    }
-
+                            _unitdesinator.unitDesignatorPax = "";
                             Contacts _contact = new Contacts();
-                            _contact.phoneNumbers = "";// _getBookingResponse.Booking.BookingContacts[0].HomePhone.ToString();
+                            _contact.phoneNumbers = "";
                             if (_unitdesinator.unitDesignatorPax != null)
-                                _contact.ReturnPaxSeats = "";// _unitdesinator.unitDesignatorPax.ToString();
+                                _contact.ReturnPaxSeats = "";
                             returnTicketBooking.airLines = pnrResDetail.Bonds.Legs[0].FlightName;
-                            returnTicketBooking.recordLocator = pnrResDetail.UniversalRecordLocator;// _getBookingResponse.Booking.RecordLocator;
+                            returnTicketBooking.recordLocator = pnrResDetail.UniversalRecordLocator;
                             returnTicketBooking.bookingdate = pnrResDetail.bookingdate;
-
                             BarcodePNR = pnrResDetail.UniversalRecordLocator;
                             if (BarcodePNR.Length < 7)
                             {
@@ -270,20 +179,14 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                             ReturnSeats returnSeats = new ReturnSeats();
                             passengerTotals.specialServices = new SpecialServices();
                             passengerTotals.baggage = new SpecialServices();
-                            var totalTax = "";// _getPriceItineraryRS.data.breakdown.journeys[journeyKey].totalTax;
-
                             #region Itenary segment and legs
-                            int journeyscount = 1;// _getBookingResponse.Booking.Journeys.Length;
+                            int journeyscount = 1;
                             List<JourneysReturn> AAJourneyList = new List<JourneysReturn>();
                             for (int i = 0; i < journeyscount; i++)
                             {
 
                                 JourneysReturn AAJourneyobj = new JourneysReturn();
-                                //orides= _getBookingResponse.Booking.Journeys[i].
-                                //AAJourneyobj.flightType = JsonObjTripsell.data.journeys[i].flightType;
-                                //AAJourneyobj.stops = JsonObjTripsell.data.journeys[i].stops;
-                                AAJourneyobj.journeyKey = "";// _getBookingResponse.Booking.Journeys[i].JourneySellKey;
-
+                                AAJourneyobj.journeyKey = "";
                                 int segmentscount = pnrResDetail.Bonds.Legs.Count;
                                 List<SegmentReturn> AASegmentlist = new List<SegmentReturn>();
                                 for (int j = 0; j < segmentscount; j++)
@@ -305,11 +208,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
 
                                     SegmentReturn AASegmentobj = new SegmentReturn();
-                                    //            //AASegmentobj.isStandby = JsonObjTripsell.data.journeys[i].segments[j].isStandby;
-                                    //            //AASegmentobj.isHosted = JsonObjTripsell.data.journeys[i].segments[j].isHosted;
-
                                     DesignatorReturn AASegmentDesignatorobj = new DesignatorReturn();
-
                                     AASegmentDesignatorobj.origin = pnrResDetail.Bonds.Legs[j].Origin;
                                     AASegmentDesignatorobj.destination = pnrResDetail.Bonds.Legs[j].Destination;
                                     orides = AASegmentDesignatorobj.origin + AASegmentDesignatorobj.destination;
@@ -323,18 +222,14 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                     }
                                     AASegmentobj.designator = AASegmentDesignatorobj;
 
-                                    int fareCount = 1;// pnrResDetail.PaxFareList.Count;
+                                    int fareCount = 1;
                                     List<FareReturn> AAFarelist = new List<FareReturn>();
                                     for (int k = 0; k < fareCount; k++)
                                     {
                                         FareReturn AAFareobj = new FareReturn();
-                                        AAFareobj.fareKey = "";// _getBookingResponse.Booking.Journeys[i].Segments[j].Fares[k].FareSellKey;
-                                                               //To  do;
-                                        AAFareobj.productClass = "";// _getBookingResponse.Booking.Journeys[i].Segments[j].Fares[k].ProductClass;
-
-                                        //var passengerFares = _getBookingResponse.Booking.Journeys[i].Segments[j].Fares[k].PaxFares;
-
-                                        int passengerFarescount = pnrResDetail.PaxFareList.Count; //_getBookingResponse.Booking.Journeys[i].Segments[j].Fares[k].PaxFares.Length;
+                                        AAFareobj.fareKey = "";
+                                        AAFareobj.productClass = "";
+                                        int passengerFarescount = pnrResDetail.PaxFareList.Count;
                                         List<PassengerFareReturn> PassengerfarelistRT = new List<PassengerFareReturn>();
                                         double AdtAmount = 0.0;
                                         double AdttaxAmount = 0.0;
@@ -351,35 +246,12 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                                 PassengerFareReturn AAPassengerfareobject = new PassengerFareReturn();
                                                 GDSResModel.PaxFare currentContact = (GDSResModel.PaxFare)pnrResDetail.PaxFareList[l];
                                                 AAPassengerfareobject.passengerType = currentContact.PaxType.ToString();
-                                                //                }
-                                                //            }
-                                                //        }
-                                                //    }
-                                                //}
-
-
-
-                                                //var serviceCharges1 = _getBookingResponse.Booking.Journeys[i].Segments[j].Fares[k].PaxFares[l].ServiceCharges;
-                                                // int serviceChargescount = _getBookingResponse.Booking.Journeys[i].Segments[j].Fares[k].PaxFares[l].ServiceCharges.Length;
                                                 List<ServiceChargeReturn> AAServicechargelist = new List<ServiceChargeReturn>();
-                                                //                        for (int m = 0; m < serviceChargescount; m++)
-                                                //                        {
                                                 ServiceChargeReturn AAServicechargeobj = new ServiceChargeReturn();
                                                 AAServicechargeobj.amount = Convert.ToInt32(currentContact.BasicFare);
-                                                //                            string data = _getBookingResponse.Booking.Journeys[i].Segments[j].Fares[k].PaxFares[l].ServiceCharges[m].ChargeType.ToString();
-                                                //                            if (data.ToLower() == "fareprice")
-                                                //                            {
                                                 journeyTotalsobj.totalAmount += Convert.ToInt32(currentContact.BasicFare);
-                                                //                            }
-                                                //                            else
-                                                //                            {
                                                 journeyTotalsobj.totalTax += Convert.ToInt32(currentContact.TotalTax);
-                                                //                            }
-
-
                                                 AAServicechargelist.Add(AAServicechargeobj);
-                                                //                        }
-
                                                 if (AAPassengerfareobject.passengerType.Equals("ADT"))
                                                 {
                                                     AdtAmount += journeyTotalsobj.totalAmount * adultcount;
@@ -396,10 +268,8 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                                     InftAmount += journeyTotalsobj.totalAmount * infantcount;
                                                     infttaxAmount += journeyTotalsobj.totalTax * infantcount;
                                                 }
-
                                                 AAPassengerfareobject.serviceCharges = AAServicechargelist;
                                                 PassengerfarelistRT.Add(AAPassengerfareobject);
-
                                             }
                                             journeyTotalsobj.totalAmount = AdtAmount + chdAmount + InftAmount;
                                             journeyTotalsobj.totalTax = AdttaxAmount + chdtaxAmount + infttaxAmount;
@@ -409,16 +279,11 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                             AAFarelist.Add(AAFareobj);
                                         }
                                     }
-                                    // }
-                                    //}
-                                    //            //breakdown.journeyTotals = journeyTotalsobj;
                                     breakdown.passengerTotals = passengerTotals;
                                     AASegmentobj.fares = AAFarelist;
                                     IdentifierReturn AAIdentifierobj = new IdentifierReturn();
-
                                     AAIdentifierobj.identifier = pnrResDetail.Bonds.Legs[j].FlightNumber;
                                     AAIdentifierobj.carrierCode = pnrResDetail.Bonds.Legs[j].CarrierCode;
-
                                     AASegmentobj.identifier = AAIdentifierobj;
 
                                     //barCode
@@ -442,20 +307,11 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         sequencenumber = sequencenumber.PadRight(5, '0');
                                     }
 
-
-
-                                    //var leg = _getBookingResponse.Booking.Journeys[i].Segments[j].Legs;
-                                    //          int legcount = _getBookingResponse.Booking.Journeys[i].Segments[j].Legs.Length;
                                     List<LegReturn> AALeglist = new List<LegReturn>();
-                                    //            for (int n = 0; n < legcount; n++)
-                                    //            {
                                     LegReturn AALeg = new LegReturn();
-                                    //                //AALeg.legKey = JsonObjTripsell.data.journeys[i].segments[j].legs[n].legKey;
                                     DesignatorReturn AAlegDesignatorobj = new DesignatorReturn();
                                     AAlegDesignatorobj.origin = pnrResDetail.Bonds.Legs[j].Origin;
                                     AAlegDesignatorobj.destination = pnrResDetail.Bonds.Legs[j].Destination;
-                                    //AAlegDesignatorobj.departure = pnrResDetail.Bonds.Legs[segmentscount].
-                                    // AAlegDesignatorobj.arrival = _getBookingResponse.Booking.Journeys[i].Segments[j].Legs[n].STA;
                                     if (!string.IsNullOrEmpty(pnrResDetail.Bonds.Legs[j].DepartureDate))
                                     {
                                         AAlegDesignatorobj.departure = Convert.ToDateTime(pnrResDetail.Bonds.Legs[j].DepartureDate);
@@ -489,10 +345,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
                                         }
                                     }
-
-
-
-
                                     //Seat
                                     foreach (Match mitem in Regex.Matches(strResponse, @"common_v52_0:BookingTraveler Key=""(?<passengerKey>[\s\S]*?)""[\s\S]*?BookingTravelerName[\s\S]*?First=""(?<First>[\s\S]*?)""\s*Last=""(?<Last>[\s\S]*?)""(?<data>[\s\S]*?)</common_v52_0:BookingTraveler>", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                     {
@@ -524,7 +376,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                             }
                                             catch (Exception ex)
                                             {
-
                                             }
 
                                             if (!htnameempty.Contains(mitem.Groups["First"].Value.Trim() + "_" + mitem.Groups["Last"].Value.Trim() + "_" + htsegmentdetails[item.Groups["segmentkey"].Value.Trim()]))
@@ -577,7 +428,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
                                     }
                                     //To do
-                                    
+
                                     foreach (Match item in Regex.Matches(strResponseretriv, @"<air:TicketInfo[\s\S]*?BookingTravelerRef=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                     {
                                         if (!htpaxdetails.Contains(item.Groups["paxid"].Value))
@@ -601,30 +452,11 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
                                     foreach (Match mitem in Regex.Matches(strResponse, @"OptionalService Type=""Baggage""[\s\S]*?SSRCode=""XBAG""[\s\S]*?FreeText=""TTL(?<BagWeight>[\s\S]*?)KG[\s\S]*?BookingTravelerRef=""(?<Travellerref>[\s\S]*?)""[\s\S]*?AirSegmentRef=""(?<SegmentRef>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                     {
-                                            try
-                                            {
-                                                if (!htbagdata.Contains(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString()))
-                                                {
-                                                    htbagdata.Add(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString(), mitem.Groups["BagWeight"].Value.Trim());
-
-                                                }
-
-                                            }
-                                            catch (Exception ex)
-                                            {
-
-                                            }
-                                    }
-
-                                    //Free seat
-
-                                    foreach (Match mitem in Regex.Matches(strResponse, @"OptionalService Type=""PreReservedSeatAssignment""[\s\S]*?SSRCode=""SEAT""[\s\S]*?ServiceData\s*Data=""(?<Seat>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Travellerref>[\s\S]*?)""[\s\S]*?AirSegmentRef=""(?<SegmentRef>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
-                                    {
                                         try
                                         {
-                                            if (!htseatdata.Contains(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString()))
+                                            if (!htbagdata.Contains(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString()))
                                             {
-                                                htseatdata.Add(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString(), "0"+mitem.Groups["Seat"].Value.Trim());
+                                                htbagdata.Add(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString(), mitem.Groups["BagWeight"].Value.Trim());
 
                                             }
 
@@ -635,8 +467,24 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         }
                                     }
 
+                                    //Free seat
 
+                                    foreach (Match mitem in Regex.Matches(strResponse, @"OptionalService Type=""PreReservedSeatAssignment""[\s\S]*?SSRCode=""SEAT""[\s\S]*?ServiceData\s*Data=""(?<Seat>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Travellerref>[\s\S]*?)""[\s\S]*?AirSegmentRef=""(?<SegmentRef>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                    {
+                                        try
+                                        {
+                                            if (!htseatdata.Contains(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString()))
+                                            {
+                                                htseatdata.Add(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString(), "0" + mitem.Groups["Seat"].Value.Trim());
 
+                                            }
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+
+                                        }
+                                    }
                                     AASegmentobj.unitdesignator = returnSeats.unitDesignator;
                                     AASegmentobj.SSRCode = returnSeats.SSRCode;
                                     AASegmentobj.legs = AALeglist;
@@ -675,14 +523,12 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                     passkeytypeobj.barcodestringlst = barcodeImage;
                                     passkeytypeobj.passengerTypeCode = currentContact.PaxType.ToString();
                                     passkeytypeobj.name.first = currentContact.FirstName + " " + currentContact.LastName;
-                                    //        //passkeytypeobj.MobNumber = "";
                                     for (int i1 = 0; i1 < passeengerlist.Count; i1++)
                                     {
                                         if (passkeytypeobj.passengerTypeCode == passeengerlist[i1].passengertypecode && passkeytypeobj.name.first.ToLower() == passeengerlist[i1].first.ToLower() + " " + passeengerlist[i1].last.ToLower())
                                         {
                                             passkeytypeobj.MobNumber = passeengerlist[i].mobile;
                                             passkeytypeobj.passengerKey = passeengerlist[i].passengerkey;
-                                            //                //passkeytypeobj.seats.unitDesignator = htseatdata[passeengerlist[i].passengerkey].ToString();
                                             break;
                                         }
 
@@ -700,17 +546,13 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 breakdown.journeyTotals = new JourneyTotals();
                                 breakdown.journeyTotals.totalAmount = Convert.ToDouble(BasefareAmt);
                                 breakdown.passengerTotals.seats = new ReturnSeats();
-                                //breakdown.passengerTotals.specialServices = new SpecialServices();
                                 breakdown.passengerTotals.specialServices.total = passengerTotals.specialServices.total;
                                 breakdown.passengerTotals.baggage.total = passengerTotals.baggage.total;
                                 breakdown.passengerTotals.seats.total = returnSeats.total;
                                 breakdown.passengerTotals.seats.taxes = returnSeats.taxes;
                                 breakdown.journeyTotals.totalTax = Convert.ToDouble(BasefareTax);
                                 breakdown.totalAmount = breakdown.journeyTotals.totalAmount + breakdown.journeyTotals.totalTax;
-                                //if (totalAmount != 0M)
-                                //{
                                 breakdown.totalToCollect = Convert.ToDouble(breakdown.journeyfareTotals[0].totalAmount) + Convert.ToDouble(breakdown.journeyfareTotals[0].totalTax);
-                                //}
                                 if (breakdown.passengerTotals.baggage.total != 0)
                                 {
                                     breakdown.totalToCollect += Convert.ToDouble(breakdown.passengerTotals.baggage.total);
@@ -721,20 +563,16 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 }
                                 returnTicketBooking.breakdown = breakdown;
                                 returnTicketBooking.journeys = AAJourneyList;
-                                //returnTicketBooking.passengers = passkeylist;
                                 returnTicketBooking.passengerscount = passengercount;
                                 returnTicketBooking.contacts = _contact;
                                 returnTicketBooking.Seatdata = htseatdata;
                                 returnTicketBooking.Mealdata = htmealdata;
                                 returnTicketBooking.Bagdata = htbagdata;
-                                //returnTicketBooking.Bagdata = htPaxbag;
-
                                 returnTicketBooking.htname = htname;
                                 returnTicketBooking.htTicketnumber = htTicketdata;
                                 returnTicketBooking.htnameempty = htnameempty;
                                 returnTicketBooking.htpax = htpax;
                                 returnTicketBooking.TicketNumber = strTicketno;
-                                //returnTicketBooking.bookingdate = _getBookingResponse.Booking.BookingInfo.BookingDate;
                                 _AirLinePNRTicket.AirlinePNR.Add(returnTicketBooking);
 
 
@@ -761,20 +599,14 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 tb_Booking.RecordLocator = returnTicketBooking.recordLocator;
                                 tb_Booking.CurrencyCode = "INR";
                                 segmentscount = pnrResDetail.Bonds.Legs.Count;
-                                // AASegmentlist = new List<SegmentReturn>();
                                 for (int j = 0; j < segmentscount; j++)
                                 {
-                                    // returnSeats.unitDesignator = string.Empty;
-                                    //returnSeats.SSRCode = string.Empty;
-                                    //DesignatorReturn AADesignatorobj = new DesignatorReturn();
                                     tb_Booking.Origin = pnrResDetail.Bonds.Legs[j].Origin;
                                     tb_Booking.Destination = pnrResDetail.Bonds.Legs[segmentscount - 1].Destination;
                                     tb_Booking.ArrivalDate = pnrResDetail.Bonds.Legs[j].ArrivalTime;
                                     tb_Booking.DepartureDate = pnrResDetail.Bonds.Legs[j].DepartureTime;
-                                    //DateTime parsedDate = DateTime.ParseExact(pnrResDetail.Bonds.Legs[j].ArrivalTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                                     DateTime parsedDate = DateTime.ParseExact(pnrResDetail.Bonds.Legs[j].ArrivalTime, "yyyy-MM-ddTHH:mm:ss.fffK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
                                     tb_Booking.ArrivalDate = parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
-                                    //parsedDate = DateTime.ParseExact(pnrResDetail.Bonds.Legs[j].DepartureTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                                     parsedDate = DateTime.ParseExact(pnrResDetail.Bonds.Legs[j].DepartureTime, "yyyy-MM-ddTHH:mm:ss.fffK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
                                     tb_Booking.DepartureDate = parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
                                 }
@@ -797,11 +629,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                     basefareSeat += Convert.ToInt32(bagitem.Groups["seatBasePrice"].Value.Trim());
                                     taxfareSeat += Convert.ToInt32(bagitem.Groups["seatTaxPrice"].Value.Trim());
                                 }
-
-
-
-
-
                                 if (basefareBag != null)
                                 {
                                     tb_Booking.SpecialServicesTotal = Convert.ToDouble(basefareBag) + Convert.ToDouble(taxfareBag);
@@ -820,38 +647,32 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         {
                                             tb_Booking.SeatTotalAmount_Tax = taxfareSeat;
                                         }
-                                        //if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments != null)
                                         tb_Booking.SeatAdjustment = 0.0;
-
                                     }
                                     tb_Booking.SeatTotalAmount -= tb_Booking.SeatTotalAmount_Tax;
                                 }
                                 tb_Booking.ExpirationDate = DateTime.Now;
-
-                                //if (JsonObjPNRBooking.data.info.createdDate != null)
                                 tb_Booking.CreatedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim());
                                 if (HttpContext.User.Identity.IsAuthenticated)
                                 {
                                     var identity = (ClaimsIdentity)User.Identity;
                                     IEnumerable<Claim> claims = identity.Claims;
                                     var userEmail = claims.Where(c => c.Type == ClaimTypes.Email).ToList()[0].Value;
-                                    tb_Booking.Createdby = userEmail;// "Online";
+                                    tb_Booking.Createdby = userEmail;
                                 }
                                 tb_Booking.ModifiedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "universal:ProviderReservationInfo[\\s\\S]*?ModifiedDate=\"(?<Modifieddate>[\\s\\S]*?)\"").Groups["Modifieddate"].Value.Trim());// DateTime.Now;
                                 tb_Booking.ModifyBy = "";
                                 tb_Booking.BookingDoc = strResponseretriv;
-                                tb_Booking.BookingStatus = "2";// Regex.Match(strResponseretriv, "UniversalRecord LocatorCode=[\\s\\S]*?Status=\"(?<Status>[\\s\\S]*?)\"").Groups["Status"].Value.Trim();
-                                tb_Booking.PaidStatus = 0;// "0";
+                                tb_Booking.BookingStatus = "2";
+                                tb_Booking.PaidStatus = 0;
 
                                 // It  will maintained by manually as Airline Code and description 6E-Indigo
                                 tb_Airlines tb_Airlines = new tb_Airlines();
                                 tb_Airlines.AirlineID = 5;
                                 tb_Airlines.AirlneName = "1G";// "Boing";
                                 tb_Airlines.AirlineDescription = "AirIndia";
-                                //if (JsonObjPNRBooking.data.info.createdDate != null)
                                 tb_Airlines.CreatedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim());
                                 tb_Airlines.Createdby = "";
-                                //if (JsonObjPNRBooking.data.info.modifiedDate != null)
                                 tb_Airlines.Modifieddate = Convert.ToDateTime(Regex.Match(strResponseretriv, "universal:ProviderReservationInfo[\\s\\S]*?ModifiedDate=\"(?<Modifieddate>[\\s\\S]*?)\"").Groups["Modifieddate"].Value.Trim());// DateTime.Now;
                                 tb_Airlines.Modifyby = "";
                                 tb_Airlines.Status = Regex.Match(strResponseretriv, "UniversalRecord LocatorCode=[\\s\\S]*?Status=\"(?<Status>[\\s\\S]*?)\"").Groups["Status"].Value.Trim();
@@ -862,9 +683,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 tb_AirCraft.AirlineID = 5;
                                 tb_AirCraft.AirCraftName = "";// "Airbus"; to do
                                 tb_AirCraft.AirCraftDescription = " ";// " City Squares Worldwide"; to do
-                                                                      //if (JsonObjPNRBooking.data.info.createdDate != null)
                                 tb_AirCraft.CreatedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim()); //DateTime.Now;
-                                                                                                                                                                                                                    //if (JsonObjPNRBooking.data.info.modifiedDate != null)
                                 tb_AirCraft.Modifieddate = Convert.ToDateTime(Regex.Match(strResponseretriv, "universal:ProviderReservationInfo[\\s\\S]*?ModifiedDate=\"(?<Modifieddate>[\\s\\S]*?)\"").Groups["Modifieddate"].Value.Trim());// DateTime.Now;
                                 tb_AirCraft.Createdby = "";
                                 tb_AirCraft.Modifyby = "";
@@ -876,13 +695,10 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 contactDetail.FirstName = contactList.first;
                                 contactDetail.LastName = contactList.last;
                                 contactDetail.EmailID = contactList.emailAddress;
-                                //contactDetail.MobileNumber = Convert.ToInt32(Regex.Replace(JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString(), @"^\+91", "")); // todo
                                 contactDetail.MobileNumber = contactList.number;
                                 contactDetail.CountryCode = contactList.countrycode;
-                                //if (JsonObjPNRBooking.data.info.createdDate != null)
                                 contactDetail.CreateDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim());
                                 contactDetail.CreateBy = ""; //"Admin";
-                                                             //if (JsonObjPNRBooking.data.info.modifiedDate != null)
                                 contactDetail.ModifyDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "universal:ProviderReservationInfo[\\s\\S]*?ModifiedDate=\"(?<Modifieddate>[\\s\\S]*?)\"").Groups["Modifieddate"].Value.Trim()); //DateTime.Now;
                                 contactDetail.ModifyBy = "";
                                 contactDetail.Status = 0;
@@ -899,26 +715,11 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
                                 tb_PassengerTotal tb_PassengerTotalobj = new tb_PassengerTotal();
                                 tb_PassengerTotalobj.BookingID = Bookingid;
-                                if (breakdown.passengerTotals.specialServices != null)
-                                {
-                                    if (breakdown.passengerTotals.specialServices.total != null)
-                                    {
-                                        //tb_PassengerTotalobj.TotalMealsAmount = Convert.ToDouble(breakdown.passengerTotals.specialServices.total);
-                                    }
-                                    if (breakdown.passengerTotals.specialServices.taxes != null)
-                                    {
-                                        //tb_PassengerTotalobj.TotalMealsAmount_Tax = Convert.ToDouble(breakdown.passengerTotals.specialServices.taxes);
-                                    }
-                                }
                                 if (breakdown.passengerTotals.seats != null)
                                 {
                                     if (breakdown.passengerTotals.seats.total > 0 || breakdown.passengerTotals.seats.total != null)
                                     {
-                                        //tb_PassengerTotalobj.TotalSeatAmount = breakdown.passengerTotals.seats.total;
-                                        //tb_PassengerTotalobj.TotalSeatAmount_Tax = breakdown.passengerTotals.seats.taxes;
-                                        //if (JsonObjPNRBooking.data.breakdown.passengerTotals.seats.adjustments != null)
                                         tb_PassengerTotalobj.SeatAdjustment = 0.0;
-
                                     }
                                 }
 
@@ -927,10 +728,8 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 tb_PassengerTotalobj.Modifyby = "";
                                 tb_PassengerTotalobj.Createdby = ""; //"Online";
                                 tb_PassengerTotalobj.Status = Regex.Match(strResponseretriv, "UniversalRecord LocatorCode=[\\s\\S]*?Status=\"(?<Status>[\\s\\S]*?)\"").Groups["Status"].Value.Trim();
-                                //if (JsonObjPNRBooking.data.info.createdDate != null)
                                 tb_PassengerTotalobj.CreatedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim());
                                 contactDetail.CreateBy = ""; //"Admin";// DateTime.Now;
-                                //if (JsonObjPNRBooking.data.info.modifiedDate != null)
                                 tb_PassengerTotalobj.ModifiedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "universal:ProviderReservationInfo[\\s\\S]*?ModifiedDate=\"(?<Modifieddate>[\\s\\S]*?)\"").Groups["Modifieddate"].Value.Trim()); //DateTime.Now;
 
                                 tb_PassengerTotalobj.AdultCount = adultcount;
@@ -941,8 +740,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 List<tb_PassengerDetails> tb_PassengerDetailsList = new List<tb_PassengerDetails>();
                                 int SegmentCount = segmentscount;
                                 string passenger = objMongoHelper.UnZip(tokenData.OldPassengerRequest);
-                                //string passenger = objMongoHelper.UnZip(tokenData.PassengerRequest);
-
                                 List<passkeytype> paxList = (List<passkeytype>)JsonConvert.DeserializeObject(passenger, typeof(List<passkeytype>));
                                 List<passkeytype> infantList = paxList.Where(p => p.passengertypecode == "INF").ToList();
 
@@ -955,12 +752,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         htpaxFQTVdetails.Add(item.Groups["FirstName"].Value.ToUpper().Trim() + "_" + item.Groups["LastName"].Value.ToUpper().Trim(), item.Groups["FQTV"].Value);
                                     }
                                 }
-
-
-
-
-                                
-
                                 Hashtable htpassenegerdata = new Hashtable();
                                 foreach (Match item in Regex.Matches(strResponseretriv, @"air:AirPricingInfo[\s\S]*?BasePrice=""INR(?<Amount>[\s\S]*?)""[\s\S]*?Taxes=""INR(?<Tax>[\s\S]*?)""[\s\S]*?SegmentRef=""(?<segment>[\s\S]*?)""[\s\S]*?</air:AirPricingInfo>", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                 {
@@ -976,7 +767,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
                                 for (int isegment = 0; isegment < pnrResDetail.Bonds.Legs.Count; isegment++)
                                 {
-                                    //foreach (var items in pnrResDetail.PaxeDetailList)
                                     for (int k = 0; k < paxList.Count; k++)
                                     {
                                         tb_PassengerDetails tb_Passengerobj = new tb_PassengerDetails();
@@ -990,7 +780,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         tb_Passengerobj.Title = paxList[k].title;
                                         tb_Passengerobj.LastName = paxList[k].last;
 
-                                        //tb_Passengerobj.contact_Emailid = PassengerDataDetailsList.FirstOrDefault(x => x.first == tb_Passengerobj.FirstName && x.last == tb_Passengerobj.LastName).Email;
                                         tb_Passengerobj.contact_Emailid = paxList[k].Email;
                                         tb_Passengerobj.contact_Mobileno = paxList[k].mobile;
                                         tb_Passengerobj.FastForwardService = 'N';
@@ -1001,12 +790,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         else if (tb_Passengerobj.Title.ToUpper() == "MS" || tb_Passengerobj.Title.ToUpper() == "MRS" || tb_Passengerobj.Title.ToUpper() == "MISS")
                                             tb_Passengerobj.Gender = "Female";
                                         int JourneysReturnCount1 = 1;
-                                        //if (JsonObjPNRBooking.data.journeys[0].segments[isegment].passengerSegment[tb_Passengerobj.PassengerKey].seats != null && JsonObjPNRBooking.data.journeys[0].segments[isegment].passengerSegment[tb_Passengerobj.PassengerKey].seats.Count > 0)
-                                        //{
-                                        //var flightseatnumber1 = JsonObjPNRBooking.data.journeys[0].segments[isegment].passengerSegment[tb_Passengerobj.PassengerKey].seats[0].unitDesignator;
                                         tb_Passengerobj.Seatnumber = "";
-                                        //}
-
                                         string combinedName = (tb_Passengerobj.FirstName + "_" + tb_Passengerobj.LastName).ToUpper() + "_" + pnrResDetail.Bonds.Legs[isegment].AircraftCode;
                                         string data = string.Empty;
                                         if (htpassenegerdata.Contains(combinedName))
@@ -1019,11 +803,8 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         {
                                             tb_Passengerobj.FrequentFlyerNumber = htpaxFQTVdetails[tb_Passengerobj.FirstName.ToUpper().Trim() + "_" + tb_Passengerobj.LastName.ToUpper().Trim()].ToString();
                                         }
-                                        //}
-                                        //if (JsonObjPNRBooking.data.info.createdDate != null)
                                         tb_Passengerobj.CreatedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim());  //DateTime.Now;
                                         tb_Passengerobj.Createdby = ""; //"Online";
-                                                                        //if (JsonObjPNRBooking.data.info.modifiedDate != null)
                                         tb_Passengerobj.ModifiedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "universal:ProviderReservationInfo[\\s\\S]*?ModifiedDate=\"(?<Modifieddate>[\\s\\S]*?)\"").Groups["Modifieddate"].Value.Trim());  //DateTime.Now;
                                         tb_Passengerobj.ModifyBy = ""; //"Online";
                                         tb_Passengerobj.Status = Regex.Match(strResponseretriv, "UniversalRecord LocatorCode=[\\s\\S]*?Status=\"(?<Status>[\\s\\S]*?)\"").Groups["Status"].Value.Trim();  //"0";
@@ -1038,18 +819,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                                     tb_Passengerobj.Inf_Firstname = infantList[k].first;
                                                     tb_Passengerobj.Inf_Lastname = infantList[k].last;
                                                     tb_Passengerobj.Inf_Dob = Convert.ToDateTime(infantList[k].dateOfBirth);
-                                                    //if (items.Value.infant.gender == "1")
-                                                    //{
                                                     tb_Passengerobj.Inf_Gender = "Master";
-                                                    //}
-                                                    // for (int i = 0; i < PassengerDataDetailsList.Count; i++)
-                                                    //{
-                                                    //if (tb_Passengerobj.Inf_TypeCode == PassengerDataDetailsList[i].passengertypecode && tb_Passengerobj.Inf_Firstname.ToLower() == PassengerDataDetailsList[i].first.ToLower() + " " + PassengerDataDetailsList[i].last.ToLower())
-                                                    //{
-                                                    //tb_Passengerobj.PassengerKey = infantList[k].passengerkey;
-                                                    // break;
-                                                    //}
-                                                    //}
                                                     string combinedkey = (infantList[inf].first + "_" + infantList[inf].last).ToUpper() + "_" + pnrResDetail.Bonds.Legs[isegment].AircraftCode;
                                                     if (htpassenegerdata.Contains(combinedkey))
                                                     {
@@ -1081,18 +851,13 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
                                         if (htmealdata != null && htmealdata.ContainsKey(hashdata))
                                         {
-
                                             var Mealcode = htmealdata[hashdata].ToString();
-
                                             var MealName = MealImageList.GetAllmeal()
                                             .Where(x => Mealcode.Contains(x.MealCode))
                                             .Select(x => x.MealImage)
                                             .FirstOrDefault();
-
-
                                             if (Mealcode != null && MealName != null)
                                             {
-
                                                 MealConcatenation += Mealcode + "-" + MealName + ",";
                                             }
                                         }
@@ -1185,10 +950,8 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                     tb_JourneysObj.Destination = tb_Booking.Destination;
                                     tb_JourneysObj.DepartureDate = Convert.ToDateTime(tb_Booking.DepartureDate);
                                     tb_JourneysObj.ArrivalDate = Convert.ToDateTime(tb_Booking.ArrivalDate);
-                                    //if (JsonObjPNRBooking.data.info.createdDate != null)
                                     tb_JourneysObj.CreatedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim()); //DateTime.Now;
                                     tb_JourneysObj.Createdby = ""; //"Online";
-                                                                   //if (JsonObjPNRBooking.data.info.modifiedDate != null)
                                     tb_JourneysObj.ModifiedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "universal:ProviderReservationInfo[\\s\\S]*?ModifiedDate=\"(?<Modifieddate>[\\s\\S]*?)\"").Groups["Modifieddate"].Value.Trim()); //DateTime.Now;                                                                                                                                                                                                                                                         //DateTime.Now;
                                     tb_JourneysObj.Modifyby = ""; //"Online";
                                     tb_JourneysObj.Status = Regex.Match(strResponseretriv, "UniversalRecord LocatorCode=[\\s\\S]*?Status=\"(?<Status>[\\s\\S]*?)\"").Groups["Status"].Value.Trim();   //"0";
@@ -1203,15 +966,10 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         segmentReturnobj.SegmentCount = j;
                                         segmentReturnobj.Origin = pnrResDetail.Bonds.Legs[j].Origin;
                                         segmentReturnobj.Destination = pnrResDetail.Bonds.Legs[j].Destination;
-                                        //segmentReturnobj.DepartureDate = pnrResDetail.Bonds.Legs[j].DepartureTime;
-                                        //segmentReturnobj.ArrivalDate = pnrResDetail.Bonds.Legs[j].ArrivalTime;
-
                                         DateTime parsedDate = DateTime.ParseExact(pnrResDetail.Bonds.Legs[j].ArrivalTime, "yyyy-MM-ddTHH:mm:ss.fffK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
                                         segmentReturnobj.ArrivalDate = parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
-                                        //parsedDate = DateTime.ParseExact(pnrResDetail.Bonds.Legs[j].DepartureTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture);
                                         parsedDate = DateTime.ParseExact(pnrResDetail.Bonds.Legs[j].DepartureTime, "yyyy-MM-ddTHH:mm:ss.fffK", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
                                         segmentReturnobj.DepartureDate = parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
-
                                         segmentReturnobj.Identifier = pnrResDetail.Bonds.Legs[j].FlightNumber;
                                         segmentReturnobj.CarrierCode = pnrResDetail.Bonds.Legs[j].CarrierCode;
                                         segmentReturnobj.Seatnumber = ""; // to do
@@ -1227,9 +985,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                             if (pnrResDetail.Bonds.Legs[j].ArrivalTerminal != null)
                                                 segmentReturnobj.ArrivalTerminal = Convert.ToInt32(pnrResDetail.Bonds.Legs[j].ArrivalTerminal);  // to do
                                         }
-                                        //if (JsonObjPNRBooking.data.info.createdDate != null)
                                         segmentReturnobj.CreatedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "AirReservation[\\s\\S]*?CreateDate=\"(?<CreateDate>[\\s\\S]*?)\"").Groups["CreateDate"].Value.Trim()); //DateTime.Now;
-                                        //if (JsonObjPNRBooking.data.info.modifiedDate != null)
                                         segmentReturnobj.ModifiedDate = Convert.ToDateTime(Regex.Match(strResponseretriv, "universal:ProviderReservationInfo[\\s\\S]*?ModifiedDate=\"(?<Modifieddate>[\\s\\S]*?)\"").Groups["Modifieddate"].Value.Trim()); //DateTime.Now;
                                         segmentReturnobj.Createdby = ""; //"Online";
                                         segmentReturnobj.Modifyby = ""; //"Online";
@@ -1238,16 +994,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
                                     }
                                 }
-
-                                //Trips tb_Trips = new Trips();
-                                //tb_Trips.OutboundFlightID = Bookingid;
-                                //tb_Trips.TripType = "OneWay";
-                                //tb_Trips.TripStatus = "active";
-                                //tb_Trips.BookingDate = DateTime.Now;
-                                //tb_Trips.UserID = "";
-                                //tb_Trips.ReturnFlightID = "";
-
-
                                 airLineFlightTicketBooking.tb_Booking = tb_Booking;
                                 airLineFlightTicketBooking.GSTDetails = gSTDetails;
                                 airLineFlightTicketBooking.tb_Segments = segmentReturnsListt;
@@ -1256,8 +1002,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 airLineFlightTicketBooking.tb_PassengerTotal = tb_PassengerTotalobj;
                                 airLineFlightTicketBooking.tb_PassengerDetails = tb_PassengerDetailsList;
                                 airLineFlightTicketBooking.ContactDetail = contactDetail;
-                                //airLineFlightTicketBooking.tb_Trips = tb_Trips;
-
                                 client1.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                                 HttpResponseMessage responsePassengers = await client1.PostAsJsonAsync(AppUrlConstant.BaseURL + "api/AirLineTicketBooking/PostairlineTicketData", airLineFlightTicketBooking);
                                 if (responsePassengers.IsSuccessStatusCode)
@@ -1265,18 +1009,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                     var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;
                                 }
                                 #endregion
-                                //}
-
-                                //LogOut 
-                                //IndigoSessionmanager_.LogoutRequest _logoutRequestobj = new IndigoSessionmanager_.LogoutRequest();
-                                //IndigoSessionmanager_.LogoutResponse _logoutResponse = new IndigoSessionmanager_.LogoutResponse();
-                                //_logoutRequestobj.ContractVersion = 456;
-                                //_logoutRequestobj.Signature = token;
-                                //_getapi objIndigo = new _getapi();
-                                //_logoutResponse = await objIndigo.Logout(_logoutRequestobj);
-
-                                //logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_logoutRequestobj) + "\n Response: " + JsonConvert.SerializeObject(_logoutResponse), "Logout", "SpicejetOneWay");
-
                             }
                             #endregion
 
@@ -1285,7 +1017,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                 }
             }
             return View(_AirLinePNRTicket);
-            //return RedirectToAction("GetTicketBooking", "AirLinesTicket");
         }
 
         public PointOfSale GetPointOfSale()
