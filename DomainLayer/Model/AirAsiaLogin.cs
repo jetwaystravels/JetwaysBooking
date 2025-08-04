@@ -65,6 +65,7 @@ namespace DomainLayer.Model
 
         // New Status Property(1 = Active, 0 = Inactive)
         public int Status { get; set; } = 1;
+        public string dealCodeName { get; set; } 
 
     }
     //public class _credentialsAkasha

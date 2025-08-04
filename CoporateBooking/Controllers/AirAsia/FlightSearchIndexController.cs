@@ -319,6 +319,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 {
                     var results = await response.Content.ReadAsStringAsync();
                     var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+                   
                     Parallel.Invoke(
                      () =>
                      {
@@ -755,7 +756,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 _SimpleAvailabilityobj.codes = _codes;
                 _SimpleAvailabilityobj.sourceOrganization = "";
                 _SimpleAvailabilityobj.currentSourceOrganization = "";
-                _SimpleAvailabilityobj.promotionCode = "OTAPROMO";
+                _SimpleAvailabilityobj.promotionCode = _credentialsAirasia.dealCodeName; //deal code 
                 string[] sortOptions = new string[1];
                 sortOptions[0] = "ServiceType";
                 // Define the Filters class
@@ -2102,7 +2103,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     _SimpleAvailabilityobjR.codes = _codes;
                     _SimpleAvailabilityobjR.sourceOrganization = "";
                     _SimpleAvailabilityobjR.currentSourceOrganization = "";
-                    _SimpleAvailabilityobjR.promotionCode = "";
+                    _SimpleAvailabilityobjR.promotionCode = _credentialsAirasia.dealCodeName;
                     string[] sortOptionsR = new string[1];
                     sortOptionsR[0] = "ServiceType";
                     Filters FiltersR = new Filters();

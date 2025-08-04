@@ -175,6 +175,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                             Hashtable htseatdata = new Hashtable();
                             Hashtable htmealdata = new Hashtable();
                             Hashtable htbagdata = new Hashtable();
+                            Hashtable htsegmentdetails = new Hashtable();
                             int adultcount = searchLog.Adults;
                             int childcount = searchLog.Children;
                             int infantcount = searchLog.Infants;
@@ -354,7 +355,6 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                     AALeg.legInfo = AALeginfoobj;
                                     AALeglist.Add(AALeg);
 
-                                    Hashtable htsegmentdetails = new Hashtable();
                                     foreach (Match mitem in Regex.Matches(strResponse, @"AirSegment Key=""(?<segmentid>[\s\S]*?)""[\s\S]*?Origin=""(?<origin>[\s\S]*?)""\s*Destination=""(?<Destination>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                     {
                                         try
@@ -564,8 +564,11 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                 double BasefareTax = 0.0;
                                 for (int i2 = 0; i2 < breakdown.journeyfareTotals.Count; i2++)
                                 {
-                                    BasefareAmt += breakdown.journeyfareTotals[i].totalAmount;
-                                    BasefareTax += breakdown.journeyfareTotals[i].totalTax;
+                                    if (i2 == 0)
+                                    {
+                                        BasefareAmt += breakdown.journeyfareTotals[i].totalAmount;
+                                        BasefareTax += breakdown.journeyfareTotals[i].totalTax;
+                                    }
                                 }
                                 breakdown.journeyTotals = new JourneyTotals();
                                 breakdown.journeyTotals.totalAmount = Convert.ToDouble(BasefareAmt);
@@ -833,7 +836,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                         tb_Passengerobj.ModifyBy = ""; //"Online";
                                         tb_Passengerobj.Status = Regex.Match(strResponseretriv, "UniversalRecord LocatorCode=[\\s\\S]*?Status=\"(?<Status>[\\s\\S]*?)\"").Groups["Status"].Value.Trim();  //"0";
 
-                                        if (infantList.Count > 0 && tb_Passengerobj.TypeCode == "ADT")
+                                        if (infantList.Count > 0 && tb_Passengerobj.TypeCode == "ADT" && isegment == 0)
                                         {
                                             if (k < infantList.Count)
                                             {
@@ -855,6 +858,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                             }
 
                                         }
+                                        string oridest = pnrResDetail.Bonds.Legs[isegment].Origin + "_" + pnrResDetail.Bonds.Legs[isegment].Destination;
 
                                         // Handle carrybages and fees
                                         List<FeeDetails> feeDetails = new List<FeeDetails>();
@@ -921,13 +925,16 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                                             }
                                         }
 
-                                        foreach (Match bagitem in Regex.Matches(strResponse, @"OptionalService Type=""PreReservedSeatAssignment""\s*TotalPrice=""INR(?<SeatPrice>[\s\S]*?)""[\s\S]*?BasePrice=""INR(?<seatBasePrice>[\s\S]*?)""[\s\S]*?Taxes=""INR(?<seatTaxPrice>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Paxid>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                        foreach (Match bagitem in Regex.Matches(strResponse, @"OptionalService Type=""PreReservedSeatAssignment""\s*TotalPrice=""INR(?<SeatPrice>[\s\S]*?)""[\s\S]*?BasePrice=""INR(?<seatBasePrice>[\s\S]*?)""[\s\S]*?Taxes=""INR(?<seatTaxPrice>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Paxid>[\s\S]*?)""\s*AirSegmentRef=""(?<segid>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                         {
-                                            if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                            if (oridest == htsegmentdetails[bagitem.Groups["segid"].Value.Trim()].ToString())
                                             {
-                                                TotalAmount_Seat = Convert.ToInt32(bagitem.Groups["seatBasePrice"].Value.Trim());
-                                                TotalAmount_Seat_tax = Convert.ToInt32(bagitem.Groups["seatTaxPrice"].Value.Trim());
-                                                break;
+                                                if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                {
+                                                    TotalAmount_Seat = Convert.ToInt32(bagitem.Groups["seatBasePrice"].Value.Trim());
+                                                    TotalAmount_Seat_tax = Convert.ToInt32(bagitem.Groups["seatTaxPrice"].Value.Trim());
+                                                    break;
+                                                }
                                             }
                                         }
 
@@ -1046,25 +1053,5 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             return View(_AirLinePNRTicket);
         }
 
-        public PointOfSale GetPointOfSale()
-        {
-            PointOfSale SourcePOS = null;
-            try
-            {
-                SourcePOS = new PointOfSale();
-                SourcePOS.State = Bookingmanager_.MessageState.New;
-                SourcePOS.OrganizationCode = "APITESTID";
-                SourcePOS.AgentCode = "AG";
-                SourcePOS.LocationCode = "";
-                SourcePOS.DomainCode = "WWW";
-            }
-            catch (Exception e)
-            {
-                string exp = e.Message;
-                exp = null;
-            }
-
-            return SourcePOS;
-        }
     }
 }

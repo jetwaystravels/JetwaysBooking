@@ -88,6 +88,15 @@
     }
     navMenu();
 
+    window.addEventListener('scroll', function () {
+        const header = document.querySelector('header.navbar');
+        if (window.scrollY > 50) {
+            header.classList.add('sticky-active');
+        } else {
+            header.classList.remove('sticky-active');
+        }
+    });
+
     // :: 3.0 SCROLL TO TOP ACTIVE CODE
     var offset = 300;
     var duration = 500;
