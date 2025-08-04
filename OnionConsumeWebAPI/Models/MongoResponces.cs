@@ -57,4 +57,15 @@
 
     }
 
+    public class GDSPNRResponse
+    {
+        public MongoDB.Bson.ObjectId _id;
+        public string Guid;
+        public string Response;
+        public string RResponse;
+        public string LocatorCode;
+        public string RLocatorCode;
+        public DateTime CreatedDate;
+    }
+
 }

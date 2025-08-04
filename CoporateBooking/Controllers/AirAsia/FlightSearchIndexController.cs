@@ -325,7 +325,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          // Airasia
                          _credentialsAirasia = new _credentials();
                          _credentialsAirasia = jsonObject.FirstOrDefault(cred => cred?.supplierid == 1 && cred.Status == 1);
-
+                         if (_credentialsAirasia == null)
+                         {
+                             _credentialsAirasia = new _credentials();
+                         }
                      },  // close first Action
 
                      () =>
@@ -333,12 +336,20 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          // Akasa
                          _CredentialsAkasha = new _credentials();
                          _CredentialsAkasha = jsonObject.FirstOrDefault(cred => cred?.supplierid == 2 && cred.Status == 1);
+                         if (_CredentialsAkasha == null)
+                         {
+                             _CredentialsAkasha = new _credentials();
+                         }
                      },
                      () =>
                      {
                          // GDS
                          _CredentialsGDS = new _credentials();
                          _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+                         if(_CredentialsGDS == null)
+                         {
+                             _CredentialsGDS = new _credentials();
+                         }
                      },
                      () =>
                      {
@@ -350,6 +361,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                          _CredentialsSpiceJet = new _credentials();
                          _CredentialsSpiceJet = jsonObject.FirstOrDefault(cred => cred?.supplierid == 3 && cred.Status == 1);
+                         if(_CredentialsSpiceJet == null)
+                         {
+                             _CredentialsSpiceJet = new _credentials();
+                         }
                      },
                      () =>
                      {
@@ -361,6 +376,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                          _CredentialsIndigo = new _credentials();
                          _CredentialsIndigo = jsonObject.FirstOrDefault(cred => cred?.supplierid == 4 && cred.Status == 1);
+                         if(_CredentialsIndigo == null)
+                         {
+                             _CredentialsIndigo = new _credentials();
+                         }
                      }
 
                  );
@@ -549,8 +568,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 IndigoSessionmanager_.LogonResponse _IndigologonResponseobj = await objIndigo.Signature(_logonRequestIndigoobj);
 
 
-
-                mongoIndigoToken.Token = _IndigologonResponseobj.Signature;
+                if (_IndigologonResponseobj != null)
+                {
+                    mongoIndigoToken.Token = _IndigologonResponseobj.Signature;
+                }
                 #endregion
 
                 //Indigo end

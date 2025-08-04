@@ -211,7 +211,9 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             {
                 client.BaseAddress = new Uri(AppUrlConstant.BaseURL);
                 //HttpResponseMessage response = await client.GetAsync("api/Login/getotacredairasia");
-                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
+               // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
+                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+
                 //Air Asia login
                 if (response.IsSuccessStatusCode)
                 {
@@ -222,7 +224,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                      {
                          // Airasia
                          _credentialsAirasia = new _credentials();
-                         _credentialsAirasia = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 1);
+                         _credentialsAirasia = jsonObject.FirstOrDefault(cred => cred?.supplierid == 1 && cred.Status == 1);
 
                      },  // close first Action
 
@@ -230,13 +232,13 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                      {
                          // Akasa
                          _CredentialsAkasha = new _credentials();
-                         _CredentialsAkasha = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 2);
+                         _CredentialsAkasha = jsonObject.FirstOrDefault(cred => cred?.supplierid == 2 && cred.Status == 1);
                      },
                      () =>
                      {
                          // GDS
                          _CredentialsGDS = new _credentials();
-                         _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 5);
+                         _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
                      },
                      () =>
                      {
@@ -247,7 +249,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          LogonRequestDataobj = new SpicejetSessionManager_.LogonRequestData();
 
                          _CredentialsSpiceJet = new _credentials();
-                         _CredentialsSpiceJet = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 3);
+                         _CredentialsSpiceJet = jsonObject.FirstOrDefault(cred => cred?.supplierid == 3 && cred.Status == 1);
                      },
                      () =>
                      {
@@ -258,7 +260,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          LogonRequestDataIndigoobj = new IndigoSessionmanager_.LogonRequestData();
 
                          _CredentialsIndigo = new _credentials();
-                         _CredentialsIndigo = jsonObject.FirstOrDefault(cred => cred?.FlightCode == 4);
+                         _CredentialsIndigo = jsonObject.FirstOrDefault(cred => cred?.supplierid == 4 && cred.Status == 1);
                      }
 
                  );

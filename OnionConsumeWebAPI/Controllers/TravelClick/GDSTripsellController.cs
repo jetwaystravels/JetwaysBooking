@@ -35,10 +35,36 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
         IHttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
 
         private readonly IConfiguration _configuration;
+        string _targetBranch = string.Empty;
+        string _userName = string.Empty;
+        string _password = string.Empty;
 
         public GDSTripsellController(IConfiguration configuration)
         {
             _configuration = configuration;
+            Task.Run(async () => await LoadCredentialsAsync()).Wait();
+        }
+
+        private async Task LoadCredentialsAsync()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
+
+                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var results = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+
+                    var _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+
+                    _targetBranch = _CredentialsGDS.organizationId;
+                    _userName = _CredentialsGDS.username;
+                    _password = _CredentialsGDS.password;
+                }
+            }
         }
 
         public IActionResult GDSSaverTripsell(string GUID)
@@ -265,14 +291,14 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             TravelPort _objAvail = null;
             HttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
             _objAvail = new TravelPort(httpContextAccessorInstance);
-            string _UniversalRecordURL = AppUrlConstant.GDSUniversalRecordURL;
-            string _testURL = AppUrlConstant.GDSURL;
-            string _targetBranch = string.Empty;
-            string _userName = string.Empty;
-            string _password = string.Empty;
-            _targetBranch = "P7027135";
-            _userName = "Universal API/uAPI5098257106-beb65aec";
-            _password = "Q!f5-d7A3D";
+          //  string _UniversalRecordURL = AppUrlConstant.GDSUniversalRecordURL;
+           // string _testURL = AppUrlConstant.GDSURL;
+            //string _targetBranch = string.Empty;
+            //string _userName = string.Empty;
+            //string _password = string.Empty;
+            //_targetBranch = "P7027135";
+            //_userName = "Universal API/uAPI5098257106-beb65aec";
+            //_password = "Q!f5-d7A3D";
             StringBuilder createPNRReq = new StringBuilder();
             StringBuilder createAirmerchandReq = new StringBuilder();
             string AdultTraveller = passengerNamedetails;
@@ -348,7 +374,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             string stravailibitilityrequest = HttpContext.Session.GetString("GDSAvailibilityRequest");
             SimpleAvailabilityRequestModel availibiltyRQGDS = Newtonsoft.Json.JsonConvert.DeserializeObject<SimpleAvailabilityRequestModel>(stravailibitilityrequest);
             Hashtable _htpaxwiseBaggage = new Hashtable();
-            string res = _objAvail.GetAirMerchandisingOfferAvailabilityReq(_testURL, createAirmerchandReq, newGuid.ToString(), _targetBranch, _userName, _password, AdultTraveller, _data, "GDSOneWay", segmentdata);
+            string res = _objAvail.GetAirMerchandisingOfferAvailabilityReq(AppUrlConstant.GDSURL, createAirmerchandReq, newGuid.ToString(), _targetBranch, _userName, _password, AdultTraveller, _data, "GDSOneWay", segmentdata);
             if (res != null)
             {
                 string weight = "";
@@ -534,14 +560,14 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             TravelPort _objAvail = null;
             HttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
             _objAvail = new TravelPort(httpContextAccessorInstance);
-            string _UniversalRecordURL = AppUrlConstant.GDSUniversalRecordURL;
-            string _testURL = AppUrlConstant.GDSURL;
-            string _targetBranch = string.Empty;
-            string _userName = string.Empty;
-            string _password = string.Empty;
-            _targetBranch = "P7027135";
-            _userName = "Universal API/uAPI5098257106-beb65aec";
-            _password = "Q!f5-d7A3D";
+           // string _UniversalRecordURL = AppUrlConstant.GDSUniversalRecordURL;
+           // string _testURL = AppUrlConstant.GDSURL;
+            //string _targetBranch = string.Empty;
+            //string _userName = string.Empty;
+            //string _password = string.Empty;
+            //_targetBranch = "P7027135";
+            //_userName = "Universal API/uAPI5098257106-beb65aec";
+            //_password = "Q!f5-d7A3D";
             StringBuilder createSSRReq = new StringBuilder();
             //string AdultTraveller = passengerNamedetails;
             string _data = HttpContext.Session.GetString("SGkeypassenger");
@@ -555,11 +581,11 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             string _pricesolution = string.Empty;
             _pricesolution = HttpContext.Session.GetString("PricingSolutionValue_0");
             StringBuilder createPNRReq = new StringBuilder();
-            string res = _objAvail.CreatePNR(_testURL, createPNRReq, newGuid.ToString(), _targetBranch, _userName, _password, jsonDataObject, _data, _Total, "GDSOneWay", _unitkey, ssrKey, _pricesolution);
+            string res = _objAvail.CreatePNR(AppUrlConstant.GDSURL, createPNRReq, newGuid.ToString(), _targetBranch, _userName, _password, jsonDataObject, _data, _Total, "GDSOneWay", _unitkey, ssrKey, _pricesolution);
 
             string RecordLocator = Regex.Match(res, @"universal:UniversalRecord\s*LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
             //getdetails
-            string strResponse = _objAvail.RetrivePnr(RecordLocator, _UniversalRecordURL, newGuid.ToString(), _targetBranch, _userName, _password, "GDSOneWay");
+            string strResponse = _objAvail.RetrivePnr(RecordLocator, AppUrlConstant.GDSUniversalRecordURL, newGuid.ToString(), _targetBranch, _userName, _password, "GDSOneWay");
 
 
             string ProvidelocatorCode = Regex.Match(strResponse, @"universal:ProviderReservationInfo[\s\S]*?LocatorCode=""(?<ProviderLocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["ProviderLocatorCode"].Value.Trim();
@@ -570,11 +596,24 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             jsonDataObject = objMongoHelper.UnZip(tokenData.PassengerRequest); //HttpContext.Session.GetString("PassengerModel");
             passengerdetails = (List<passkeytype>)JsonConvert.DeserializeObject(jsonDataObject.ToString(), typeof(List<passkeytype>));
             string strSeatResponseleft = HttpContext.Session.GetString("SeatResponseleft");
-            res = _objAvail.AirMerchandisingFulfillmentReq(_testURL, createSSRReq, newGuid.ToString(), _targetBranch, _userName, _password, "GDSOneWay", unitKey, ssrKey, BaggageSSrkey, availibiltyRQGDS, passengerdetails, htbaggagedata, strSeatResponseleft, segmentblock);
+            res = _objAvail.AirMerchandisingFulfillmentReq(AppUrlConstant.GDSURL, createSSRReq, newGuid.ToString(), _targetBranch, _userName, _password, "GDSOneWay", unitKey, ssrKey, BaggageSSrkey, availibiltyRQGDS, passengerdetails, htbaggagedata, strSeatResponseleft, segmentblock);
             
             UniversalLocatorCode = Regex.Match(res, @"UniversalRecord\s*LocatorCode=""(?<UniversalLocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["UniversalLocatorCode"].Value.Trim();
 
-            HttpContext.Session.SetString("PNR", res+"@@"+UniversalLocatorCode);
+            // HttpContext.Session.SetString("PNR", res+"@@"+UniversalLocatorCode);
+
+
+            GDSPNRResponse mongoGDS = new GDSPNRResponse
+            {
+                Guid = GUID,
+                Response = res,
+                LocatorCode = UniversalLocatorCode,
+                RLocatorCode = "",
+                RResponse = ""
+            };
+
+
+            _mongoDBHelper.SaveGDSLocatorCode(mongoGDS);
 
             return RedirectToAction("GDSPayment", "GDSPaymentGateway", new { Guid = GUID });
         }

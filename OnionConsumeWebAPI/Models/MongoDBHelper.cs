@@ -564,6 +564,36 @@ namespace OnionConsumeWebAPI.Models
             return seatMeal;
         }
 
+        public void SaveGDSLocatorCode(GDSPNRResponse gDSPNRResponse)
+        {
+            MongoHelper mongoHelper = new MongoHelper();
+            try
+            {
+
+                gDSPNRResponse.CreatedDate = DateTime.UtcNow.AddMinutes(Convert.ToInt16(0));
+                mDB.GetCollection<GDSPNRResponse>("gdspnrresp").InsertOneAsync(gDSPNRResponse);
+
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLog(ex, "SaveGDSLocatorCode method", _connectionString);
+            }
+        }
+
+        public async Task<GDSPNRResponse> GetGDSPNRByGUID(string guid)
+        {
+            GDSPNRResponse legal = new GDSPNRResponse();
+            try
+            {
+                legal = await mDB.GetCollection<GDSPNRResponse>("gdspnrresp").Find(Builders<GDSPNRResponse>.Filter.Eq("Guid", guid)).Sort(Builders<GDSPNRResponse>.Sort.Descending("CreatedDate")).FirstOrDefaultAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                logger.WriteLog(ex, "GetlegalEntityByGUID methhod", _connectionString);
+            }
+            return legal;
+        }
+
 
     }
 }

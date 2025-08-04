@@ -44,10 +44,36 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
         AirAsiaTripResponceModel passeengerlist = null;
         Logs logs = new Logs();
         private readonly IConfiguration _configuration;
+        string _targetBranch = string.Empty;
+        string _userName = string.Empty;
+        string _password = string.Empty;
 
         public RoundAATripsellController(IConfiguration configuration)
         {
             _configuration = configuration;
+            Task.Run(async () => await LoadCredentialsAsync()).Wait();
+        }
+
+        private async Task LoadCredentialsAsync()
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
+
+                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var results = await response.Content.ReadAsStringAsync();
+                    var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+
+                    var _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+
+                    _targetBranch = _CredentialsGDS.organizationId;
+                    _userName = _CredentialsGDS.username;
+                    _password = _CredentialsGDS.password;
+                }
+            }
         }
 
         public IActionResult RoundAATripsellView(string Guid, string Supp)
@@ -1381,13 +1407,13 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         HttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
                         _objAvail = new TravelPort(httpContextAccessorInstance);
                         string _UniversalRecordURL = AppUrlConstant.GDSUniversalRecordURL;
-                        string _testURL = AppUrlConstant.GDSURL;
-                        string _targetBranch = string.Empty;
-                        string _userName = string.Empty;
-                        string _password = string.Empty;
-                        _targetBranch = "P7027135";
-                        _userName = "Universal API/uAPI5098257106-beb65aec";
-                        _password = "Q!f5-d7A3D";
+                        //string _testURL = AppUrlConstant.GDSURL;
+                        //string _targetBranch = string.Empty;
+                        //string _userName = string.Empty;
+                        //string _password = string.Empty;
+                        //_targetBranch = "P7027135";
+                        //_userName = "Universal API/uAPI5098257106-beb65aec";
+                        //_password = "Q!f5-d7A3D";
                         StringBuilder createPNRReq = new StringBuilder();
                         StringBuilder createAirmerchandReq = new StringBuilder();
                         string AdultTraveller = passengerNamedetails;
@@ -1420,7 +1446,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         Hashtable _htpaxwiseBaggage = new Hashtable();
                         //string stravailibitilityrequest = HttpContext.Session.GetString("GDSAvailibilityRequest");
                         //SimpleAvailabilityRequestModel availibiltyRQGDS = Newtonsoft.Json.JsonConvert.DeserializeObject<SimpleAvailabilityRequestModel>(stravailibitilityrequest);
-                        string res = _objAvail.GetAirMerchandisingOfferAvailabilityReq(_testURL, createAirmerchandReq, newGuid.ToString(), _targetBranch, _userName, _password, AdultTraveller, _data, "GDSRT", segmentdata);
+                        string res = _objAvail.GetAirMerchandisingOfferAvailabilityReq(AppUrlConstant.GDSURL, createAirmerchandReq, newGuid.ToString(), _targetBranch, _userName, _password, AdultTraveller, _data, "GDSRT", segmentdata);
                         SSRAvailabiltyResponceModel SSRAvailabiltyResponceobj = new SSRAvailabiltyResponceModel();
                         if (res != null)
                         {
@@ -1706,7 +1732,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
             MongoHelper objMongoHelper = new MongoHelper();
             MongoDBHelper _mongoDBHelper = new MongoDBHelper(_configuration);
             MongoSuppFlightToken tokenData = new MongoSuppFlightToken();
-
+            GDSPNRResponse mongoGDS = new GDSPNRResponse();
 
             List<string> _unitkey = new List<string>();
             for (int i = 0; i < unitKey.Count; i++)
@@ -3864,14 +3890,14 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     HttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
                                     _objAvail = new TravelPort(httpContextAccessorInstance);
                                     string _UniversalRecordURL = AppUrlConstant.GDSUniversalRecordURL;
-                                    string _testURL = AppUrlConstant.GDSURL;
-                                    string _targetBranch = string.Empty;
+                                  //  string _testURL = AppUrlConstant.GDSURL;
+                                    //string _targetBranch = string.Empty;
                                     string Logfolder = string.Empty;
-                                    string _userName = string.Empty;
-                                    string _password = string.Empty;
-                                    _targetBranch = "P7027135";
-                                    _userName = "Universal API/uAPI5098257106-beb65aec";
-                                    _password = "Q!f5-d7A3D";
+                                    //string _userName = string.Empty;
+                                    //string _password = string.Empty;
+                                    //_targetBranch = "P7027135";
+                                    //_userName = "Universal API/uAPI5098257106-beb65aec";
+                                    //_password = "Q!f5-d7A3D";
                                     StringBuilder createPNRReq = new StringBuilder();
                                     string AdultTraveller = objMongoHelper.UnZip(tokenData.OldPassengerRequest);
                                     string _data = objMongoHelper.UnZip(seatMealdetail.KPassenger); // HttpContext.Session.GetString("SGkeypassengerRT");
@@ -3910,7 +3936,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     string RecordLocator = string.Empty;
                                     string _TicketRecordLocator = string.Empty;
                                     segmentblock = segmentdata;
-                                    res = _objAvail.CreatePNRRoundTrip(_testURL, createPNRReq, newGuid.ToString(), _targetBranch, _userName, _password, AdultTraveller, _data, _Total, Logfolder, k1, _unitkey, _ssrKey, _pricesolution);
+                                    res = _objAvail.CreatePNRRoundTrip(AppUrlConstant.GDSURL, createPNRReq, newGuid.ToString(), _targetBranch, _userName, _password, AdultTraveller, _data, _Total, Logfolder, k1, _unitkey, _ssrKey, _pricesolution);
                                     RecordLocator = Regex.Match(res, @"universal:UniversalRecord\s*LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
                                     //getdetails
                                     strResponse = _objAvail.RetrivePnr(RecordLocator, _UniversalRecordURL, newGuid.ToString(), _targetBranch, _userName, _password, Logfolder);
@@ -3924,16 +3950,22 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     List<passkeytype> passengerdetails = (List<passkeytype>)JsonConvert.DeserializeObject(jsonDataObject.ToString(), typeof(List<passkeytype>));
                                     string strSeatResponseleft = HttpContext.Session.GetString("SeatResponseleft");
                                     string strSeatResponseright = HttpContext.Session.GetString("SeatResponseright");
-                                    res = _objAvail.AirMerchandisingFulfillmentReqRoundTrip(_testURL, createSSRReq, newGuid.ToString(), _targetBranch, _userName, _password, Logfolder, unitKey, ssrKey, BaggageSSrkey, availibiltyRQGDS, passengerdetails, _htbaggagedataStringL, _htbaggagedataStringR, strSeatResponseleft, strSeatResponseright, k1, segmentblock);
+                                    res = _objAvail.AirMerchandisingFulfillmentReqRoundTrip(AppUrlConstant.GDSURL, createSSRReq, newGuid.ToString(), _targetBranch, _userName, _password, Logfolder, unitKey, ssrKey, BaggageSSrkey, availibiltyRQGDS, passengerdetails, _htbaggagedataStringL, _htbaggagedataStringR, strSeatResponseleft, strSeatResponseright, k1, segmentblock);
 
                                     UniversalLocatorCode = Regex.Match(res, @"UniversalRecord\s*LocatorCode=""(?<UniversalLocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["UniversalLocatorCode"].Value.Trim();
                                     if (k1 == 0)
                                     {
-                                        HttpContext.Session.SetString("PNRL", res + "@@" + UniversalLocatorCode);
+                                        mongoGDS.Guid = Guid;
+                                        mongoGDS.Response = res;
+                                        mongoGDS.LocatorCode = UniversalLocatorCode;
+                                       // HttpContext.Session.SetString("PNRL", res + "@@" + UniversalLocatorCode);
                                     }
                                     else
                                     {
-                                        HttpContext.Session.SetString("PNRR", res + "@@" + UniversalLocatorCode);
+                                        mongoGDS.RResponse = res;
+                                        mongoGDS.RLocatorCode = UniversalLocatorCode;
+                                        _mongoDBHelper.SaveGDSLocatorCode(mongoGDS);
+                                        //HttpContext.Session.SetString("PNRR", res + "@@" + UniversalLocatorCode);
                                     }
                                     #endregion
                                 }

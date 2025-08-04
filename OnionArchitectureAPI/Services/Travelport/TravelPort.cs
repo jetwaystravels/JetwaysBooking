@@ -4466,10 +4466,14 @@ namespace OnionArchitectureAPI.Services.Travelport
                         //    //_data = "\"" + _data.Split('_')[0] + "_" + htpaxid[getpaxkey] + _data.Split('_')[2] + "\""; 
                         //    _data = _data.Split('_')[0] + "_" + getpaxkey + "_" + _data.Split('_')[2];
                         //}
-                        referencekey = htbaggagedata[_data].ToString().Replace("common_v52_0", "com");
-                        BookingTravellerref = Regex.Match(referencekey, "BookingTravelerRef=\"(?<Travellerref>[\\s\\S]*?)\"").Groups["Travellerref"].Value.Trim();
-                        AirSegmentref = Regex.Match(referencekey, "AirSegmentRef=\"(?<Airsegmentref>[\\s\\S]*?)\"").Groups["Airsegmentref"].Value.Trim();
-                        createSSRReq.Append(htbaggagedata[_data].ToString().Replace("common_v52_0", "com").Replace("SSRCode=\"XBAG\"", "SSRCode=\"XBAG\" SSRFreeText=\"TTL" + _data.Split("_")[0] + "1PC\""));
+                        if (htbaggagedata.Contains(_data))
+                        {
+                            referencekey = htbaggagedata[_data].ToString().Replace("common_v52_0", "com");
+
+                            BookingTravellerref = Regex.Match(referencekey, "BookingTravelerRef=\"(?<Travellerref>[\\s\\S]*?)\"").Groups["Travellerref"].Value.Trim();
+                            AirSegmentref = Regex.Match(referencekey, "AirSegmentRef=\"(?<Airsegmentref>[\\s\\S]*?)\"").Groups["Airsegmentref"].Value.Trim();
+                            createSSRReq.Append(htbaggagedata[_data].ToString().Replace("common_v52_0", "com").Replace("SSRCode=\"XBAG\"", "SSRCode=\"XBAG\" SSRFreeText=\"TTL" + _data.Split("_")[0] + "1PC\""));
+                        }
                     }
                     else
                     {
@@ -4484,10 +4488,13 @@ namespace OnionArchitectureAPI.Services.Travelport
                             //    : BaggageSSrkey[i].ToString();
 
                             string _data = BaggageSSrkey[i].ToString().Replace("_RT0", "").Replace("_RT1", "").Trim(); ; ;
-                            referencekey = htbaggagedata[_data].ToString().Replace("common_v52_0", "com");
-                            BookingTravellerref = Regex.Match(referencekey, "BookingTravelerRef=\"(?<Travellerref>[\\s\\S]*?)\"").Groups["Travellerref"].Value.Trim();
-                            AirSegmentref = Regex.Match(referencekey, "AirSegmentRef=\"(?<Airsegmentref>[\\s\\S]*?)\"").Groups["Airsegmentref"].Value.Trim();
-                            createSSRReq.Append(htbaggagedata[_data].ToString().Replace("common_v52_0", "com").Replace("SSRCode=\"XBAG\"", "SSRCode=\"XBAG\" SSRFreeText=\"TTL" + _data.Split("_")[0] + "1PC\""));
+                            if (htbaggagedata.Contains(_data))
+                            {
+                                referencekey = htbaggagedata[_data].ToString().Replace("common_v52_0", "com");
+                                BookingTravellerref = Regex.Match(referencekey, "BookingTravelerRef=\"(?<Travellerref>[\\s\\S]*?)\"").Groups["Travellerref"].Value.Trim();
+                                AirSegmentref = Regex.Match(referencekey, "AirSegmentRef=\"(?<Airsegmentref>[\\s\\S]*?)\"").Groups["Airsegmentref"].Value.Trim();
+                                createSSRReq.Append(htbaggagedata[_data].ToString().Replace("common_v52_0", "com").Replace("SSRCode=\"XBAG\"", "SSRCode=\"XBAG\" SSRFreeText=\"TTL" + _data.Split("_")[0] + "1PC\""));
+                            }
                         }
                     }
                 }

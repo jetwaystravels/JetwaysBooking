@@ -64,6 +64,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                 MongoHelper objMongoHelper = new MongoHelper();
                 MongoDBHelper _mongoDBHelper = new MongoDBHelper(_configuration);
                 MongoSuppFlightToken tokenData = new MongoSuppFlightToken();
+                GDSPNRResponse gDSPNRResponse = await _mongoDBHelper.GetGDSPNRByGUID(Guid);
                 for (int k1 = 0; k1 < data.Airline.Count; k1++)
                 {
                     string tokenview = string.Empty;
@@ -2601,10 +2602,26 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 string _targetBranch = string.Empty;
                                 string _userName = string.Empty;
                                 string _password = string.Empty;
-                                _targetBranch = "P7027135";
-                                _userName = "Universal API/uAPI5098257106-beb65aec";
-                                _password = "Q!f5-d7A3D";
-                                StringBuilder createPNRReq = new StringBuilder();
+
+                                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    var results = await response.Content.ReadAsStringAsync();
+                                    var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+
+                                    _credentials _CredentialsGDS = new _credentials();
+                                    _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+
+                                    _targetBranch = _CredentialsGDS.organizationId;
+                                    _userName = _CredentialsGDS.username;
+                                    _password = _CredentialsGDS.password;
+                                }
+
+                                //_targetBranch = "P7027135";
+                                //_userName = "Universal API/uAPI5098257106-beb65aec";
+                                //_password = "Q!f5-d7A3D";
+                                //StringBuilder createPNRReq = new StringBuilder();
                                 //string AdultTraveller = HttpContext.Session.GetString("PassengerNameDetails");
                                 string AdultTraveller = passengernamedetails;
                                 string _data = HttpContext.Session.GetString("SGkeypassengerRT");
@@ -2649,13 +2666,13 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 //RecordLocator = Regex.Match(res, @"universal:UniversalRecord\s*LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
                                 if (k1 == 0)
                                 {
-                                    strResponse = HttpContext.Session.GetString("PNRL").Split("@@")[0];
-                                    RecordLocator = HttpContext.Session.GetString("PNRL").Split("@@")[1];
+                                    strResponse = gDSPNRResponse.Response; // HttpContext.Session.GetString("PNRL").Split("@@")[0];
+                                    RecordLocator = gDSPNRResponse.LocatorCode; // HttpContext.Session.GetString("PNRL").Split("@@")[1];
                                 }
                                 else
                                 {
-                                    strResponse = HttpContext.Session.GetString("PNRR").Split("@@")[0];
-                                    RecordLocator = HttpContext.Session.GetString("PNRR").Split("@@")[1];
+                                    strResponse = gDSPNRResponse.RResponse;  //HttpContext.Session.GetString("PNRR").Split("@@")[0];
+                                    RecordLocator = gDSPNRResponse.RLocatorCode; // HttpContext.Session.GetString("PNRR").Split("@@")[1];
                                 }
                                 _TicketRecordLocator = Regex.Match(strResponse, @"AirReservation[\s\S]*?LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
                                 //GetAirTicket

@@ -2327,15 +2327,36 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         #region GDSAirPricelRequest
                         httpContextAccessorInstance = new HttpContextAccessor();
                         _testURL = AppUrlConstant.GDSURL;
-                        _targetBranch = string.Empty;
-                        _userName = string.Empty;
-                        _password = string.Empty;
+                        //_targetBranch = string.Empty;
+                        //_userName = string.Empty;
+                        //_password = string.Empty;
                         _objAvail = new TravelPort(httpContextAccessorInstance);
-                        _targetBranch = "P7027135";
-                        _userName = "Universal API/uAPI5098257106-beb65aec";
-                        _password = "Q!f5-d7A3D";
+
+                        //using (HttpClient client = new HttpClient())
+                        //{
+                            client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
+                            HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var results = await response.Content.ReadAsStringAsync();
+                                var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+
+                                _credentials _CredentialsGDS = new _credentials();
+                                _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+
+                                _targetBranch = _CredentialsGDS.organizationId;
+                                _userName = _CredentialsGDS.username;
+                                _password = _CredentialsGDS.password;
+                            }
+                       // }
+
+
+                        //_targetBranch = "P7027135";
+                        //_userName = "Universal API/uAPI5098257106-beb65aec";
+                        //_password = "Q!f5-d7A3D";
                         fareRepriceReq = new StringBuilder();
-                        string res = _objAvail.AirPriceGetRoundTripCorporate(_testURL, fareRepriceReq, availibiltyRQGDS, newGuid.ToString(), _targetBranch, _userName, _password, Airfaredata, farebasisdata, p, "");
+                        string res = _objAvail.AirPriceGetRoundTripCorporate(AppUrlConstant.GDSURL, fareRepriceReq, availibiltyRQGDS, newGuid.ToString(), _targetBranch, _userName, _password, Airfaredata, farebasisdata, p, "");
                         HostTokenKey = Regex.Match(res, @"HostToken\s*Key=""(?<HostTokenKey>[\s\S]*?)"">(?<Value>[\s\S]*?)</").Groups["HostTokenKey"].Value.Trim();
                         HostTokenValue = Regex.Match(res, @"HostToken\s*Key=""(?<HostTokenKey>[\s\S]*?)"">(?<Value>[\s\S]*?)</").Groups["Value"].Value.Trim();
                         TravelPortParsing _objP = new TravelPortParsing();
@@ -3462,8 +3483,8 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                     if (_JourneykeyRTData.ToLower() == "vistara" || _JourneykeyRTData.ToLower() == "airindia" || _JourneykeyRTData.ToLower() == "hehnair")
                     {
                         #region SeatMap
-                        _testURL = AppUrlConstant.GDSSeatURL;
-                        SeatMapres = _objAvail.GetSeatMapRoundTrip(_testURL, fareRepriceReq, availibiltyRQGDS, newGuid.ToString(), _targetBranch, _userName, _password, Airfaredata, farebasisdata, HostTokenKey, HostTokenValue, p, "");
+                       // _testURL = AppUrlConstant.GDSSeatURL;
+                        SeatMapres = _objAvail.GetSeatMapRoundTrip(AppUrlConstant.GDSSeatURL, fareRepriceReq, availibiltyRQGDS, newGuid.ToString(), _targetBranch, _userName, _password, Airfaredata, farebasisdata, HostTokenKey, HostTokenValue, p, "");
                         List<IndigoBookingManager_.GetSeatAvailabilityResponse> SeatGroup = null;// await objssr.GetseatAvailability(Signature, AirAsiaTripResponceobj, "OneWay");
                         if (SeatMapres != null)
                         {
@@ -4414,12 +4435,12 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                         httpContextAccessorInstance = new HttpContextAccessor();
                         _objAvail = new TravelPort(httpContextAccessorInstance);
-                        _testURL = AppUrlConstant.GDSSSRURL;
-                        _targetBranch = "P7027135";
-                        _userName = "Universal API/uAPI5098257106-beb65aec";
-                        _password = "Q!f5-d7A3D";
+                       // _testURL = AppUrlConstant.GDSSSRURL;
+                        //_targetBranch = "P7027135";
+                        //_userName = "Universal API/uAPI5098257106-beb65aec";
+                        //_password = "Q!f5-d7A3D";
                         StringBuilder SSRReq = new StringBuilder();
-                        string res = _objAvail.AirSSRGet(_testURL, SSRReq, "SsrType", newGuid.ToString(), _targetBranch, _userName, _password, p, "");
+                        string res = _objAvail.AirSSRGet(AppUrlConstant.GDSSSRURL, SSRReq, "SsrType", newGuid.ToString(), _targetBranch, _userName, _password, p, "");
                         AirAsiaTripResponceModel passeengerlist = null;
                         if (res != null)
                         {

@@ -66,5 +66,10 @@
         public static string AkasaAirPNRBooking = URLAkasaAir + "/api/nsk/v1/booking/retrieve/byRecordLocator/";
         #endregion
 
+        // #region Admin URLs for common with corperate and retail
+        public static string AdminBaseURL = "http://localhost:7260";
+        public static string Getsuppliercred = AdminBaseURL + "/api/SuppliersCredentialAPI/getsuppliercred";
+
+
     }
 }

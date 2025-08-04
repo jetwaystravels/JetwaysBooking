@@ -86,9 +86,12 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
         public async Task<ActionResult> GDSTripsell(string fareKey, string journeyKey, string Guid)
         {
             AAIdentifier AAIdentifierobj = null;
+
             string _targetBranch = string.Empty;
             string _userName = string.Empty;
             string _password = string.Empty;
+
+
             dynamic Airfaredata = null;
             if (!string.IsNullOrEmpty(fareKey))
             {
@@ -119,9 +122,31 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                 HttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
                 _objAvail = new TravelPort(httpContextAccessorInstance);
                 string _testURL = AppUrlConstant.GDSURL;
-                _targetBranch = "P7027135";
-                _userName = "Universal API/uAPI5098257106-beb65aec";
-                _password = "Q!f5-d7A3D";
+                
+
+               // using (HttpClient client = new HttpClient())
+              //  {
+                    client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
+
+                    // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
+                    HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+                    //Air Asia login
+                    //Air Asia login
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var results = await response.Content.ReadAsStringAsync();
+                        var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+
+                        _credentials _CredentialsGDS = new _credentials();
+                        _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+
+                        _targetBranch = _CredentialsGDS.organizationId;
+                        _userName = _CredentialsGDS.username;
+                        _password = _CredentialsGDS.password;
+                    }
+               // }
+
+
                 StringBuilder fareRepriceReq = new StringBuilder();
                 SimpleAvailibilityaAddResponce AirfaredataL = null;
                 string[] _data = fareKey.ToString().Split("@0f");
@@ -138,7 +163,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                     string _farebasisL = _data[0].ToString().Split("_")[1];
                     farebasisdataL = _farebasisL;
                 }
-                string res = _objAvail.AirPriceGetCorporate(_testURL, fareRepriceReq, availibiltyRQGDS, newGuid.ToString(), _targetBranch, _userName, _password, AirfaredataL, farebasisdataL, 0, "GDSOneWay");
+                string res = _objAvail.AirPriceGetCorporate(AppUrlConstant.GDSURL, fareRepriceReq, availibiltyRQGDS, newGuid.ToString(), _targetBranch, _userName, _password, AirfaredataL, farebasisdataL, 0, "GDSOneWay");
 
                 string HostTokenKey = Regex.Match(res, @"HostToken\s*Key=""(?<HostTokenKey>[\s\S]*?)"">(?<Value>[\s\S]*?)</").Groups["HostTokenKey"].Value.Trim();
                 string HostTokenValue = Regex.Match(res, @"HostToken\s*Key=""(?<HostTokenKey>[\s\S]*?)"">(?<Value>[\s\S]*?)</").Groups["Value"].Value.Trim();
@@ -419,12 +444,12 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                     _objAvail = null;
                     httpContextAccessorInstance = new HttpContextAccessor();
                     _objAvail = new TravelPort(httpContextAccessorInstance);
-                    _testURL = AppUrlConstant.GDSSSRURL;
-                    _targetBranch = "P7027135";
-                    _userName = "Universal API/uAPI5098257106-beb65aec";
-                    _password = "Q!f5-d7A3D";
+                  //  _testURL = AppUrlConstant.GDSSSRURL;
+                    //_targetBranch = "P7027135";
+                    //_userName = "Universal API/uAPI5098257106-beb65aec";
+                    //_password = "Q!f5-d7A3D";
                     StringBuilder SSRReq = new StringBuilder();
-                    res = _objAvail.AirSSRGet(_testURL, SSRReq, "SsrType", newGuid.ToString(), _targetBranch, _userName, _password, 0, "GDSOneWay");
+                    res = _objAvail.AirSSRGet(AppUrlConstant.GDSSSRURL, SSRReq, "SsrType", newGuid.ToString(), _targetBranch, _userName, _password, 0, "GDSOneWay");
                     if (res != null)
                     {
                         Hashtable htSSr = new Hashtable();
@@ -497,8 +522,8 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                     #endregion
 
                     #region SeatMap
-                    _testURL = AppUrlConstant.GDSSeatURL;
-                    string SeatMapres = _objAvail.GetSeatMap(_testURL, fareRepriceReq, availibiltyRQGDS, newGuid.ToString(), _targetBranch, _userName, _password, AirfaredataL, farebasisdataL, HostTokenKey, HostTokenValue, 0, "GDSOneWay");
+                   // _testURL = AppUrlConstant.GDSSeatURL;
+                    string SeatMapres = _objAvail.GetSeatMap(AppUrlConstant.GDSSeatURL, fareRepriceReq, availibiltyRQGDS, newGuid.ToString(), _targetBranch, _userName, _password, AirfaredataL, farebasisdataL, HostTokenKey, HostTokenValue, 0, "GDSOneWay");
                     List<IndigoBookingManager_.GetSeatAvailabilityResponse> SeatGroup = null;
                     {
                         string columncount0 = string.Empty;

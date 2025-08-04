@@ -136,12 +136,34 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                     string _targetBranch = string.Empty;
                     string _userName = string.Empty;
                     string _password = string.Empty;
-                    _targetBranch = "P7027135";
-                    _userName = "Universal API/uAPI5098257106-beb65aec";
-                    _password = "Q!f5-d7A3D";
+                    //_targetBranch = "P7027135";
+                    //_userName = "Universal API/uAPI5098257106-beb65aec";
+                    //_password = "Q!f5-d7A3D";
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
+                        HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var results = await response.Content.ReadAsStringAsync();
+                            var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+
+                            _credentials _CredentialsGDS = new _credentials();
+                            _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+
+                            _targetBranch = _CredentialsGDS.organizationId;
+                            _userName = _CredentialsGDS.username;
+                            _password = _CredentialsGDS.password;
+                        }
+                    }
+
                     StringBuilder createPNRReq = new StringBuilder();
                     string AdultTraveller = passengernamedetails;
-                    string strResponse = HttpContext.Session.GetString("PNR").Split("@@")[0];
+
+                    GDSPNRResponse gDSPNRResponse = await _mongoDBHelper.GetGDSPNRByGUID(Guid);
+
+                    string strResponse = gDSPNRResponse.Response; // HttpContext.Session.GetString("PNR").Split("@@")[0];
 
                     string _TicketRecordLocator = Regex.Match(strResponse, @"AirReservation[\s\S]*?LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
                     //GetAirTicket
@@ -166,7 +188,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
                     }
                     //getdetails
-                    string RecordLocator = HttpContext.Session.GetString("PNR").Split("@@")[1];
+                    string RecordLocator = gDSPNRResponse.LocatorCode;// HttpContext.Session.GetString("PNR").Split("@@")[1];
                     string strResponseretriv = _objAvail.RetrivePnr(RecordLocator, _UniversalRecordURL, newGuid.ToString(), _targetBranch, _userName, _password, "GDSOneWay");
 
                     /*
