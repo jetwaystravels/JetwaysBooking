@@ -63,7 +63,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
             string json = HttpContext.Session.GetString("AirlineSelectedRT");
             Airlinenameforcommit data = JsonConvert.DeserializeObject<Airlinenameforcommit>(json);
 
-           
+
 
             using (HttpClient client = new HttpClient())
             {
@@ -2460,6 +2460,11 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                     // Spice Jet
                     else if (flagSpicejet == true && data.Airline[k1].ToLower().Contains("spicejet"))
                     {
+                        TotalMeal = 0;
+                        TotalBag = 0;
+                        TotalFastFFWD = 0;
+                        Totatamountmb = 0;
+                        TotalBagtax = 0;
                         #region Spicejet Commit
                         //Spicejet
                         token = string.Empty;
@@ -2926,7 +2931,10 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     {
                                                         carriercode = parts[1]; // "6E" + "774"
                                                         flightnumber = parts[2];
-                                                        orides = parts[3];
+                                                        int lastSpaceIndex = flightreference.LastIndexOf(' ');
+                                                        // Extract substring after the last space
+                                                        string result = flightreference.Substring(lastSpaceIndex + 1);
+                                                        orides = result;
                                                     }
                                                     else
                                                     {
@@ -4407,7 +4415,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 tb_Passengerobj.ModifiedDate = Convert.ToDateTime(_getBookingResponse.Booking.BookingInfo.ModifiedDate);
                                                 tb_Passengerobj.ModifyBy = _getBookingResponse.Booking.BookingInfo.ModifiedAgentID.ToString();
                                                 tb_Passengerobj.Status = _getBookingResponse.Booking.BookingInfo.BookingStatus.ToString();
-                                                if (items.Infant != null)
+                                                if (items.Infant != null & isegment == 0)
                                                 {
                                                     tb_Passengerobj.Inf_TypeCode = "INFT";
                                                     tb_Passengerobj.Inf_Firstname = items.Infant.Names[0].FirstName;
@@ -4765,22 +4773,22 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                 //using (HttpClient client = new HttpClient())
                                 //{
-                                    
-                                    HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
 
-                                    if (response.IsSuccessStatusCode)
-                                    {
-                                        var results = await response.Content.ReadAsStringAsync();
-                                        var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+                                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
 
-                                        _credentials _CredentialsGDS = new _credentials();
-                                        _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    var results = await response.Content.ReadAsStringAsync();
+                                    var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
 
-                                        _targetBranch = _CredentialsGDS.organizationId;
-                                        _userName = _CredentialsGDS.username;
-                                        _password = _CredentialsGDS.password;
-                                    }
-                               // }
+                                    _credentials _CredentialsGDS = new _credentials();
+                                    _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+
+                                    _targetBranch = _CredentialsGDS.organizationId;
+                                    _userName = _CredentialsGDS.username;
+                                    _password = _CredentialsGDS.password;
+                                }
+                                // }
 
                                 StringBuilder createPNRReq = new StringBuilder();
                                 //string AdultTraveller = HttpContext.Session.GetString("PassengerNameDetails");
@@ -4883,7 +4891,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         Hashtable htpax = new Hashtable();
                                         Hashtable htPaxbag = new Hashtable();
 
-
+                                        Hashtable htsegmentdetails = new Hashtable();
                                         Hashtable htseatdata = new Hashtable();
                                         Hashtable htmealdata = new Hashtable();
                                         Hashtable htbagdata = new Hashtable();
@@ -5086,7 +5094,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 AALeg.legInfo = AALeginfoobj;
                                                 AALeglist.Add(AALeg);
 
-                                                Hashtable htsegmentdetails = new Hashtable();
+
                                                 foreach (Match mitem in Regex.Matches(strResponse, @"AirSegment Key=""(?<segmentid>[\s\S]*?)""[\s\S]*?Origin=""(?<origin>[\s\S]*?)""\s*Destination=""(?<Destination>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                                 {
                                                     try
@@ -5620,7 +5628,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     tb_Passengerobj.ModifyBy = ""; //"Online";
                                                     tb_Passengerobj.Status = Regex.Match(strResponseretriv, "UniversalRecord LocatorCode=[\\s\\S]*?Status=\"(?<Status>[\\s\\S]*?)\"").Groups["Status"].Value.Trim();  //"0";
 
-                                                    if (infantList.Count > 0 && tb_Passengerobj.TypeCode == "ADT")
+                                                    if (infantList.Count > 0 && tb_Passengerobj.TypeCode == "ADT" && isegment == 0)
                                                     {
                                                         if (k < infantList.Count)
                                                         {
@@ -5653,7 +5661,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                         }
 
                                                     }
-
+                                                    string oridest = pnrResDetail.Bonds.Legs[isegment].Origin + "_" + pnrResDetail.Bonds.Legs[isegment].Destination;
                                                     // Handle carrybages and fees
                                                     List<FeeDetails> feeDetails = new List<FeeDetails>();
                                                     double TotalAmount_Seat = 0;
@@ -5709,25 +5717,30 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     }
 
                                                     //Seat
-
-                                                    foreach (Match bagitem in Regex.Matches(strResponse, @"OptionalService Type=""Baggage""\s*TotalPrice=""INR(?<BagPrice>[\s\S]*?)""[\s\S]*?BasePrice=""INR(?<BagBasePrice>[\s\S]*?)""\s*Taxes=""INR(?<BagTaxPrice>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Paxid>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                                    if (isegment < 1)
                                                     {
-                                                        if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                        foreach (Match bagitem in Regex.Matches(strResponse, @"OptionalService Type=""Baggage""\s*TotalPrice=""INR(?<BagPrice>[\s\S]*?)""[\s\S]*?BasePrice=""INR(?<BagBasePrice>[\s\S]*?)""\s*Taxes=""INR(?<BagTaxPrice>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Paxid>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                                         {
-                                                            TotalAmount_Baggage = Convert.ToInt32(bagitem.Groups["BagBasePrice"].Value.Trim());
-                                                            TotalAmount_Baggage_tax = Convert.ToInt32(bagitem.Groups["BagTaxPrice"].Value.Trim());
-                                                            break;
-                                                        }
+                                                            if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                            {
+                                                                TotalAmount_Baggage = Convert.ToInt32(bagitem.Groups["BagBasePrice"].Value.Trim());
+                                                                TotalAmount_Baggage_tax = Convert.ToInt32(bagitem.Groups["BagTaxPrice"].Value.Trim());
+                                                                break;
+                                                            }
 
+                                                        }
                                                     }
 
-                                                    foreach (Match bagitem in Regex.Matches(strResponse, @"OptionalService Type=""PreReservedSeatAssignment""\s*TotalPrice=""INR(?<SeatPrice>[\s\S]*?)""[\s\S]*?BasePrice=""INR(?<seatBasePrice>[\s\S]*?)""[\s\S]*?Taxes=""INR(?<seatTaxPrice>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Paxid>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                                    foreach (Match bagitem in Regex.Matches(strResponse, @"OptionalService Type=""PreReservedSeatAssignment""\s*TotalPrice=""INR(?<SeatPrice>[\s\S]*?)""[\s\S]*?BasePrice=""INR(?<seatBasePrice>[\s\S]*?)""[\s\S]*?Taxes=""INR(?<seatTaxPrice>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Paxid>[\s\S]*?)""\s*AirSegmentRef=""(?<segid>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                                     {
-                                                        if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                        if (oridest == htsegmentdetails[bagitem.Groups["segid"].Value.Trim()].ToString())
                                                         {
-                                                            TotalAmount_Seat = Convert.ToInt32(bagitem.Groups["seatBasePrice"].Value.Trim());
-                                                            TotalAmount_Seat_tax = Convert.ToInt32(bagitem.Groups["seatTaxPrice"].Value.Trim());
-                                                            break;
+                                                            if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                            {
+                                                                TotalAmount_Seat = Convert.ToInt32(bagitem.Groups["seatBasePrice"].Value.Trim());
+                                                                TotalAmount_Seat_tax = Convert.ToInt32(bagitem.Groups["seatTaxPrice"].Value.Trim());
+                                                                break;
+                                                            }
                                                         }
                                                     }
 
