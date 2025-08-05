@@ -4835,8 +4835,29 @@ header.navbar.sticky-active {
 
 /* End stiky header */
 
+/*Start popular filter fixed*/
+#popularFilters {
+    background: #fff;
+    transition: opacity 0.1s ease-in-out;
+}
 
+    #popularFilters.fixed {
+        position: fixed;
+        top: 154px !important;
+        left: 80px !important;
+        width: 275px;
+        z-index: 1000;
+        opacity: 1;
+        box-shadow: 0 0 12px 0 rgb(0 0 0 / 8%);
+        border-radius: 0 0 8px 8px;
+        border: 1px solid rgba(156, 170, 179, .28);
+        padding: 15px 15px;
+    }
 
+    #popularFilters.hidden {
+        display: none;
+    }
+/*End popular filter fixed*/
 
 /* Start date picker */
 

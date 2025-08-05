@@ -5,9 +5,9 @@
 	var data = Model;
 }
 
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
 	<div class="row y-gap-40">
-		<div class="sidebar__item">
+		<div class="sidebar__item" id="popularFilters">
 			<h5 class="text-18 fw-600 mb-10">Popular Filters</h5>
 			<div class="sidebar-checkbox">
 
@@ -314,10 +314,9 @@
 
 					</div>
 				</div>
-			</div>
+			</div>			
 		</div>
-
-
+		<div class="sidebar__item col-12 px-0" id="lastSidebarItem" style="visibility: hidden; height: 1px;"></div>
 	</div>
 </aside>
 <style>
@@ -381,6 +380,29 @@
 	document.getElementById("spnorg").innerHTML = GetParameterValues("Origin").replace("%20", " ");
 	document.getElementById("spndest").innerHTML = GetParameterValues("Destination").replace("%20", " ");
 
+
+</script>
+
+
+<script>
+	const popularFilters = document.getElementById('popularFilters');
+	const lastSidebarItem = document.getElementById('lastSidebarItem');
+
+	let hasBeenFixed = false;
+
+	window.addEventListener('scroll', () => {
+		const lastItemRect = lastSidebarItem.getBoundingClientRect();
+
+		if (lastItemRect.bottom < 0 && !hasBeenFixed) {
+			// Scrolled past the last item - show fixed
+			hasBeenFixed = true;
+			popularFilters.classList.add('fixed');
+		} else if (lastItemRect.bottom >= 0 && hasBeenFixed) {
+			// Scrolled back up - hide fixed
+			hasBeenFixed = false;
+			popularFilters.classList.remove('fixed');
+		}
+	});
 
 </script>
 
