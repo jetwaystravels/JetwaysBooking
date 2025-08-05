@@ -240,14 +240,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             string Baggage = HttpContext.Session.GetString("Baggage");
             ViewModel vm = new ViewModel();
             passeengerlist = (AirAsiaTripResponceModel)JsonConvert.DeserializeObject(passenger, typeof(AirAsiaTripResponceModel));
-            tokenData = _mongoDBHelper.GetSuppFlightTokenByGUID(GUID, "GDS").Result;
-            string passengerNamedetails = objMongoHelper.UnZip(tokenData.OldPassengerRequest);
-            if (string.IsNullOrEmpty(passengerNamedetails))
-            {
-                _mongoDBHelper.UpdateFlightTokenOldPassengerGDS(GUID, "GDS", passobj);
-                tokenData = _mongoDBHelper.GetSuppFlightTokenByGUID(GUID, "GDS").Result;
-                passengerNamedetails = objMongoHelper.UnZip(tokenData.OldPassengerRequest);
-            }
+
             string _pricesolution = string.Empty;
             _pricesolution = HttpContext.Session.GetString("PricingSolutionValue_0");
             TravelPort _objAvail = null;
@@ -288,6 +281,14 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
 
             StringBuilder createPNRReq = new StringBuilder();
             StringBuilder createAirmerchandReq = new StringBuilder();
+            string passengerNamedetails = objMongoHelper.UnZip(tokenData.OldPassengerRequest);
+            tokenData = _mongoDBHelper.GetSuppFlightTokenByGUID(GUID, "GDS").Result;
+            if (string.IsNullOrEmpty(passengerNamedetails))
+            {
+                _mongoDBHelper.UpdateFlightTokenOldPassengerGDS(GUID, "GDS", passobj);
+                tokenData = _mongoDBHelper.GetSuppFlightTokenByGUID(GUID, "GDS").Result;
+                passengerNamedetails = objMongoHelper.UnZip(tokenData.OldPassengerRequest);
+            }
             string AdultTraveller = passengerNamedetails;
             string _data = HttpContext.Session.GetString("SGkeypassenger");
             string _Total = HttpContext.Session.GetString("Total");
@@ -474,7 +475,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
             HttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
             _objAvail = new TravelPort(httpContextAccessorInstance);
             string _UniversalRecordURL = AppUrlConstant.GDSUniversalRecordURL;
-           // string _testURL = AppUrlConstant.GDSURL;
+            // string _testURL = AppUrlConstant.GDSURL;
             //string _targetBranch = string.Empty;
             //string _userName = string.Empty;
             //string _password = string.Empty;
@@ -529,7 +530,7 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
                 res = _objAvail.AirMerchandisingFulfillmentReq(AppUrlConstant.GDSURL, createSSRReq, newGuid.ToString(), _targetBranch, _userName, _password, "GDSOneWay", unitKey, ssrKey, BaggageSSrkey, availibiltyRQGDS, passengerdetails, htbaggagedata, strSeatResponseleft, segmentblock);
                 UniversalLocatorCode = Regex.Match(res, @"UniversalRecord\s*LocatorCode=""(?<UniversalLocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["UniversalLocatorCode"].Value.Trim();
             }
-           // HttpContext.Session.SetString("PNR", res + "@@" + UniversalLocatorCode);
+            // HttpContext.Session.SetString("PNR", res + "@@" + UniversalLocatorCode);
 
             GDSPNRResponse mongoGDS = new GDSPNRResponse
             {
