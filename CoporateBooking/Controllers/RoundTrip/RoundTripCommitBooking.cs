@@ -991,7 +991,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         tb_Passengerobj.ModifiedDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.modifiedDate); //DateTime.Now;
                                     tb_Passengerobj.ModifyBy = JsonObjPNRBooking.data.info.modifiedAgentId; //"Online";
                                     tb_Passengerobj.Status = JsonObjPNRBooking.data.info.status; //"0";
-                                    if (items.Value.infant != null)
+                                    if (items.Value.infant != null && isegment == 0)
                                     {
                                         tb_Passengerobj.Inf_TypeCode = "INFT";
                                         tb_Passengerobj.Inf_Firstname = items.Value.infant.name.first;
@@ -2152,7 +2152,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         tb_Passengerobj.ModifiedDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.modifiedDate); //DateTime.Now;
                                     tb_Passengerobj.ModifyBy = JsonObjPNRBooking.data.info.modifiedAgentId; //"Online";
                                     tb_Passengerobj.Status = JsonObjPNRBooking.data.info.status; //"0";
-                                    if (items.Value.infant != null)
+                                    if (items.Value.infant != null & isegment==0)
                                     {
                                         tb_Passengerobj.Inf_TypeCode = "INFT";
                                         tb_Passengerobj.Inf_Firstname = items.Value.infant.name.first;
@@ -3362,7 +3362,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 tb_Passengerobj.ModifiedDate = Convert.ToDateTime(_getBookingResponse.Booking.BookingInfo.ModifiedDate);
                                                 tb_Passengerobj.ModifyBy = _getBookingResponse.Booking.BookingInfo.ModifiedAgentID.ToString();
                                                 tb_Passengerobj.Status = _getBookingResponse.Booking.BookingInfo.BookingStatus.ToString();
-                                                if (items.Infant != null)
+                                                if (items.Infant != null && isegment==0)
                                                 {
                                                     tb_Passengerobj.Inf_TypeCode = "INFT";
                                                     tb_Passengerobj.Inf_Firstname = items.Infant.Names[0].FirstName;

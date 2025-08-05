@@ -955,7 +955,7 @@ namespace OnionConsumeWebAPI.Controllers
                                 tb_Passengerobj.ModifiedDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.modifiedDate); //DateTime.Now;
                             tb_Passengerobj.ModifyBy = JsonObjPNRBooking.data.info.modifiedAgentId; //"Online";
                             tb_Passengerobj.Status = JsonObjPNRBooking.data.info.status; //"0";
-                            if (items.Value.infant != null)
+                            if (items.Value.infant != null && isegment==0)
                             {
                                 tb_Passengerobj.Inf_TypeCode = "INFT";
                                 tb_Passengerobj.Inf_Firstname = items.Value.infant.name.first;
