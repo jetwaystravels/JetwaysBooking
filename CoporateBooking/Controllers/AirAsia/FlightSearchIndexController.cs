@@ -211,7 +211,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             LegalEntity legalEntity = new LegalEntity();
             if (!Request.Form.ContainsKey("hdnlegal") || string.IsNullOrEmpty(Request.Form["hdnlegal"]))
             {
-                
+
             }
             else
             {
@@ -219,8 +219,8 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             }
 
 
-                //caching
-                Logs logs = new Logs();
+            //caching
+            Logs logs = new Logs();
             IHttpContextAccessor httpContextAccessorInstance = new HttpContextAccessor();
             string searlizetext = string.Empty;
             string _simpleAvailability = string.Empty;
@@ -278,7 +278,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             //        }
             //        catch (Exception ex)
             //        {
-                        
+
             //        }
             //    }
             //}
@@ -319,7 +319,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 {
                     var results = await response.Content.ReadAsStringAsync();
                     var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
-                   
+
                     Parallel.Invoke(
                      () =>
                      {
@@ -347,7 +347,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          // GDS
                          _CredentialsGDS = new _credentials();
                          _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
-                         if(_CredentialsGDS == null)
+                         if (_CredentialsGDS == null)
                          {
                              _CredentialsGDS = new _credentials();
                          }
@@ -362,7 +362,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                          _CredentialsSpiceJet = new _credentials();
                          _CredentialsSpiceJet = jsonObject.FirstOrDefault(cred => cred?.supplierid == 3 && cred.Status == 1);
-                         if(_CredentialsSpiceJet == null)
+                         if (_CredentialsSpiceJet == null)
                          {
                              _CredentialsSpiceJet = new _credentials();
                          }
@@ -377,7 +377,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                          _CredentialsIndigo = new _credentials();
                          _CredentialsIndigo = jsonObject.FirstOrDefault(cred => cred?.supplierid == 4 && cred.Status == 1);
-                         if(_CredentialsIndigo == null)
+                         if (_CredentialsIndigo == null)
                          {
                              _CredentialsIndigo = new _credentials();
                          }
@@ -389,29 +389,35 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                 // AirAsia Start
                 airlineLogin login = new airlineLogin();
-                login.credentials = _credentialsAirasia;
-
-                //  TempData["AirAsiaLogin"] = login.credentials.Image;
                 AirasiaTokan AirasiaTokan = new AirasiaTokan();
-                var AirasialoginRequest = JsonConvert.SerializeObject(login, Formatting.Indented);
-                if (SaveLogs)
+                var AirasialoginRequest = "";
+                HttpResponseMessage responce = null;
+                if (!string.IsNullOrEmpty(_credentialsAirasia.username))
                 {
-                    logs.WriteLogs(AirasialoginRequest, "1-Tokan_Request", "AirAsiaOneWay", SameAirlineRT);
-                }
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage responce = await client.PostAsJsonAsync(AppUrlConstant.AirasiaTokan, login);
+                    login.credentials = _credentialsAirasia;
 
-                if (responce.IsSuccessStatusCode)
-                {
-
-                    dynamic results = responce.Content.ReadAsStringAsync().Result;
+                    //  TempData["AirAsiaLogin"] = login.credentials.Image;
+                    AirasiaTokan = new AirasiaTokan();
+                    AirasialoginRequest = JsonConvert.SerializeObject(login, Formatting.Indented);
                     if (SaveLogs)
                     {
-                        logs.WriteLogs(results, "1-Token_Responce", "AirAsiaOneWay", SameAirlineRT);
+                        logs.WriteLogs(AirasialoginRequest, "1-Tokan_Request", "AirAsiaOneWay", SameAirlineRT);
                     }
-                    var JsonObj = JsonConvert.DeserializeObject<dynamic>(results);
-                    AirasiaTokan.token = JsonObj.data.token;
-                    AirasiaTokan.idleTimeoutInMinutes = JsonObj.data.idleTimeoutInMinutes;
+                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    responce = await client.PostAsJsonAsync(AppUrlConstant.AirasiaTokan, login);
+
+                    if (responce.IsSuccessStatusCode)
+                    {
+
+                        dynamic results = responce.Content.ReadAsStringAsync().Result;
+                        if (SaveLogs)
+                        {
+                            logs.WriteLogs(results, "1-Token_Responce", "AirAsiaOneWay", SameAirlineRT);
+                        }
+                        var JsonObj = JsonConvert.DeserializeObject<dynamic>(results);
+                        AirasiaTokan.token = JsonObj.data.token;
+                        AirasiaTokan.idleTimeoutInMinutes = JsonObj.data.idleTimeoutInMinutes;
+                    }
                 }
 
 
@@ -422,36 +428,46 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                 AirasiaTokan AkasaTokan = new AirasiaTokan();
                 HttpResponseMessage responcedata = null;
-
+                var AkasaloginRequest = "";
                 airlineLogin loginobject = new airlineLogin();
-                loginobject.credentials = _CredentialsAkasha;
+                if (!string.IsNullOrEmpty(_CredentialsAkasha.username))
+                {
+                    loginobject.credentials = _CredentialsAkasha;
 
-                var AkasaloginRequest = JsonConvert.SerializeObject(loginobject, Formatting.Indented);
-                if (SaveLogs)
-                {
-                    logs.WriteLogs(AkasaloginRequest, "1-Tokan_Request", "AkasaOneWay", SameAirlineRT);
-                }
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                responcedata = await client.PostAsJsonAsync(AppUrlConstant.AkasaTokan, loginobject);
-                if (responcedata.IsSuccessStatusCode)
-                {
-                    var results = responcedata.Content.ReadAsStringAsync().Result;
+                    AkasaloginRequest = JsonConvert.SerializeObject(loginobject, Formatting.Indented);
                     if (SaveLogs)
                     {
-                        logs.WriteLogs(results, "1-Token_Responce", "AkasaOneWay", SameAirlineRT);
+                        logs.WriteLogs(AkasaloginRequest, "1-Tokan_Request", "AkasaOneWay", SameAirlineRT);
                     }
-                    var JsonObj = JsonConvert.DeserializeObject<dynamic>(results);
-                    AkasaTokan.token = JsonObj.data.token;
-                    AkasaTokan.idleTimeoutInMinutes = JsonObj.data.idleTimeoutInMinutes;
+                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    responcedata = await client.PostAsJsonAsync(AppUrlConstant.AkasaTokan, loginobject);
+                    if (responcedata.IsSuccessStatusCode)
+                    {
+                        var results = responcedata.Content.ReadAsStringAsync().Result;
+                        if (SaveLogs)
+                        {
+                            logs.WriteLogs(results, "1-Token_Responce", "AkasaOneWay", SameAirlineRT);
+                        }
+                        var JsonObj = JsonConvert.DeserializeObject<dynamic>(results);
+                        AkasaTokan.token = JsonObj.data.token;
+                        AkasaTokan.idleTimeoutInMinutes = JsonObj.data.idleTimeoutInMinutes;
+                    }
+                }
+                else
+                {
+                    responcedata = new HttpResponseMessage();
+                    responcedata.StatusCode = HttpStatusCode.BadRequest;
                 }
 
 
-               
+
+
+
                 legalEntity.Guid = ResponseGuid;// SearchGuid;
 
                 if (!Request.Form.ContainsKey("hdnlegal") || string.IsNullOrEmpty(Request.Form["hdnlegal"]))
                 {
-                                   
+
 
                     string rawLegalEntity = Convert.ToString(formCollection["legal_entity"]);
 
@@ -594,29 +610,32 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 if (searchLog.DepartDateTime != null && searchLog.ArrivalDateTime != null)
                 {
                     //AirAsia round login
-                    login = new airlineLogin();
-                    login.credentials = _credentialsAirasia;
-                    //till here
-                    TempData["AirAsiaLogin"] = login.credentials.Image;
-                    //AirasiaTokan = new AirasiaTokan();
-                    AirasialoginRequest = JsonConvert.SerializeObject(login, Formatting.Indented);
-                    if (SaveLogs)
+                    if (!string.IsNullOrEmpty(_credentialsAirasia.username))
                     {
-                        logs.WriteLogsR(AirasialoginRequest, "1-Tokan_Request", "AirAsiaRT");
-                    }
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    responce = await client.PostAsJsonAsync(AppUrlConstant.AirasiaTokan, login);
-
-                    if (responce.IsSuccessStatusCode)
-                    {
-                        var results = responce.Content.ReadAsStringAsync().Result;
+                        login = new airlineLogin();
+                        login.credentials = _credentialsAirasia;
+                        //till here
+                        TempData["AirAsiaLogin"] = login.credentials.Image;
+                        //AirasiaTokan = new AirasiaTokan();
+                        AirasialoginRequest = JsonConvert.SerializeObject(login, Formatting.Indented);
                         if (SaveLogs)
                         {
-                            logs.WriteLogsR(results, "1-Token_Responce", "AirAsiaRT");
+                            logs.WriteLogsR(AirasialoginRequest, "1-Tokan_Request", "AirAsiaRT");
                         }
-                        var JsonObj = JsonConvert.DeserializeObject<dynamic>(results);
-                        AirasiaTokanR.token = JsonObj.data.token;
-                        AirasiaTokanR.idleTimeoutInMinutes = JsonObj.data.idleTimeoutInMinutes;
+                        client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                        responce = await client.PostAsJsonAsync(AppUrlConstant.AirasiaTokan, login);
+
+                        if (responce.IsSuccessStatusCode)
+                        {
+                            var results = responce.Content.ReadAsStringAsync().Result;
+                            if (SaveLogs)
+                            {
+                                logs.WriteLogsR(results, "1-Token_Responce", "AirAsiaRT");
+                            }
+                            var JsonObj = JsonConvert.DeserializeObject<dynamic>(results);
+                            AirasiaTokanR.token = JsonObj.data.token;
+                            AirasiaTokanR.idleTimeoutInMinutes = JsonObj.data.idleTimeoutInMinutes;
+                        }
                     }
 
                     mongoAirAsiaToken.RToken = AirasiaTokanR.token;
@@ -808,14 +827,22 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 }
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AirasiaTokan.token);
-                HttpResponseMessage responce1 = await client.PostAsJsonAsync(AppUrlConstant.Airasiasearchsimple, _SimpleAvailabilityobj);
+                HttpResponseMessage responce1 = new HttpResponseMessage();
+                if (AirasiaTokan.token != "")
+                {
+                    responce1 = await client.PostAsJsonAsync(AppUrlConstant.Airasiasearchsimple, _SimpleAvailabilityobj);
+                }
+                else
+                {
+                    responce1.StatusCode = HttpStatusCode.BadRequest;
+                }
                 int uniqueidx = 0;
 
                 // Handling special condition for airasia
                 _SimpleAvailabilityobj.endDate = Convert.ToDateTime(searchLog.ArrivalDateTime).ToString("yyyy-MM-dd");
 
-                Stopwatch stop = new Stopwatch();
-                stop.Start();
+                //Stopwatch stop = new Stopwatch();
+                //stop.Start();
                 if (responce1.IsSuccessStatusCode)
                 {
                     var results = responce1.Content.ReadAsStringAsync().Result;
@@ -1009,7 +1036,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                             }
                         }
                     }
-                    stop.Stop();
+                    //stop.Stop();
                 }
                 GetAvailabilityRequest _getAvailabilityRQ = null;
                 if (flightclass != "B")
@@ -1777,6 +1804,8 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                 #endregion
                 #region GDS
+                TravelPortParsing _objP = new TravelPortParsing();
+                List<GDSResModel.Segment> getAvailRes = new List<GDSResModel.Segment>();
                 // string _testURL = "https://apac.universal-api.pp.travelport.com/B2BGateway/connect/uAPI/AirService";
                 string _testURL = AppUrlConstant.GDSURL;
                 string _targetBranch = string.Empty;
@@ -1794,14 +1823,15 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 mongoGDSToken.PassRequest = objMongoHelper.Zip(JsonConvert.SerializeObject(_GetfligthModel)); ;
                 mongoGDSToken.Guid = SearchGuid;
                 mongoGDSToken.Supp = "GDS";
-                res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuid.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "GDSOneWay");
-                TempData["origin"] = _GetfligthModel.origin;
-                TempData["destination"] = _GetfligthModel.destination;
-                TravelPortParsing _objP = new TravelPortParsing();
-                List<GDSResModel.Segment> getAvailRes = new List<GDSResModel.Segment>();
-                if (res != null && !res.Contains("Bad Request") && !res.Contains("Internal Server Error"))
+                if (_CredentialsGDS.username != null)
                 {
-                    getAvailRes = _objP.ParseLowFareSearchRsp2(res, "OneWay", Convert.ToDateTime(_GetfligthModel.beginDate));
+                    res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuid.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "GDSOneWay");
+                    TempData["origin"] = _GetfligthModel.origin;
+                    TempData["destination"] = _GetfligthModel.destination;
+                    if (res != null && !res.Contains("Bad Request") && !res.Contains("Internal Server Error"))
+                    {
+                        getAvailRes = _objP.ParseLowFareSearchRsp2(res, "OneWay", Convert.ToDateTime(_GetfligthModel.beginDate));
+                    }
                 }
                 count2 = 0;
                 if (getAvailRes != null && getAvailRes.Count > 0)
@@ -2148,43 +2178,21 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     //To do
                     var result1s = response.Content.ReadAsStringAsync().Result;
                     var JsonObject = JsonConvert.DeserializeObject<List<_credentials>>(result1s);
-                    // var _credentialsAirasiaR = new _credentials();
-
-                    //AirAsia round login
-                    //login = new airlineLogin();
-                    //login.credentials = _credentialsAirasia;
-                    ////till here
-                    //TempData["AirAsiaLogin"] = login.credentials.Image;
-                    //AirasiaTokan = new AirasiaTokan();
-                    //AirasialoginRequest = JsonConvert.SerializeObject(login, Formatting.Indented);
-                    //if (SaveLogs)
-                    //{
-                    //    logs.WriteLogsR(AirasialoginRequest, "1-Tokan_Request", "AirAsiaRT");
-                    //}
-                    //client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    //responce = await client.PostAsJsonAsync(AppUrlConstant.AirasiaTokan, login);
-
-                    //if (responce.IsSuccessStatusCode)
-                    //{
-                    //    var results = responce.Content.ReadAsStringAsync().Result;
-                    //    if (SaveLogs)
-                    //    {
-                    //        logs.WriteLogsR(results, "1-Token_Responce", "AirAsiaRT");
-                    //    }
-                    //    var JsonObj = JsonConvert.DeserializeObject<dynamic>(results);
-                    //    AirasiaTokan.token = JsonObj.data.token;
-                    //    AirasiaTokan.idleTimeoutInMinutes = JsonObj.data.idleTimeoutInMinutes;
-                    //}
-
-                    //mongoAirAsiaToken.RToken = AirasiaTokan.token;
                     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    // client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AirasiaTokan.token);
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", mongoAirAsiaToken.RToken);
                     if (SaveLogs)
                     {
                         logs.WriteLogsR(jsonR, "2-SimpleAvailability_Req", "AirAsiaRT");
                     }
-                    HttpResponseMessage responceR = await client.PostAsJsonAsync(AppUrlConstant.AirasiasearchsimpleR, _SimpleAvailabilityobjR);
+                    HttpResponseMessage responceR = new HttpResponseMessage();
+                    if (AirasiaTokan.token != "" && AirasiaTokan.token != null)
+                    {
+                        responceR = await client.PostAsJsonAsync(AppUrlConstant.AirasiasearchsimpleR, _SimpleAvailabilityobjR);
+                    }
+                    else
+                    {
+                        responceR.StatusCode = HttpStatusCode.BadRequest;
+                    }
                     if (responceR.IsSuccessStatusCode)
                     {
                         var resultsR = responceR.Content.ReadAsStringAsync().Result;
@@ -2410,7 +2418,15 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         }
                         client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AkasaTokanR.token);
-                        responceR = await client.PostAsJsonAsync(AppUrlConstant.AkasasearchsimpleR, _SimpleAvailabilityobjR);
+                        if (AkasaTokanR.token != "" && AkasaTokanR.token != null)
+                        {
+                            responceR = await client.PostAsJsonAsync(AppUrlConstant.AkasasearchsimpleR, _SimpleAvailabilityobjR);
+                        }
+                        else
+                        {
+                            responceR.StatusCode = HttpStatusCode.BadRequest;
+                        }
+
                         if (responceR.IsSuccessStatusCode)
                         {
                             var resultsR = responceR.Content.ReadAsStringAsync().Result;
@@ -2593,19 +2609,6 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                             }
                         }
-
-                        //                  #endregion
-                        //                  //Roundtripcode for SpiceJet
-                        //                  #region spicejet
-                        //                  List<SimpleAvailibilityaAddResponce> SpiceJetAvailibilityaAddResponcelistR = new List<SimpleAvailibilityaAddResponce>();
-                        //                  //Logon 
-                        //                  #region Logon
-                        //                  Spicejet._login objSpicejetR_ = new Spicejet._login();
-                        ////_getapi objSpicejet = new _getapi();
-                        //objSpicejet = new _getapi();
-                        //_SpicejetlogonResponseobjR = await objSpicejet.Signature(_logonRequestobj);
-                        //                  #endregion
-                        //GetAvailability
                         #region GetAvailability
                         if (_SpicejetlogonResponseobjR != null)
                         {
@@ -2874,14 +2877,6 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     }
 
                     #region Indigo
-                    //               List<SimpleAvailibilityaAddResponce> IndigoAvailibilityaAddResponcelistR = new List<SimpleAvailibilityaAddResponce>();
-                    ////Logon 
-                    //objIndigo = new _getapiIndigo();
-                    //IndigoSessionmanager_.LogonResponse _IndigologonResponseobjR = await objIndigo.Signature(_logonRequestIndigoobj);
-                    #region Logon
-
-
-                    #endregion
                     //.GetAvailability
                     #region GetAvailability
 
@@ -2901,7 +2896,11 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     _GetfligthModel.destination = searchLog.OrgCode;
                     _GetfligthModel.beginDate = searchLog.ArrivalDateTime;
                     _GetfligthModel.endDate = searchLog.ArrivalDateTime;
-                    IndigoBookingManager_.GetAvailabilityVer2Response _IndigoAvailabilityResponseobjR = await objgetAvail_.GetTripAvailability(_GetfligthModel, _IndigologonResponseobjR, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT);
+                    IndigoBookingManager_.GetAvailabilityVer2Response _IndigoAvailabilityResponseobjR = null;
+                    if (_IndigologonResponseobjR != null)
+                    {
+                        _IndigoAvailabilityResponseobjR = await objgetAvail_.GetTripAvailability(_GetfligthModel, _IndigologonResponseobjR, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT);
+                    }
                     count2 = 0;
                     if (_IndigoAvailabilityResponseobjR != null && _IndigoAvailabilityResponseobjR.GetTripAvailabilityVer2Response.Schedules[0].Length > 0)
                     {
@@ -3169,8 +3168,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     _GetfligthModel.destination = searchLog.OrgCode;
                     _GetfligthModel.beginDate = searchLog.ArrivalDateTime;
                     _GetfligthModel.endDate = searchLog.ArrivalDateTime;
-
-                    res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuidR.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "");
+                    if (!string.IsNullOrEmpty(_CredentialsGDS.username))
+                    {
+                        res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuidR.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "");
+                    }
                     TempData["originR"] = _GetfligthModel.origin;
                     TempData["destinationR"] = _GetfligthModel.destination;
                     _objP = new TravelPortParsing();
@@ -3461,10 +3462,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     var RightResponse = objMongoHelper.Zip(objMongoHelper.CreateCommonObject(SimpleAvailibilityaAddResponcelistR));
                     _mongoDBHelper.SaveFlightSearch(SearchGuid, Response, RightResponse);
                     _mongoDBHelper.SaveMongoFlightToken(mongoGDSToken);
-                    //if (_SpicejetlogonResponseobjR != null)
-                    //{
-                    //    mongoSpiceToken.RToken = _SpicejetlogonResponseobjR.Signature;
-                    //}
+                    //if (!string.IsNullOrEmpty(AirasiaTokan.token))
                     if (AirasiaTokan.token != "")
                     {
 
@@ -3475,17 +3473,18 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         _mongoDBHelper.UpdateMongoFlightPassRequest(ResponseGuid, "AirAsia", mongoAirAsiaToken.PassRequest, mongoAirAsiaToken.PassRequestR);
 
                     }
+                    //if (!string.IsNullOrEmpty(AkasaTokan.token))
                     if (AkasaTokan.token != "")
                     {
                         mongoAKashaToken.PassRequestR = objMongoHelper.Zip(JsonConvert.SerializeObject(_SimpleAvailabilityobjR));
                         mongoAKashaToken.Guid = SearchGuid;
                         mongoAKashaToken.Supp = "Akasa";
-                        //_mongoDBHelper.SaveMongoFlightToken(mongoAKashaToken);
                         _mongoDBHelper.UpdateMongoFlightToken(ResponseGuid, "Akasa", mongoAKashaToken.Token, mongoAKashaToken.RToken);
                         _mongoDBHelper.UpdateMongoFlightPassRequest(ResponseGuid, "Akasa", mongoAKashaToken.PassRequest, mongoAKashaToken.PassRequestR);
                     }
 
 
+                    //if (!string.IsNullOrEmpty(mongoSpiceToken.Token))
                     if (mongoSpiceToken.Token != "")
                     {
 
@@ -3497,6 +3496,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         _mongoDBHelper.SaveMongoFlightToken(mongoSpiceToken);
                     }
 
+                    //if (!string.IsNullOrEmpty(mongoIndigoToken.Token))
                     if (mongoIndigoToken.Token != "")
                     {
 
@@ -3525,6 +3525,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     mongoAKashaToken.Supp = "Akasa";
                     _mongoDBHelper.SaveMongoFlightToken(mongoAKashaToken);
 
+                    //if (!string.IsNullOrEmpty(AirasiaTokan.token))
                     if (AirasiaTokan.token != "")
                     {
 
@@ -3535,6 +3536,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     }
 
 
+                    //if (!string.IsNullOrEmpty(mongoSpiceToken.Token))
                     if (mongoSpiceToken.Token != "")
                     {
 
@@ -3544,6 +3546,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         _mongoDBHelper.SaveMongoFlightToken(mongoSpiceToken);
                     }
 
+                    //if (!string.IsNullOrEmpty(mongoIndigoToken.Token))
                     if (mongoIndigoToken.Token != "")
                     {
 
@@ -3553,20 +3556,12 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         mongoIndigoToken.Supp = "Indigo";
                         _mongoDBHelper.SaveMongoFlightToken(mongoIndigoToken);
                     }
-                    //if (mongoGDSToken.Token != "")
-                    //{
-
-                    //    mongoGDSToken.PassRequest = objMongoHelper.Zip(JsonConvert.SerializeObject(_SimpleAvailabilityobj));
-                    //    _mongoDBHelper.SaveMongoFlightToken(mongoGDSToken);
-                    //}
                     _mongoDBHelper.SaveMongoFlightToken(mongoGDSToken);
                     return RedirectToAction("FlightView", "ResultFlightView", new { Guid = SearchGuid, TripType = SameAirlineRT, Origin = searchLog.Origin.Trim(), OriginCode = searchLog.OrgCode.Trim(), Destination = searchLog.Destination.Trim(), DestinationCode = searchLog.DestCode.Trim(), BeginDate = _GetfligthModel.beginDate, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount, FlightClass = flightclass });
 
                 }
 
             }
-
-            // }
 
         }
         public IActionResult PassengeDetails(Passengers passengers)
