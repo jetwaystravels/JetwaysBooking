@@ -146,7 +146,7 @@ namespace OnionArchitectureAPI.Services.Spicejet
 
         }
 
-        public async Task<GetAvailabilityVer2Response> GetTripAvailabilityCorporate(SimpleAvailabilityRequestModel _GetfligthModel, LogonResponse _SpicejetlogonResponseobj, int TotalCount, int adultcount, int childcount, int infantcount, string flightclass, string JourneyType, string _AirlineWay = "", string Guid = "")
+        public async Task<GetAvailabilityVer2Response> GetTripAvailabilityCorporate(SimpleAvailabilityRequestModel _GetfligthModel, LogonResponse _SpicejetlogonResponseobj, int TotalCount, int adultcount, int childcount, int infantcount, string flightclass, string JourneyType, string _AirlineWay = "", string Guid = "", string dealcode = "")
         {
             #region Availability
 
@@ -204,6 +204,10 @@ namespace OnionArchitectureAPI.Services.Spicejet
 
             _getAvailabilityRQ.TripAvailabilityRequest.AvailabilityRequests[0].BookingStatusSpecified = true;
             _getAvailabilityRQ.TripAvailabilityRequest.AvailabilityRequests[0].BookingStatus = BookingStatus.Default;
+            if (!string.IsNullOrEmpty(dealcode))
+            {
+                _getAvailabilityRQ.TripAvailabilityRequest.AvailabilityRequests[0].PromotionCode = dealcode;
+            }
             // Different Product Class
             //string[] faretypes = { "R", "MX", "IO", "SF" };
             string[] faretypes = null;

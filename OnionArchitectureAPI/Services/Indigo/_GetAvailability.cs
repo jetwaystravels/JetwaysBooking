@@ -22,7 +22,7 @@ namespace OnionArchitectureAPI.Services.Indigo
             _httpContextAccessor.HttpContext.Session.SetString(key, value);
         }
         Logs logs = new Logs();
-        public async Task<GetAvailabilityVer2Response> GetTripAvailability(SimpleAvailabilityRequestModel _GetfligthModel, LogonResponse _IndigologonResponseobj, int TotalCount, int adultcount, int childcount, int infantcount, string flightclass,string JourneyType, string _AirlineWay = "")
+        public async Task<GetAvailabilityVer2Response> GetTripAvailability(SimpleAvailabilityRequestModel _GetfligthModel, LogonResponse _IndigologonResponseobj, int TotalCount, int adultcount, int childcount, int infantcount, string flightclass,string JourneyType, string _AirlineWay = "",string dealcode="")
         {
             #region Availability
             GetAvailabilityRequest _getAvailabilityReturnRQ = new GetAvailabilityRequest();
@@ -101,6 +101,10 @@ namespace OnionArchitectureAPI.Services.Indigo
             _getAvailabilityReturnRQ.TripAvailabilityRequest.LoyaltyFilter = LoyaltyFilter.MonetaryOnly;
             _getAvailabilityReturnRQ.TripAvailabilityRequest.AvailabilityRequests[0].IncludeTaxesAndFees = true;
             _getAvailabilityReturnRQ.TripAvailabilityRequest.AvailabilityRequests[0].IncludeTaxesAndFeesSpecified = true;
+            if(!string.IsNullOrEmpty(dealcode))
+            {
+                _getAvailabilityReturnRQ.TripAvailabilityRequest.AvailabilityRequests[0].PromotionCode = dealcode;
+            }
             SetSessionValue("IndigoAvailibilityRequest", JsonConvert.SerializeObject(_getAvailabilityReturnRQ));
             SetSessionValue("IndigoPassengerModel", JsonConvert.SerializeObject(_getAvailabilityReturnRQ));
             _getapiIndigo objIndigo = new _getapiIndigo();

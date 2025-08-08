@@ -775,7 +775,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 _SimpleAvailabilityobj.codes = _codes;
                 _SimpleAvailabilityobj.sourceOrganization = "";
                 _SimpleAvailabilityobj.currentSourceOrganization = "";
-                _SimpleAvailabilityobj.promotionCode = _credentialsAirasia.dealCodeName; //deal code 
+                if (!string.IsNullOrEmpty(_credentialsAirasia.dealCodeName))
+                {
+                    _SimpleAvailabilityobj.promotionCode = _credentialsAirasia.dealCodeName; //deal code 
+                }
                 string[] sortOptions = new string[1];
                 sortOptions[0] = "ServiceType";
                 // Define the Filters class
@@ -1096,6 +1099,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         _SimpleAvailabilityobj.numberOfFaresPerJourney = 4;
                         // Handling special condition for akasa
                         _SimpleAvailabilityobj.endDate = null;
+                        if (!string.IsNullOrEmpty(_CredentialsAkasha.dealCodeName))
+                        {
+                            _SimpleAvailabilityobj.promotionCode = _CredentialsAkasha.dealCodeName; //deal code 
+                        }
                         json = JsonConvert.SerializeObject(_SimpleAvailabilityobj, Formatting.Indented);
                         logs.WriteLogs(json, "2-SimpleAvailability_Req", "AkasaOneWay", SameAirlineRT);
                         client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
@@ -1320,7 +1327,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     OnionArchitectureAPI.Services.Spicejet._GetAvailability objspicejetgetAvail_ = new OnionArchitectureAPI.Services.Spicejet._GetAvailability(httpContextAccessorInstance);
                     if (_SpicejetlogonResponseobj != null)
                     {
-                        _getAvailabilityVer2Response = await objspicejetgetAvail_.GetTripAvailabilityCorporate(_GetfligthModel, _SpicejetlogonResponseobj, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, "SpicejetOneWay", SearchGuid);
+                        _getAvailabilityVer2Response = await objspicejetgetAvail_.GetTripAvailabilityCorporate(_GetfligthModel, _SpicejetlogonResponseobj, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, "SpicejetOneWay", SearchGuid, _CredentialsSpiceJet.dealCodeName);
                         int count1 = 0;
                         if (_getAvailabilityVer2Response != null && _getAvailabilityVer2Response.GetTripAvailabilityVer2Response.Schedules[0].Length > 0)
                         {
@@ -1573,7 +1580,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 int count2 = 0;
                 if (_IndigologonResponseobj != null)
                 {
-                    _IndigoAvailabilityResponseobj = await objgetAvail_.GetTripAvailability(_GetfligthModel, _IndigologonResponseobj, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, "IndigoOneWay");
+                    _IndigoAvailabilityResponseobj = await objgetAvail_.GetTripAvailability(_GetfligthModel, _IndigologonResponseobj, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, "IndigoOneWay",_CredentialsIndigo.dealCodeName);
                     count2 = 0;
                     if (_IndigoAvailabilityResponseobj != null && _IndigoAvailabilityResponseobj.GetTripAvailabilityVer2Response.Schedules[0].Length > 0)
                     {
@@ -2133,7 +2140,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     _SimpleAvailabilityobjR.codes = _codes;
                     _SimpleAvailabilityobjR.sourceOrganization = "";
                     _SimpleAvailabilityobjR.currentSourceOrganization = "";
-                    _SimpleAvailabilityobjR.promotionCode = _credentialsAirasia.dealCodeName;
+                    if (!string.IsNullOrEmpty(_credentialsAirasia.dealCodeName))
+                    {
+                        _SimpleAvailabilityobjR.promotionCode = _credentialsAirasia.dealCodeName;
+                    }
                     string[] sortOptionsR = new string[1];
                     sortOptionsR[0] = "ServiceType";
                     Filters FiltersR = new Filters();
@@ -2410,6 +2420,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         FiltersR.productClasses = productClassesR;
                         _SimpleAvailabilityobjR.filters = FiltersR;
                         _SimpleAvailabilityobjR.numberOfFaresPerJourney = 4;
+                        if (!string.IsNullOrEmpty(_CredentialsAkasha.dealCodeName))
+                        {
+                            _SimpleAvailabilityobjR.promotionCode = _CredentialsAkasha.dealCodeName;
+                        }
                         jsonR = JsonConvert.SerializeObject(_SimpleAvailabilityobjR, Formatting.Indented);
                         if (SaveLogs)
                         {
@@ -2625,7 +2639,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                             _GetfligthModel.destination = searchLog.DestCode;
                             _GetfligthModel.beginDate = searchLog.ArrivalDateTime;
                             _GetfligthModel.endDate = searchLog.ArrivalDateTime;
-                            _getAvailabilityVer2ReturnResponse = await objspicejetgetAvail_.GetTripAvailabilityCorporate(_GetfligthModel, _SpicejetlogonResponseobjR, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, "SpicejetRT");
+                            _getAvailabilityVer2ReturnResponse = await objspicejetgetAvail_.GetTripAvailabilityCorporate(_GetfligthModel, _SpicejetlogonResponseobjR, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, "SpicejetRT", _CredentialsSpiceJet.dealCodeName);
                             count2 = 0;
                             if (_getAvailabilityVer2ReturnResponse != null && _getAvailabilityVer2ReturnResponse.GetTripAvailabilityVer2Response.Schedules[0].Length > 0)
                             {
@@ -2899,7 +2913,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     IndigoBookingManager_.GetAvailabilityVer2Response _IndigoAvailabilityResponseobjR = null;
                     if (_IndigologonResponseobjR != null)
                     {
-                        _IndigoAvailabilityResponseobjR = await objgetAvail_.GetTripAvailability(_GetfligthModel, _IndigologonResponseobjR, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT);
+                        _IndigoAvailabilityResponseobjR = await objgetAvail_.GetTripAvailability(_GetfligthModel, _IndigologonResponseobjR, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, _CredentialsIndigo.dealCodeName);
                     }
                     count2 = 0;
                     if (_IndigoAvailabilityResponseobjR != null && _IndigoAvailabilityResponseobjR.GetTripAvailabilityVer2Response.Schedules[0].Length > 0)
