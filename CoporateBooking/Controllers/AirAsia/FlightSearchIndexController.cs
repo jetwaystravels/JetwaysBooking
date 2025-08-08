@@ -148,6 +148,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             string userEmail = HttpContext.Session.GetString("LoggedInEmail");
             //string emaillogin = "kanpur.ashok@gmail.com";
             string emaillogin = userEmail;
+            string Iata = string.Empty;
 
             MongoHelper objMongoHelper = new MongoHelper();
             MongoDBHelper _mongoDBHelper = new MongoDBHelper(_configuration);
@@ -208,14 +209,55 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 return RedirectToAction("Index", "FlightSearchIndex");
             }
 
+            if (!string.IsNullOrEmpty(formCollection["hdniata"]))
+            {
+                Iata = Convert.ToString(formCollection["hdniata"]);
+            }
+
+
+            string custentity = string.Empty;
+
             LegalEntity legalEntity = new LegalEntity();
             if (!Request.Form.ContainsKey("hdnlegal") || string.IsNullOrEmpty(Request.Form["hdnlegal"]))
             {
-
+                custentity = Convert.ToString(formCollection["legal_entity"]).Split('-')[0];
             }
             else
             {
                 legalEntity = _mongoDBHelper.GetlegalEntityByGUID(Convert.ToString(formCollection["hdnlegal"])).Result;
+
+                if(legalEntity != null)
+                {
+                    custentity = legalEntity.LegalName;
+                }
+               
+            }
+
+
+            List<CustomerDealCodes> lstcustomerDealCodes = new List<CustomerDealCodes>();  
+            string apiUrl = $"{AppUrlConstant.GetCustomerDealCode}?legalEntityCode={custentity}&Iata={Iata}";
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Add(
+                        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonData = await response.Content.ReadAsStringAsync();
+                        lstcustomerDealCodes = JsonConvert.DeserializeObject<List<CustomerDealCodes>>(jsonData);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               
+                // Ideally log the exception
+                // You could use ViewBag.Error = "Something went wrong." or TempData["Error"]
             }
 
 
@@ -318,6 +360,8 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 if (response.IsSuccessStatusCode)
                 {
                     var results = await response.Content.ReadAsStringAsync();
+
+                    // Deal Code from Supplier Deal Code API
                     var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
 
                     Parallel.Invoke(
@@ -330,6 +374,19 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          {
                              _credentialsAirasia = new _credentials();
                          }
+
+                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+ 
+                                 if(lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                                 {
+                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 1);
+                                     if (dealCode != null)
+                                     {
+                                         _credentialsAirasia.dealCodeName = dealCode.dealCodeName;
+                                     }
+                                 }
+                           
+                        
                      },  // close first Action
 
                      () =>
@@ -341,6 +398,17 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          {
                              _CredentialsAkasha = new _credentials();
                          }
+                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+
+                                 if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                                 {
+                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 2);
+                                     if (dealCode != null)
+                                     {
+                                         _CredentialsAkasha.dealCodeName = dealCode.dealCodeName;
+                                     }
+                                 }
+
                      },
                      () =>
                      {
@@ -351,6 +419,18 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          {
                              _CredentialsGDS = new _credentials();
                          }
+
+                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+
+                                 if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                                 {
+                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 5);
+                                     if (dealCode != null)
+                                     {
+                                         _CredentialsGDS.dealCodeName = dealCode.dealCodeName;
+                                     }
+                                 }
+
                      },
                      () =>
                      {
@@ -366,6 +446,17 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          {
                              _CredentialsSpiceJet = new _credentials();
                          }
+
+                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+
+                                 if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                                 {
+                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 3);
+                                     if (dealCode != null)
+                                     {
+                                         _CredentialsSpiceJet.dealCodeName = dealCode.dealCodeName;
+                                     }
+                                 }
                      },
                      () =>
                      {
@@ -381,6 +472,18 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          {
                              _CredentialsIndigo = new _credentials();
                          }
+
+                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+
+                                 if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                                 {
+                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 4);
+                                     if (dealCode != null)
+                                     {
+                                         _CredentialsIndigo.dealCodeName = dealCode.dealCodeName;
+                                     }
+                                 }
+
                      }
 
                  );
@@ -459,9 +562,24 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     responcedata.StatusCode = HttpStatusCode.BadRequest;
                 }
 
+                List<string> supplierDeals = new List<string>();
 
+                if (_credentialsAirasia.supplierid != 0)
+                    supplierDeals.Add($"{_credentialsAirasia.supplierid}_{_credentialsAirasia.dealCodeName}");
 
+                if (_CredentialsAkasha.supplierid != 0)
+                    supplierDeals.Add($"{_CredentialsAkasha.supplierid}_{_CredentialsAkasha.dealCodeName}");
 
+                if (_CredentialsSpiceJet.supplierid != 0)
+                    supplierDeals.Add($"{_CredentialsSpiceJet.supplierid}_{_CredentialsSpiceJet.dealCodeName}");
+
+                if (_CredentialsIndigo.supplierid != 0)
+                    supplierDeals.Add($"{_CredentialsIndigo.supplierid}_{_CredentialsIndigo.dealCodeName}");
+
+                if (_CredentialsGDS.supplierid != 0)
+                    supplierDeals.Add($"{_CredentialsGDS.supplierid}_{_CredentialsGDS.dealCodeName}");
+
+                string dealcoderesult = string.Join(",", supplierDeals);
 
                 legalEntity.Guid = ResponseGuid;// SearchGuid;
 
@@ -517,6 +635,9 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         legalEntity.Email = username;
                         legalEntity.UserId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+
+                        legalEntity.DealCode = dealcoderesult;
+
                         // Save to DB
                         _mongoDBHelper.SaveUpdateLegalEntity(legalEntity);
                     }
@@ -543,6 +664,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     NewlegalEntity.UserId = legalEntity.UserId;
 
                     NewlegalEntity.Guid = legalEntity.Guid;
+
+
+                    legalEntity.DealCode = dealcoderesult;
+
                     // SearchGuid;
                     _mongoDBHelper.SaveUpdateLegalEntity(NewlegalEntity);
                 }

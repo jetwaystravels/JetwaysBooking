@@ -24,6 +24,9 @@ namespace CoporateBooking.Models
         public string BillingEntityFullName;
         public string EmployeeFullName;
 
+
+        public string DealCode;
+
         public DateTime CreatedDate;
 
     }

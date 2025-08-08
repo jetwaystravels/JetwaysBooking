@@ -427,6 +427,7 @@
 
 
                                         <input type="hidden" name="hdnempid" id="hdnempid" />
+                                        <input type="hidden" name="hdniata" id="hdniata" />
                                     }
 
 
@@ -1138,6 +1139,7 @@
 
              // 2. Full JSON Data for Mapping Legal Entity -> Employees & Balance
              var legalEntitiesData = @Html.Raw(jsonData);
+            //console.log(legalEntitiesData);
         </script>
 
         <!--Start Emulate section -->
@@ -1238,6 +1240,15 @@
                             bindFor(ui.item.value);
                             $(this).blur();
                             $(this).siblings('.remove-icon').show();
+                           
+                            const result = legalEntitiesData.find(item => item.legalEntityName === ui.item.value);
+
+                            if (result) {
+                                //console.log(result);
+                                $('#hdniata').val(result.assignIATAGroup);
+                                            
+                            }
+
 
                             $('#employeeSelect').val('');
                             $('#employeeSelect').siblings('.remove-icon').hide();

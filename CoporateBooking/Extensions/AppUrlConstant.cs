@@ -86,6 +86,7 @@
         public static string GetBillingEntity = AdminBaseURL + "/api/Customer/GetBillingEntity";
         public static string Getsuppliercred = AdminBaseURL + "/api/SuppliersCredentialAPI/getsuppliercred";
         public static string Getsupplierdealcode = AdminBaseURL + "/api/EmployeeBillingEntityAPI/Getsupplierdealcode";
+        public static string GetCustomerDealCode = AdminBaseURL + "/api/Customer/GetCustomerDealCode";
 
 
 

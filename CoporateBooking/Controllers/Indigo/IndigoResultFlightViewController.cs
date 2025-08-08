@@ -11,6 +11,7 @@ using static DomainLayer.Model.ReturnTicketBooking;
 using OnionArchitectureAPI.Services.Indigo;
 using System.Collections;
 using OnionConsumeWebAPI.Models;
+using CoporateBooking.Models;
 namespace OnionConsumeWebAPI.Controllers
 {
     public class IndigoResultFlightViewController : Controller
@@ -107,11 +108,24 @@ namespace OnionConsumeWebAPI.Controllers
 
                 tokenData = _mongoDBHelper.GetSuppFlightTokenByGUID(Guid, "Indigo").Result;
 
-                //int adultcount = Convert.ToInt32(HttpContext.Session.GetString("adultCount"));
-                //int childcount = Convert.ToInt32(HttpContext.Session.GetString("childCount"));
-                //int infantcount = Convert.ToInt32(HttpContext.Session.GetString("infantCount"));
+                LegalEntity legal = new LegalEntity();
+                legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
 
-                int adultcount = searchLog.Adults;
+                if (legal != null)
+                {
+                    string indigoValue = legal.DealCode
+                                        .Split(',')
+                                        .FirstOrDefault(s => s.Contains("4"));
+
+                    // Extract the value before `_` if found
+                    string supplierId = indigoValue?.Split('_')[0];
+                }
+
+                    //int adultcount = Convert.ToInt32(HttpContext.Session.GetString("adultCount"));
+                    //int childcount = Convert.ToInt32(HttpContext.Session.GetString("childCount"));
+                    //int infantcount = Convert.ToInt32(HttpContext.Session.GetString("infantCount"));
+
+                    int adultcount = searchLog.Adults;
                 int childcount = searchLog.Children;
                 int infantcount = searchLog.Infants;
 
