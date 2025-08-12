@@ -66,7 +66,7 @@ namespace OnionArchitectureAPI.Services.Indigo
             return (SellResponse)_getSellRS;
         }
 
-        public async Task<SellResponse> Sell(string Signature, string _JourneykeyData, string _FareKeyData, string _Jparts, string fareKey, int TotalCount, int adultcount, int childcount, int infantcount, int p, string _AirlineWay = "")
+        public async Task<SellResponse> Sell(string Signature, string _JourneykeyData, string _FareKeyData, string _Jparts, string fareKey, int TotalCount, int adultcount, int childcount, int infantcount, int p, string _AirlineWay = "", string dealcode = "")
         {
             SellResponse _getSellRS = null;
             SellRequest _getSellRQ = null;
@@ -98,6 +98,15 @@ namespace OnionArchitectureAPI.Services.Indigo
             _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.SourcePOS = GetPointOfSale();
             _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.PaxCountSpecified = true;
             _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.PaxCount = Convert.ToInt16(TotalCount);
+
+            if (!string.IsNullOrEmpty(dealcode))
+            {
+                string[] faretypesreturn = { "R", "Z", "F" };
+                _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.TypeOfSale = new TypeOfSale();
+                _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.TypeOfSale.PromotionCode = dealcode;
+                _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.TypeOfSale.FareTypes = faretypesreturn;
+                _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.TypeOfSale.PromotionSold = false;
+            }
             _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.LoyaltyFilter = LoyaltyFilter.MonetaryOnly;
             _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.IsAllotmentMarketFare = false;
             _getSellRQ.SellRequestData.SellJourneyByKeyRequest.SellJourneyByKeyRequestData.PreventOverLap = false;
@@ -187,7 +196,7 @@ namespace OnionArchitectureAPI.Services.Indigo
 
 
 
-        public async Task<GetBookingFromStateResponse> GetBookingFromState(string Signature, int p,string _AirlineWay = "")
+        public async Task<GetBookingFromStateResponse> GetBookingFromState(string Signature, int p, string _AirlineWay = "")
         {
             GetBookingFromStateResponse _GetBookingFromStateRS1 = null;
             GetBookingFromStateRequest _GetBookingFromStateRQ1 = null;
@@ -261,7 +270,7 @@ namespace OnionArchitectureAPI.Services.Indigo
 
             return _getBookingFromStateResponse;
         }
-        public async Task<PriceItineraryResponse> GetItineraryPrice(string Signature, string _JourneykeyData, string _FareKeyData, string _Jparts, string fareKey, int TotalCount, int adultcount, int childcount, int infantcount, int p,string _AirlineWay = "")
+        public async Task<PriceItineraryResponse> GetItineraryPrice(string Signature, string _JourneykeyData, string _FareKeyData, string _Jparts, string fareKey, int TotalCount, int adultcount, int childcount, int infantcount, int p, string _AirlineWay = "", string dealcode = "")
         {
             PriceItineraryResponse _getPriceItineraryRS = null;
             PriceItineraryRequest _getPriceItineraryRQ = null;
@@ -285,6 +294,14 @@ namespace OnionArchitectureAPI.Services.Indigo
             _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.CurrencyCode = "INR";
             _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.PaxPriceType = getPaxdetails(adultcount, childcount, 0);
             _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.SourcePOS = GetPointOfSale();
+            if (!string.IsNullOrEmpty(dealcode))
+            {
+                string[] faretypesreturn = { "R", "Z", "F" };
+                _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.TypeOfSale = new TypeOfSale();
+                _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.TypeOfSale.PromotionCode = dealcode;
+                _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.TypeOfSale.FareTypes = faretypesreturn;
+                _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.TypeOfSale.PromotionSold = true;
+            }
             _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.LoyaltyFilter = LoyaltyFilter.MonetaryOnly;
             _getPriceItineraryRQ.ItineraryPriceRequest.SellByKeyRequest.IsAllotmentMarketFare = false;
             _getPriceItineraryRQ.ItineraryPriceRequest.SSRRequest = new SSRRequest();
@@ -531,7 +548,7 @@ namespace OnionArchitectureAPI.Services.Indigo
 
         }
 
-        public async Task<SellResponse> sellssrInft(string Signature, PriceItineraryResponse _getPriceItineraryRS, int infantcount, int _a, int p,string _Airline = "")
+        public async Task<SellResponse> sellssrInft(string Signature, PriceItineraryResponse _getPriceItineraryRS, int infantcount, int _a, int p, string _Airline = "")
         {
             var passanger = _getPriceItineraryRS.Booking.Passengers;
             string passenger = string.Empty;
@@ -629,7 +646,7 @@ namespace OnionArchitectureAPI.Services.Indigo
                 }
                 //if (sellSsrResponse != null)
                 //{
-                    //var JsonObjSeatAssignment = sellSsrResponse;
+                //var JsonObjSeatAssignment = sellSsrResponse;
                 //}
                 return (SellResponse)sellSsrResponse;
             }

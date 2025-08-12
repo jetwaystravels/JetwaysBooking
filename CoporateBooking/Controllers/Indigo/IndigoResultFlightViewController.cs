@@ -111,6 +111,7 @@ namespace OnionConsumeWebAPI.Controllers
                 LegalEntity legal = new LegalEntity();
                 legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
 
+                string dealcode = string.Empty;
                 if (legal != null)
                 {
                     string indigoValue = legal.DealCode
@@ -118,7 +119,8 @@ namespace OnionConsumeWebAPI.Controllers
                                         .FirstOrDefault(s => s.Contains("4"));
 
                     // Extract the value before `_` if found
-                    string supplierId = indigoValue?.Split('_')[0];
+                    string supplierId = indigoValue?.Split('_')[1];
+                    dealcode = supplierId;
                 }
 
                     //int adultcount = Convert.ToInt32(HttpContext.Session.GetString("adultCount"));
@@ -149,7 +151,7 @@ namespace OnionConsumeWebAPI.Controllers
 
                 #region IndigoSellRequest
                 _sell objsell = new _sell();
-                IndigoBookingManager_.SellResponse _getSellRS = await objsell.Sell(Signature, journeyKey, fareKey, "", "", TotalCount, adultcount, childcount, infantcount,0, "OneWay");
+                IndigoBookingManager_.SellResponse _getSellRS = await objsell.Sell(Signature, journeyKey, fareKey, "", "", TotalCount, adultcount, childcount, infantcount,0, "OneWay", dealcode);
                 //string str = JsonConvert.SerializeObject(_getSellRS);
                 #endregion
                 if(_getSellRS==null || _getSellRS.BookingUpdateResponseData.Error!=null)
@@ -440,7 +442,7 @@ namespace OnionConsumeWebAPI.Controllers
 
                     #region  GetItineraryPrice
 
-                    IndigoBookingManager_.PriceItineraryResponse _getPriceItineraryRS = await objsell.GetItineraryPrice(Signature, journeyKey, fareKey, "", "", TotalCount, adultcount, childcount, infantcount, 0,"OneWay");
+                    IndigoBookingManager_.PriceItineraryResponse _getPriceItineraryRS = await objsell.GetItineraryPrice(Signature, journeyKey, fareKey, "", "", TotalCount, adultcount, childcount, infantcount, 0,"OneWay",dealcode);
                     //str = JsonConvert.SerializeObject(_getPriceItineraryRS);
                     #endregion
 

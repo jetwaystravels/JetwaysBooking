@@ -4843,6 +4843,12 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     strResponse = gDSPNRResponse.RResponse;  //HttpContext.Session.GetString("PNRR").Split("@@")[0];
                                     RecordLocator = gDSPNRResponse.RLocatorCode; // HttpContext.Session.GetString("PNRR").Split("@@")[1];
                                 }
+                                //string filePath = @"C:\Users\Jet\Downloads\test.xml";
+
+                                //using (StreamReader reader = new StreamReader(filePath))
+                                //{
+                                //    strResponse = reader.ReadToEnd();
+                                //}
                                 _TicketRecordLocator = Regex.Match(strResponse, @"AirReservation[\s\S]*?LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
                                 //GetAirTicket
 
@@ -4890,6 +4896,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         Hashtable htnameempty = new Hashtable();
                                         Hashtable htpax = new Hashtable();
                                         Hashtable htPaxbag = new Hashtable();
+                                        Hashtable htpaxdetails = new Hashtable();
 
                                         Hashtable htsegmentdetails = new Hashtable();
                                         Hashtable htseatdata = new Hashtable();
@@ -5196,6 +5203,26 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     }
 
                                                 }
+                                                //To do
+
+                                                foreach (Match item in Regex.Matches(strResponseretriv, @"<air:TicketInfo[\s\S]*?BookingTravelerRef=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                                {
+                                                    if (!htpaxdetails.Contains(item.Groups["paxid"].Value))
+                                                    {
+                                                        htpaxdetails.Add(item.Groups["paxid"].Value, item.Groups["FName"].Value + "_" + item.Groups["LName"].Value);
+                                                    }
+                                                }
+
+                                                if (htpaxdetails.Count == 0)
+                                                {
+                                                    foreach (Match item in Regex.Matches(strResponseretriv, @"BookingTraveler\s*Key=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                                    {
+                                                        if (!htpaxdetails.Contains(item.Groups["paxid"].Value))
+                                                        {
+                                                            htpaxdetails.Add(item.Groups["paxid"].Value, item.Groups["FName"].Value + "_" + item.Groups["LName"].Value);
+                                                        }
+                                                    }
+                                                }
 
                                                 foreach (Match mitem in Regex.Matches(strResponse, @"common_v52_0:BookingTraveler Key=""(?<passengerKey>[\s\S]*?)""[\s\S]*?BookingTravelerName[\s\S]*?First=""(?<First>[\s\S]*?)""\s*Last=""(?<Last>[\s\S]*?)""(?<data>[\s\S]*?)</common_v52_0:BookingTraveler>", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                                 {
@@ -5217,6 +5244,44 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                                         }
                                                         segcounter++;
+                                                    }
+                                                }
+
+                                                //Free seat
+
+                                                foreach (Match mitem in Regex.Matches(strResponse, @"OptionalService Type=""PreReservedSeatAssignment""[\s\S]*?SSRCode=""SEAT""[\s\S]*?ServiceData\s*Data=""(?<Seat>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Travellerref>[\s\S]*?)""[\s\S]*?AirSegmentRef=""(?<SegmentRef>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                                {
+                                                    try
+                                                    {
+                                                        if (!htseatdata.Contains(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString()))
+                                                        {
+                                                            htseatdata.Add(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString(), "0" + mitem.Groups["Seat"].Value.Trim());
+
+                                                        }
+
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+
+                                                    }
+                                                }
+
+                                                //baggage
+
+                                                foreach (Match mitem in Regex.Matches(strResponse, @"OptionalService Type=""Baggage""[\s\S]*?SSRCode=""XBAG""[\s\S]*?FreeText=""TTL(?<BagWeight>[\s\S]*?)KG[\s\S]*?BookingTravelerRef=""(?<Travellerref>[\s\S]*?)""[\s\S]*?AirSegmentRef=""(?<SegmentRef>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
+                                                {
+                                                    try
+                                                    {
+                                                        if (!htbagdata.Contains(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString()))
+                                                        {
+                                                            htbagdata.Add(htpaxdetails[mitem.Groups["Travellerref"].Value.Trim()] + "_" + htsegmentdetails[mitem.Groups["SegmentRef"].Value.Trim()].ToString(), mitem.Groups["BagWeight"].Value.Trim());
+
+                                                        }
+
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+
                                                     }
                                                 }
                                                 AASegmentobj.unitdesignator = returnSeats.unitDesignator;
@@ -5544,7 +5609,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
 
                                             //To do
-                                            Hashtable htpaxdetails = new Hashtable();
+                                            htpaxdetails = new Hashtable();
                                             foreach (Match item in Regex.Matches(strResponseretriv, @"<air:TicketInfo[\s\S]*?BookingTravelerRef=""(?<paxid>[\s\S]*?)""[\s\S]*?First=""(?<FName>[\s\S]*?)""[\s\S]*?last=""(?<LName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                             {
                                                 if (!htpaxdetails.Contains(item.Groups["paxid"].Value))
@@ -5721,11 +5786,14 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     {
                                                         foreach (Match bagitem in Regex.Matches(strResponse, @"OptionalService Type=""Baggage""\s*TotalPrice=""INR(?<BagPrice>[\s\S]*?)""[\s\S]*?BasePrice=""INR(?<BagBasePrice>[\s\S]*?)""\s*Taxes=""INR(?<BagTaxPrice>[\s\S]*?)""[\s\S]*?BookingTravelerRef=""(?<Paxid>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                                         {
-                                                            if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                            if (htpaxdetails.Contains(bagitem.Groups["Paxid"].Value.Trim()))
                                                             {
-                                                                TotalAmount_Baggage = Convert.ToInt32(bagitem.Groups["BagBasePrice"].Value.Trim());
-                                                                TotalAmount_Baggage_tax = Convert.ToInt32(bagitem.Groups["BagTaxPrice"].Value.Trim());
-                                                                break;
+                                                                if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                                {
+                                                                    TotalAmount_Baggage = Convert.ToInt32(bagitem.Groups["BagBasePrice"].Value.Trim());
+                                                                    TotalAmount_Baggage_tax = Convert.ToInt32(bagitem.Groups["BagTaxPrice"].Value.Trim());
+                                                                    break;
+                                                                }
                                                             }
 
                                                         }
@@ -5735,11 +5803,14 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                     {
                                                         if (oridest == htsegmentdetails[bagitem.Groups["segid"].Value.Trim()].ToString())
                                                         {
-                                                            if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                            if (htpaxdetails.Contains(bagitem.Groups["Paxid"].Value.Trim()))
                                                             {
-                                                                TotalAmount_Seat = Convert.ToInt32(bagitem.Groups["seatBasePrice"].Value.Trim());
-                                                                TotalAmount_Seat_tax = Convert.ToInt32(bagitem.Groups["seatTaxPrice"].Value.Trim());
-                                                                break;
+                                                                if (tb_Passengerobj.FirstName.Trim().ToUpper() + "_" + tb_Passengerobj.LastName.Trim().ToUpper() == htpaxdetails[bagitem.Groups["Paxid"].Value.Trim()].ToString())
+                                                                {
+                                                                    TotalAmount_Seat = Convert.ToInt32(bagitem.Groups["seatBasePrice"].Value.Trim());
+                                                                    TotalAmount_Seat_tax = Convert.ToInt32(bagitem.Groups["seatTaxPrice"].Value.Trim());
+                                                                    break;
+                                                                }
                                                             }
                                                         }
                                                     }

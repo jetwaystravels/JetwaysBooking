@@ -26,6 +26,7 @@ using OnionArchitectureAPI.Services.Travelport;
 using Microsoft.IdentityModel.Tokens;
 using static DomainLayer.Model.GDSResModel;
 using OnionConsumeWebAPI.Models;
+using CoporateBooking.Models;
 
 namespace OnionConsumeWebAPI.Controllers.RoundTrip
 {
@@ -1973,7 +1974,20 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         str3 = string.Empty;
                         TotalCount = 0;
                         tokenData = _mongoDBHelper.GetSuppFlightTokenByGUID(Guid, "Indigo").Result;
+                        LegalEntity legal = new LegalEntity();
+                        legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
 
+                        string dealcode = string.Empty;
+                        if (legal != null)
+                        {
+                            string indigoValue = legal.DealCode
+                                                .Split(',')
+                                                .FirstOrDefault(s => s.Contains("4"));
+
+                            // Extract the value before `_` if found
+                            string supplierId = indigoValue?.Split('_')[1];
+                            dealcode = supplierId;
+                        }
                         string stravailibitilityrequest = objMongoHelper.UnZip(tokenData.PassRequest);
                         GetAvailabilityRequest availibiltyRQ = JsonConvert.DeserializeObject<GetAvailabilityRequest>(stravailibitilityrequest);
 
@@ -1997,7 +2011,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         _FareKeyData = FRTparts[0];
                         #region IndigoSellRequest
                         _sell objsell = new _sell();
-                        IndigoBookingManager_.SellResponse _getSellRS = await objsell.Sell(Signature, _JourneykeyData, _FareKeyData, _Jparts[0], fareKey[p], TotalCount, adultcount, childcount, infantcount, p);
+                        IndigoBookingManager_.SellResponse _getSellRS = await objsell.Sell(Signature, _JourneykeyData, _FareKeyData, _Jparts[0], fareKey[p], TotalCount, adultcount, childcount, infantcount, p,"", dealcode);
                         #endregion
                         #region GetState
 
@@ -2174,7 +2188,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             AirAsiaTripResponceobj.passengers = passkeylist;
                             AirAsiaTripResponceobj.passengerscount = passengercount;
                             #region Indigo ItenaryRequest
-                            IndigoBookingManager_.PriceItineraryResponse _getPriceItineraryRS = await objsell.GetItineraryPrice(Signature, _JourneykeyData, _FareKeyData, _Jparts[0], fareKey[p], TotalCount, adultcount, childcount, infantcount, p);
+                            IndigoBookingManager_.PriceItineraryResponse _getPriceItineraryRS = await objsell.GetItineraryPrice(Signature, _JourneykeyData, _FareKeyData, _Jparts[0], fareKey[p], TotalCount, adultcount, childcount, infantcount, p,"", dealcode);
                             #endregion
                             HttpContext.Session.SetString("journeySellKey", JsonConvert.SerializeObject(_JourneykeyData));
                             SimpleAvailabilityRequestModel _SimpleAvailabilityobj = new SimpleAvailabilityRequestModel();
