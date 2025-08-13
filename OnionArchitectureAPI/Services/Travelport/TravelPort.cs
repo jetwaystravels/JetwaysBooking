@@ -182,7 +182,7 @@ namespace OnionArchitectureAPI.Services.Travelport
             return res;
         }
 
-        public string GetAvailabiltyCorporate(string _testURL, StringBuilder sbReq, TravelPort _objAvail, SimpleAvailabilityRequestModel _GetfligthModel, string newGuid, string _targetBranch, string _userName, string _password, string flightclass, string JourneyType, string _AirlineWay)
+        public string GetAvailabiltyCorporate(string _testURL, StringBuilder sbReq, TravelPort _objAvail, SimpleAvailabilityRequestModel _GetfligthModel, string newGuid, string _targetBranch, string _userName, string _password, string flightclass, string JourneyType, string _AirlineWay, string dealcode)
         {
 
             sbReq = new StringBuilder();
@@ -308,7 +308,10 @@ namespace OnionArchitectureAPI.Services.Travelport
             }
             sbReq.Append("<air:AirPricingModifiers FaresIndicator=\"AllFares\" ETicketability=\"Required\">");
             sbReq.Append("<FlightType TripleInterlineCon=\"false\" DoubleInterlineCon=\"false\" SingleInterlineCon=\"true\" TripleOnlineCon=\"false\" DoubleOnlineCon=\"false\" SingleOnlineCon=\"true\" StopDirects=\"true\" NonStopDirects=\"true\" />");
-            sbReq.Append("<air:AccountCodes><com:AccountCode Code=\"SME2\" /></air:AccountCodes>");
+            if (!string.IsNullOrEmpty(dealcode))
+            {
+                sbReq.Append("<air:AccountCodes><com:AccountCode Code=\"" + dealcode + "\" /></air:AccountCodes>");
+            }
             sbReq.Append("</air:AirPricingModifiers>");
             sbReq.Append("</air:LowFareSearchReq></soap:Body></soap:Envelope>");
             string res = Methodshit.HttpPost(_testURL, sbReq.ToString(), _userName, _password);

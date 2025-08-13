@@ -352,9 +352,10 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
-
+                var url = $"{AppUrlConstant.Getsuppliercred}?flightclass={Uri.EscapeDataString(flightclass)}";
+                HttpResponseMessage response = await client.GetAsync(url);
                 // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
-                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+               // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
                 //Air Asia login
                 //Air Asia login
                 if (response.IsSuccessStatusCode)
@@ -1957,7 +1958,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 mongoGDSToken.Supp = "GDS";
                 if (_CredentialsGDS.username != null)
                 {
-                    res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuid.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "GDSOneWay");
+                    res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuid.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "GDSOneWay", _CredentialsGDS.dealCodeName);
                     TempData["origin"] = _GetfligthModel.origin;
                     TempData["destination"] = _GetfligthModel.destination;
                     if (res != null && !res.Contains("Bad Request") && !res.Contains("Internal Server Error"))
@@ -3309,7 +3310,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     _GetfligthModel.endDate = searchLog.ArrivalDateTime;
                     if (!string.IsNullOrEmpty(_CredentialsGDS.username))
                     {
-                        res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuidR.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "");
+                        res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuidR.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "",_CredentialsGDS.dealCodeName);
                     }
                     TempData["originR"] = _GetfligthModel.origin;
                     TempData["destinationR"] = _GetfligthModel.destination;

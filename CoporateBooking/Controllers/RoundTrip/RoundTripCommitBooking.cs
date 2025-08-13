@@ -3430,7 +3430,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                                     // Iterate through service charges
                                                     int ServiceCount = fee.ServiceCharges.Length;
-                                                    if (fee.FeeCode.ToString().StartsWith("SFBO"))
+                                                    if (fee.FeeType.ToString().StartsWith("SeatFee"))
                                                     {
                                                         foreach (var serviceCharge in fee.ServiceCharges)
                                                         {
@@ -3440,7 +3440,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                             {
                                                                 if (fee.FlightReference.ToString().Contains(oridest) == true)
                                                                 {
-                                                                    if (serviceChargeCode.StartsWith("SFBO") && serviceCharge.ChargeType.ToString() == "ServiceCharge")
+                                                                    if (serviceCharge.ChargeType.ToString() == "ServiceCharge")
                                                                     {
                                                                         TotalAmount_Seat = amount;
                                                                         //TicketSeat[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Seat;
@@ -3458,7 +3458,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                                         }
                                                     }
-                                                    else if (!ssrCode.Equals("SFBO") && !ssrCode.Equals("INFT") && !ssrCode.ToString().ToLower().Contains("tax") && ssrCode.StartsWith("E", StringComparison.OrdinalIgnoreCase) == false)
+                                                    else if (!fee.FeeType.ToString().StartsWith("SeatFee") && !ssrCode.Equals("INFT") && !ssrCode.ToString().ToLower().Contains("tax") && ssrCode.StartsWith("E", StringComparison.OrdinalIgnoreCase) == false)
                                                     {
                                                         foreach (var serviceCharge in fee.ServiceCharges)
                                                         {
