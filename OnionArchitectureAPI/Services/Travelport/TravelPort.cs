@@ -4534,6 +4534,7 @@ namespace OnionArchitectureAPI.Services.Travelport
                             string _data = htseat[oneway0List[a].ToString().Split("_")[0].Trim()].ToString().Replace("common_v52_0", "com");
                             //_data=_data.Replace("<com:ServiceData", "<com:ServiceData " + SeatNum.Trim() + );
                             //BookingTravellerref = Regex.Match(_data, @"BookingTravelerRef=""(?<BookingTravelerRef>[\s\S]*?)""").Groups["BookingTravelerRef"].Value;
+                            AirSegmentref = lstsegment[0].Trim();
                             string NewValue = "";
                             if (passengerdetails[a].passengerkey.Contains("**"))
                             {
@@ -4543,7 +4544,7 @@ namespace OnionArchitectureAPI.Services.Travelport
                             {
                                 NewValue = "<com:ServiceData " + SeatNum.Trim() + " BookingTravelerRef=\"" + passengerdetails[a].passengerkey.Trim() + "\" AirSegmentRef=\"" + AirSegmentref + "\">";
                             }
-                            AirSegmentref = lstsegment[0].Trim();
+                            //AirSegmentref = lstsegment[0].Trim();
                             _data = _data.Replace("<com:ServiceData", "<com:ServiceData " + SeatNum.Trim());
                             _data = Regex.Replace(_data, "Key=\"", "Key=\"" + a + "");
                             _data = Regex.Replace(_data, "<air:TaxInfo Category=[\\s\\S]*?/>", "");
@@ -4561,6 +4562,7 @@ namespace OnionArchitectureAPI.Services.Travelport
                             string _data = htseat[oneway1List[a].ToString().Split("_")[0].Trim()].ToString().Replace("common_v52_0", "com");
                             //_data=_data.Replace("<com:ServiceData", "<com:ServiceData " + SeatNum.Trim() + );
                             //BookingTravellerref = Regex.Match(_data, @"BookingTravelerRef=""(?<BookingTravelerRef>[\s\S]*?)""").Groups["BookingTravelerRef"].Value;
+                            AirSegmentref = lstsegment[1].Trim();
                             string NewValue = "";
                             if (passengerdetails[a].passengerkey.Contains("**"))
                             {
@@ -4570,7 +4572,7 @@ namespace OnionArchitectureAPI.Services.Travelport
                             {
                                 NewValue = "<com:ServiceData " + SeatNum.Trim() + " BookingTravelerRef=\"" + passengerdetails[a].passengerkey.Trim() + "\" AirSegmentRef=\"" + AirSegmentref + "\">";
                             }
-                            AirSegmentref = lstsegment[1].Trim();
+                            //AirSegmentref = lstsegment[1].Trim();
                             _data = _data.Replace("<com:ServiceData", "<com:ServiceData " + SeatNum.Trim());
                             _data = Regex.Replace(_data, "Key=\"", "Key=\"" + paxcounter + "");
                             _data = Regex.Replace(_data, "<air:TaxInfo Category=[\\s\\S]*?/>", "");

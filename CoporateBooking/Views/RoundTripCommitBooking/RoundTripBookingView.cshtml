@@ -25,7 +25,7 @@
 
     <style>
         .ticketdwn img {
-        cursor: pointer;
+            cursor: pointer;
         }
     </style>
 
@@ -79,65 +79,65 @@
     <style>
         /* Resetting default browser styles */
         bodyD, h1, p {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
         html, bodyD {
-        height: 100%;
-        margin: 0;
+            height: 100%;
+            margin: 0;
         }
 
         /* Main container for centering the content */
         .main-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
         }
 
         /* Error container styling */
         .error-container {
-        text-align: center;
-        background: #fff;
-        padding: 2rem;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 446px;
-        width: 100%;
+            text-align: center;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 446px;
+            width: 100%;
         }
 
         /* Styling for the error message */
         .error-message h1 {
-        font-size: 4rem;
-        color: #ff4d4d;
-        margin-bottom: 0.5rem;
+            font-size: 4rem;
+            color: #ff4d4d;
+            margin-bottom: 0.5rem;
         }
 
         .error-message p {
-        font-size: 1.2rem;
-        color: #333;
+            font-size: 1.2rem;
+            color: #333;
         }
 
-        .error-message p a {
-        color: #007bff;
-        text-decoration: none;
-        }
+            .error-message p a {
+                color: #007bff;
+                text-decoration: none;
+            }
 
-        .error-message p a:hover {
-        text-decoration: underline;
-        }
+                .error-message p a:hover {
+                    text-decoration: underline;
+                }
 
         .btncstm {
-        color: #000;
-        border: 1px solid #000;
-        width: 140px;
-        float: right;
-        padding: 4px;
-        background-color: #fdfbfb;
+            color: #000;
+            border: 1px solid #000;
+            width: 140px;
+            float: right;
+            padding: 4px;
+            background-color: #fdfbfb;
         }
 
     </style>
@@ -374,7 +374,7 @@
                                                                         <td rowspan="2" style="vertical-align:middle;">@Model.AirlinePNR[a].passengers[i2].name.first (@Model.AirlinePNR[a].passengers[i2].passengerTypeCode)</td>
                                                                     }
                                                                 }
-                                                                    // else
+                                                                // else
                                                                 // {
                                                                 //     <td></td>
                                                                 // }
@@ -719,10 +719,10 @@
 
 
 
-                                                                // if (@Model.AirlinePNR[a].breakdown.passengerTotals.seats.totalSeatAmount > 0)
+                                                        // if (@Model.AirlinePNR[a].breakdown.passengerTotals.seats.totalSeatAmount > 0)
                                                         // {
                                                         //     <tr>
-                                                                //         <td>Seat Amount:</td>
+                                                        //         <td>Seat Amount:</td>
                                                         //         <td>Rs. @Model.AirlinePNR[a].breakdown.passengerTotals.seats.totalSeatAmount</td>
                                                         //     </tr>
 
@@ -841,7 +841,7 @@
                                                                         <td rowspan="2" style="vertical-align:middle;">@Model.AirlinePNR[a].passengers[i2].name.first (@Model.AirlinePNR[a].passengers[i2].passengerTypeCode)</td>
                                                                     }
                                                                 }
-                                                                    // else
+                                                                // else
                                                                 // {
                                                                 //     <td></td>
                                                                 // }
@@ -1268,7 +1268,7 @@
                                                     @for (int i3 = 0; i3 < @Model.AirlinePNR[a].journeys[0].segments.Count; i3++)
                                                     {
                                                         // string barcodeimageUrl = string.Empty;
-                                                    // if (Model.AirlinePNR[a].passengers[i2].barcodestringlst != null && Model.AirlinePNR[a].passengers[i2].barcodestringlst.Count > 0 && i3 == 0)
+                                                        // if (Model.AirlinePNR[a].passengers[i2].barcodestringlst != null && Model.AirlinePNR[a].passengers[i2].barcodestringlst.Count > 0 && i3 == 0)
                                                         // {
                                                         //     barcodeimageUrl = @Model.AirlinePNR[a].passengers[i2].barcodestringlst[0].Trim();
                                                         // }
@@ -1492,7 +1492,7 @@
                                                                 {
                                                                     hashdata = @Model.AirlinePNR[a].passengers[i2].passengerKey + "_" + @Model.AirlinePNR[a].journeys[0].segments[i3].designator.origin + "_" + @Model.AirlinePNR[a].journeys[0].segments[i3].designator.destination;
                                                                 }
-                                                                    // if (htmeal != null)
+                                                                // if (htmeal != null)
                                                                 // {
                                                                 //     <td>@htmeal[hashdata]</td>
                                                                 // }
@@ -1576,7 +1576,14 @@
                                                                             if (Model.AirlinePNR[a].passengers[i2].passengerTypeCode == "CHD")
                                                                                 Model.AirlinePNR[a].passengers[i2].passengerTypeCode = "CNN";
                                                                             var weight = htbag[hashdata];
-                                                                            <td>XBAG-@weight Kg</td>
+                                                                            if (weight != null)
+                                                                            {
+                                                                                <td>XBAG-@weight Kg</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td>NA</td>
+                                                                            }
                                                                         }
                                                                         else
                                                                         {
