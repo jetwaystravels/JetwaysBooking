@@ -61,8 +61,9 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
             using (HttpClient client = new HttpClient())
             {
                 client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
-
-                HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+                var url = $"{AppUrlConstant.Getsuppliercred}?flightclass={Uri.EscapeDataString("Corporate")}";
+                HttpResponseMessage response = await client.GetAsync(url);
+                //HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
 
                 if (response.IsSuccessStatusCode)
                 {

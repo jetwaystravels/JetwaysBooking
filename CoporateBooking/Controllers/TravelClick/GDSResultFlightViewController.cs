@@ -128,11 +128,14 @@ namespace OnionConsumeWebAPI.Controllers.TravelClick
               //  {
                     client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
 
-                    // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
-                    HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
-                    //Air Asia login
-                    //Air Asia login
-                    if (response.IsSuccessStatusCode)
+                // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
+                var url = $"{AppUrlConstant.Getsuppliercred}?flightclass={Uri.EscapeDataString("Corporate")}";
+                HttpResponseMessage response = await client.GetAsync(url);
+                    
+
+                //Air Asia login
+                //Air Asia login
+                if (response.IsSuccessStatusCode)
                     {
                         var results = await response.Content.ReadAsStringAsync();
                         var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);

@@ -2348,22 +2348,24 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                         //using (HttpClient client = new HttpClient())
                         //{
-                            client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
-                            HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+                        client.BaseAddress = new Uri(AppUrlConstant.AdminBaseURL);
+                        var url = $"{AppUrlConstant.Getsuppliercred}?flightclass={Uri.EscapeDataString("Corporate")}";
+                        HttpResponseMessage response = await client.GetAsync(url);
+                        //HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
 
-                            if (response.IsSuccessStatusCode)
-                            {
-                                var results = await response.Content.ReadAsStringAsync();
-                                var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var results = await response.Content.ReadAsStringAsync();
+                            var jsonObject = JsonConvert.DeserializeObject<List<_credentials>>(results);
 
-                                _credentials _CredentialsGDS = new _credentials();
-                                _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
+                            _credentials _CredentialsGDS = new _credentials();
+                            _CredentialsGDS = jsonObject.FirstOrDefault(cred => cred?.supplierid == 5 && cred.Status == 1);
 
-                                _targetBranch = _CredentialsGDS.organizationId;
-                                _userName = _CredentialsGDS.username;
-                                _password = _CredentialsGDS.password;
-                            }
-                       // }
+                            _targetBranch = _CredentialsGDS.organizationId;
+                            _userName = _CredentialsGDS.username;
+                            _password = _CredentialsGDS.password;
+                        }
+                        // }
 
 
                         //_targetBranch = "P7027135";

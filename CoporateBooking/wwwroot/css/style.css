@@ -1066,7 +1066,7 @@ HEADER AREA CSS
     top: 0;
     background: var(--white-color);
     /*margin-top: -100px;*/
-    margin-top: -50px;
+    /* margin-top: -50px;*/
 }
 
 .navbar.navbar-sticky-transitioned {
@@ -3928,6 +3928,35 @@ FOOTER AREA CSS
 /*End round trip domestic flight listing */
 
 /*start Oneway flight listing */
+.select-bx {
+    background: #fff;
+    width: 106px;
+    margin-left: auto;
+    text-align: center !important;
+    box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.20);
+    border-radius: 12px 0 12px 0;
+    position: relative;
+    top: 11px;
+    right: 1px;
+    border-bottom: 1px solid rgba(156, 170, 179, .28);
+    padding: 8px 10px 8px 8px;
+}
+
+    .select-bx input#selectAll {
+        margin-right: 8px;
+    }
+
+    .select-bx input[type="checkbox"] {
+        accent-color: #3554d1;
+    }
+
+#flight-results input[type="checkbox"] {
+    accent-color: #3554d1;
+    position: relative;
+    top: -2px;
+    left: 2px;
+}
+
 
 .booking-quote {
     box-shadow: #757575 0px 0px 12px;
@@ -3955,6 +3984,10 @@ FOOTER AREA CSS
         .booking-quote .select-quote label {
             vertical-align: middle;
         }
+
+    .booking-quote input[type="checkbox"] {
+        accent-color: #3554d1;
+    }
 
 /*End Oneway flight listing */
 
@@ -4759,6 +4792,11 @@ a.login-otp {
     padding: 20px 33px 10px;
 }
 
+.cs-loader p {
+    border: none;
+    box-shadow: none;
+}
+
 @keyframes rotation {
     0% {
         transform: rotate(0deg);
@@ -4844,9 +4882,8 @@ header.navbar.sticky-active {
     #popularFilters.fixed {
         position: fixed;
         top: 154px !important;
-        left: 80px !important;
         width: 275px;
-        z-index: 1000;
+        z-index: 10;
         opacity: 1;
         box-shadow: 0 0 12px 0 rgb(0 0 0 / 8%);
         border-radius: 0 0 8px 8px;
@@ -4858,6 +4895,184 @@ header.navbar.sticky-active {
         display: none;
     }
 /*End popular filter fixed*/
+
+
+/* New css Traveller Details modal popup Start */
+
+.custom-modal {
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    /*  display: flex; */
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-modal-content {
+    background-color: #fff;
+    width: 90%;
+    max-width: 430px;
+    border-radius: 8px;
+    overflow: hidden;
+    animation: fadeIn 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+    .custom-modal-content p {
+        font-size: 14px;
+        color: #111;
+        line-height: 25px;
+    }
+
+    .custom-modal-content h5 {
+        font-size: 1rem;
+    }
+
+    .custom-modal-content p strong {
+        margin-top: 8px;
+        display: inline-block;
+        margin-bottom: 4px;
+        width: 100%;
+        padding-bottom: 5px;
+        background: #f8f9fc;
+        font-weight: 600;
+    }
+
+    .custom-modal-content .btn {
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 10px 16px;
+    }
+
+
+    .custom-modal-content .btn-secondary {
+        color: #fff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .custom-modal-content .btn-secondary:hover {
+            color: #fff;
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+.custom-modal-header,
+.custom-modal-footer {
+    padding: 9px 16px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: right;
+}
+
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-modal-body {
+    padding: 12px 18px;
+}
+
+.custom-modal-close {
+    cursor: pointer;
+    font-size: 24px;
+    color: #000;
+}
+
+
+#dataPopup {
+    display: none;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+/* New css Traveller Details modal popup End */
+
+
+/* New css Traveller section Start */
+
+.error-message {
+    color: red;
+    font-size: 11px;
+    margin: 5px 0 0 0;
+    display: none;
+}
+
+.error-message-val {
+    color: red;
+    font-size: 11px;
+    margin: 5px 0 0 0;
+    display: none;
+}
+
+.error-input {
+    border: 1px solid red;
+}
+
+.modal-body p {
+    border-radius: 6px;
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 9%);
+    border: 1px solid #E4E3E1;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.dobinput {
+    background: #fff;
+    color: var(--color-light-1);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 8px;
+    min-height: 40px;
+    transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+    width: 100%;
+    font-size: 14px;
+}
+
+.brd-none {
+    border: none;
+}
+
+.custom-select::-ms-expand {
+    display: none; /* Hide the arrow icon in IE */
+}
+
+.custom-select option {
+    padding: 5px; /* Set the desired padding for each option */
+    height: 50px;
+    overflow: hidden;
+}
+
+.checkbox-button2 {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 0;
+    cursor: pointer;
+}
+
+
+    .checkbox-button2.checked::after {
+        content: '\2713';
+        font-size: 16px;
+        color: #333;
+        display: block;
+        text-align: center;
+        line-height: 20px;
+    }
+
+/* New css Traveller section End */
+
 
 /* Start date picker */
 

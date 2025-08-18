@@ -46,6 +46,7 @@ using static System.Net.WebRequestMethods;
 using CoporateBooking.Models;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
+using Microsoft.Extensions.Primitives;
 
 namespace OnionConsumeWebAPI.Controllers.AirAsia
 {
@@ -584,9 +585,9 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                 legalEntity.Guid = ResponseGuid;// SearchGuid;
 
-                if (!Request.Form.ContainsKey("hdnlegal") || string.IsNullOrEmpty(Request.Form["hdnlegal"]))
+                if (!Request.Form.TryGetValue("hdnlegal", out StringValues legal) || StringValues.IsNullOrEmpty(legal))
                 {
-
+                    //if (!Request.Form.ContainsKey("hdnlegal") || string.IsNullOrEmpty(Request.Form["hdnlegal"].ToString()))
 
                     string rawLegalEntity = Convert.ToString(formCollection["legal_entity"]);
 
