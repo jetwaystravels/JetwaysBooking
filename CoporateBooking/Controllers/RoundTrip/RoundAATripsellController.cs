@@ -3822,10 +3822,8 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     {
                                         mongoGDS.RResponse = res;
                                         mongoGDS.RLocatorCode = UniversalLocatorCode;
-                                        _mongoDBHelper.SaveGDSLocatorCode(mongoGDS);
                                         //HttpContext.Session.SetString("PNRR", res + "@@" + UniversalLocatorCode);
                                     }
-
                                     #endregion
                                 }
 
@@ -3835,6 +3833,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         k1++;
                     }
                 }
+                _mongoDBHelper.SaveGDSLocatorCode(mongoGDS);
             }
 
             #endregion

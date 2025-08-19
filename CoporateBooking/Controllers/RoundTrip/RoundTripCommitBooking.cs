@@ -4834,12 +4834,12 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 //res = "";// _objAvail.CreatePNRRoundTrip(_testURL, createPNRReq, newGuid.ToString(), _targetBranch, _userName, _password, AdultTraveller, _data, _Total, Logfolder, k1, _unitkey, _SSRkey, _pricesolution);
 
                                 //RecordLocator = Regex.Match(res, @"universal:UniversalRecord\s*LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
-                                if (k1 == 0)
+                                if (k1 == 0 && gDSPNRResponse!=null)
                                 {
                                     strResponse = gDSPNRResponse.Response; // HttpContext.Session.GetString("PNRL").Split("@@")[0];
                                     RecordLocator = gDSPNRResponse.LocatorCode; // HttpContext.Session.GetString("PNRL").Split("@@")[1];
                                 }
-                                else
+                                else if(k1 == 1 && gDSPNRResponse != null)
                                 {
                                     strResponse = gDSPNRResponse.RResponse;  //HttpContext.Session.GetString("PNRR").Split("@@")[0];
                                     RecordLocator = gDSPNRResponse.RLocatorCode; // HttpContext.Session.GetString("PNRR").Split("@@")[1];
