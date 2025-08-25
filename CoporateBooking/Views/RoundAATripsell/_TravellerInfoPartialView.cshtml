@@ -2,6 +2,8 @@
 @{
 	Layout = null;
 	var data = Model;
+	var gstData = ViewBag.GSTdata as List<CoporateBooking.Models.CompanyEmployeeGSTDetails>
+						?? new List<CoporateBooking.Models.CompanyEmployeeGSTDetails>();
 }
 <div class="py-15 px-20 rounded-4 text-15 bg-blue-1-05 mb-10">
 	@{
@@ -80,7 +82,7 @@
 							@* <input type="hidden" name="passengerdetails[@i].passengerkey" value="@Model.passeengerlistRT[0].passengers[i].passengerKey" required />*@
 				//}
 						}
-						<input type="text" class="contactFname validate-field" data-validate="name" maxlength="32" oninput="validateInputT(event ,@i)" id="LeadPass[@i]" placeholder="First & middle name" name="passengerdetails[@i].First" style='text-transform:uppercase' required />
+						<input type="text" class="contactFname validate-field" data-validate="name" maxlength="32" oninput="validateInputT(event ,@i)" value="@(gstData.ElementAtOrDefault(i)?.FirstName ?? "")" id="LeadPass[@i]" placeholder="First & middle name" name="passengerdetails[@i].First" style='text-transform:uppercase' required />
 
 					</div>
 					<p id="error-Fname" class="error-message  error-CFname" style="display: none;">Enter First Name</p>
@@ -88,7 +90,7 @@
 				<div class="col-md-3">
 
 					<div class="form-input">
-						<input type="text" class="contactLname validate-field" data-validate="last" oninput="validateInputT(event,@i)" maxlength="32" placeholder="Last name" name="passengerdetails[@i].Last" style='text-transform:uppercase' required />
+						<input type="text" class="contactLname validate-field" data-validate="last" value="@(gstData.ElementAtOrDefault(i)?.LastName ?? "")" oninput="validateInputT(event,@i)" maxlength="32" placeholder="Last name" name="passengerdetails[@i].Last" style='text-transform:uppercase' required />
 
 					</div>
 					<p id="error-Lname" class="error-message error-CLname" style="display:none">Enter Last Name</p>
@@ -98,11 +100,11 @@
 					if (Model.passeengerlistRT[0].passengers[i].passengerTypeCode == "ADT" || Model.passeengerlistRT[0].passengers[i].passengerTypeCode == "CHD")
 					{
 						<div class="col-md-3">
-							<div class="form-input"><input type="text" data-validate="email" class="contactemail validate-field" maxlength="50" oninput="validateInputT(event,@i)" id="contactemailID" placeholder="email" name="passengerdetails[@i].email" required /></div>
+							<div class="form-input"><input type="text" data-validate="email" class="contactemail validate-field" maxlength="50" oninput="validateInputT(event,@i)" value="@(gstData.ElementAtOrDefault(i)?.BusinessEmail ?? "")" id="contactemailID" placeholder="email" name="passengerdetails[@i].email" required /></div>
 						</div>
 						<p class="error-message error-emailname" style="display:none">Enter your email</p>
 						<div class="col-md-2">
-							<div class="form-input"><input type="text" maxlength="10" data-validate="phone" id="contactphoneID" class="contactphone validate-field" oninput="validateInputT(event,@i)" placeholder="phone" name="passengerdetails[@i].mobile" required /></div>
+							<div class="form-input"><input type="text" maxlength="10" data-validate="phone" id="contactphoneID" class="contactphone validate-field" oninput="validateInputT(event,@i)" value="@(gstData.ElementAtOrDefault(i)?.MobileNumber ?? "")" placeholder="phone" name="passengerdetails[@i].mobile" required /></div>
 						</div>
 
 						<p class="error-message error-phoneN" style="display:none">Enter your phone</p>
@@ -168,11 +170,12 @@
 											<img class="size-30" src="@departLogoPath" alt="Depart Logo" />
 										</div>
 										<input type="text"
-										id="FFID_Dep_@i"
-										maxlength="9"
-										placeholder="Departure Frequent Flyer"
-										name="passengerdetails[@i].DepartFrequentFlyer"
-										required />
+											   id="FFID_Dep_@i"
+											   maxlength="9"
+											   placeholder="Departure Frequent Flyer"
+											   value="@(gstData.ElementAtOrDefault(i)?.FrequentFlyerNumbers ?? "")"
+											   name="passengerdetails[@i].DepartFrequentFlyer"
+											   required />
 									</div>
 								</div>
 
@@ -191,11 +194,12 @@
 												</div>
 
 												<input type="text"
-												id="FFID_Ret_@i"
-												maxlength="9"
-												placeholder="Return Frequent Flyer"
-												name="passengerdetails[@i].ReturnFrequentFlyer"
-												required />
+													   id="FFID_Ret_@i"
+													   maxlength="9"
+													   placeholder="Return Frequent Flyer"
+													   value="@(gstData.ElementAtOrDefault(i)?.FrequentFlyerNumbers ?? "")"
+													   name="passengerdetails[@i].ReturnFrequentFlyer"
+													   required />
 
 											</div>
 										</div>
@@ -208,6 +212,7 @@
 													   id="FFID_Ret_@i"
 													   maxlength="9"
 													   placeholder="Return Frequent Flyer"
+													   value="@(gstData.ElementAtOrDefault(i)?.FrequentFlyerNumbers ?? "")"
 													   name="Model.passeengerlistRT[0].passengers[i].DepartFrequentFlyer"
 													   required />
 
@@ -215,84 +220,84 @@
 										</div>
 									}
 								}
-                            }
-                        </div>
-                        // ✅ End frquent flyer section
-                    }
-                    if (@Model.passeengerlistRT[0].passengers[i].passengerTypeCode == "INFT" || @Model.passeengerlistRT[0].passengers[i].passengerTypeCode == "INF")
-                    {
-                        <div class="col-md-4 infant-dob-input">
-                            <div class="form-input dobinput d-flex" id="InfDOBCount_@inafantIdx">
-                                <div class="dob-picker">
-                                    <select class="brd-none year-select" id="year_@inafantIdx" required>
-                                        <option value="" disabled selected>Year</option>
-                                        <option value="2025">2025</option>
-                                        <option value="2024">2024</option>
-                                        <option value="2023">2023</option>
-                                        <option value="2022">2022</option>
-                                    </select>
-                                    <select class="brd-none month-select" id="month_@inafantIdx" required>
-                                        <option value="" disabled selected>Month</option>
-                                        <option value="1">January</option>
-                                        <option value="2">February</option>
-                                        <option value="3">March</option>
-                                        <option value="4">April</option>
-                                        <option value="5">May</option>
-                                        <option value="6">June</option>
-                                        <option value="7">July</option>
-                                        <option value="8">August</option>
-                                        <option value="9">September</option>
-                                        <option value="10">October</option>
-                                        <option value="11">November</option>
-                                        <option value="12">December</option>
-                                    </select>
-                                    <select class="brd-none day-select" id="day_@inafantIdx" required>
-                                        <option value="" disabled selected>Day</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                        <option value="11">11</option>
-                                        <option value="12">12</option>
-                                        <option value="13">13</option>
-                                        <option value="14">14</option>
-                                        <option value="15">15</option>
-                                        <option value="16">16</option>
-                                        <option value="17">17</option>
-                                        <option value="18">18</option>
-                                        <option value="19">19</option>
-                                        <option value="20">20</option>
-                                        <option value="21">21</option>
-                                        <option value="22">22</option>
-                                        <option value="23">23</option>
-                                        <option value="24">24</option>
-                                        <option value="25">25</option>
-                                        <option value="26">26</option>
-                                        <option value="27">27</option>
-                                        <option value="28">28</option>
-                                        <option value="29">29</option>
-                                        <option value="30">30</option>
-                                        <option value="31">31</option>
-                                    </select>
-                                </div>
-                                <input type="hidden" name="passengerdetails[@i].dateOfBirth" id="dobHidden_@inafantIdx" />
-                            </div>
-                        </div>
-                        inafantIdx++;
-                    }
-                }
-            </div>
-        }
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary mt-15" id="showReviewPopup">Save</button>
-        </div>
-    </form>
+							}
+						</div>
+						// ✅ End frquent flyer section
+					}
+					if (@Model.passeengerlistRT[0].passengers[i].passengerTypeCode == "INFT" || @Model.passeengerlistRT[0].passengers[i].passengerTypeCode == "INF")
+					{
+						<div class="col-md-4 infant-dob-input">
+							<div class="form-input dobinput d-flex" id="InfDOBCount_@inafantIdx">
+								<div class="dob-picker">
+									<select class="brd-none year-select" id="year_@inafantIdx" required>
+										<option value="" disabled selected>Year</option>
+										<option value="2025">2025</option>
+										<option value="2024">2024</option>
+										<option value="2023">2023</option>
+										<option value="2022">2022</option>
+									</select>
+									<select class="brd-none month-select" id="month_@inafantIdx" required>
+										<option value="" disabled selected>Month</option>
+										<option value="1">January</option>
+										<option value="2">February</option>
+										<option value="3">March</option>
+										<option value="4">April</option>
+										<option value="5">May</option>
+										<option value="6">June</option>
+										<option value="7">July</option>
+										<option value="8">August</option>
+										<option value="9">September</option>
+										<option value="10">October</option>
+										<option value="11">November</option>
+										<option value="12">December</option>
+									</select>
+									<select class="brd-none day-select" id="day_@inafantIdx" required>
+										<option value="" disabled selected>Day</option>
+										<option value="1">1</option>
+										<option value="2">2</option>
+										<option value="3">3</option>
+										<option value="4">4</option>
+										<option value="5">5</option>
+										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
+										<option value="9">9</option>
+										<option value="10">10</option>
+										<option value="11">11</option>
+										<option value="12">12</option>
+										<option value="13">13</option>
+										<option value="14">14</option>
+										<option value="15">15</option>
+										<option value="16">16</option>
+										<option value="17">17</option>
+										<option value="18">18</option>
+										<option value="19">19</option>
+										<option value="20">20</option>
+										<option value="21">21</option>
+										<option value="22">22</option>
+										<option value="23">23</option>
+										<option value="24">24</option>
+										<option value="25">25</option>
+										<option value="26">26</option>
+										<option value="27">27</option>
+										<option value="28">28</option>
+										<option value="29">29</option>
+										<option value="30">30</option>
+										<option value="31">31</option>
+									</select>
+								</div>
+								<input type="hidden" name="passengerdetails[@i].dateOfBirth" id="dobHidden_@inafantIdx" />
+							</div>
+						</div>
+						inafantIdx++;
+					}
+				}
+			</div>
+		}
+		<div class="d-flex justify-content-end">
+			<button type="button" class="btn btn-primary mt-15" id="showReviewPopup">Save</button>
+		</div>
+	</form>
 </div>
 <div class="modal fade" id="dataPopup" tabindex="-1" role="dialog" aria-labelledby="dataPopupLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
