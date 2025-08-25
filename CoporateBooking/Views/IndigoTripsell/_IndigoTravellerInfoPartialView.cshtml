@@ -1,7 +1,8 @@
 ﻿@model DomainLayer.ViewModel.ViewModel
 @{
     Layout = null;
-
+	var gstData = ViewBag.GSTdata as List<CoporateBooking.Models.CompanyEmployeeGSTDetails>
+                        ?? new List<CoporateBooking.Models.CompanyEmployeeGSTDetails>();
 }
 
 <div class="py-15 px-20 rounded-4 text-15 bg-blue-1-05 mb-10">
@@ -61,7 +62,7 @@
 		<div class="col-md-3 inputFirstname">
 		    <div class="form-input">
 
-			<input type="text" class="contactFname validate-field" data-validate="name" maxlength="32" oninput="validateInputI(event ,@i)" id="LeadPass[@i]" placeholder="First & middle name" name="passengerdetails[@i].First" style='text-transform:uppercase' required />
+			<input type="text" class="contactFname validate-field" data-validate="name" maxlength="32" oninput="validateInputI(event ,@i)" value="@(gstData.ElementAtOrDefault(i)?.FirstName ?? "")" id="LeadPass[@i]" placeholder="First & middle name" name="passengerdetails[@i].First" style='text-transform:uppercase' required />
 
 		    </div>
 		    <p id="error-Fname" class="error-message  error-CFname" style="display: none;"></p>
@@ -69,7 +70,7 @@
 		</div>
 		<div class="col-md-2">
 		    <div class="form-input">
-			<input type="text" class="contactLname validate-field" data-validate="last" oninput="validateInputI(event,@i)" maxlength="32" placeholder="Last name" name="passengerdetails[@i].Last" style='text-transform:uppercase' required />
+						<input type="text" class="contactLname validate-field" data-validate="last" oninput="validateInputI(event,@i)" value="@(gstData.ElementAtOrDefault(i)?.LastName ?? "")" maxlength="32" placeholder="Last name" name="passengerdetails[@i].Last" style='text-transform:uppercase' required />
 
 		    </div>
 		    <p id="error-Lname" class="error-message error-CLname" style="display:none"></p>
@@ -79,7 +80,7 @@
 		    if (Model.passeengerlist.passengers[i].passengerTypeCode == "ADT" || Model.passeengerlist.passengers[i].passengerTypeCode == "CHD")
 		    {
 			<div class="col-md-3">
-			      <div class="form-input"><input type="text" data-validate="email" class="contactemail validate-field" maxlength="50" oninput="validateInputI(event,@i)" id="contactemailID" placeholder="email" name="passengerdetails[@i].Email" required /></div>
+							<div class="form-input"><input type="text" data-validate="email" class="contactemail validate-field" maxlength="50" oninput="validateInputI(event,@i)" id="contactemailID" value="@(gstData.ElementAtOrDefault(i)?.BusinessEmail ?? "")" placeholder="email" name="passengerdetails[@i].Email" required /></div>
 			</div>
 			<p class="error-message error-emailname" style="display:none"></p>
 			<p class="error-message-val " style="display:none"></p>
@@ -104,6 +105,7 @@
 									   class="contactphone validate-field"
 									   oninput="validateInputT(event,@i)"
 									   placeholder="phone"
+									   value="@(gstData.ElementAtOrDefault(i)?.MobileNumber ?? "")"
 									   name="passengerdetails[@i].mobile"
 									   required />
 							</div>
@@ -122,6 +124,7 @@
 									   class=""
 									   oninput=""
 									   placeholder="Frequent Flyer Numbers"
+									   value="@(gstData.ElementAtOrDefault(i)?.FrequentFlyerNumbers ?? "")"
 									   name="passengerdetails[@i].FrequentFlyer"
 									   required style="border-radius: 0 4px 4px 0;" />
 							</div>

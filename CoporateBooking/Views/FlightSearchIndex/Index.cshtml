@@ -2374,12 +2374,33 @@
                                 }
                             }
 
-                            // inside your autocomplete select:
+                           // inside your autocomplete select:
                             if (empId !== "GUEST" && empId !== "0") {
                                 toggleTravellers(true);   // disable when employee selected
                             } else {
                                 toggleTravellers(false);  // enable when Guest selected
                             }
+            $selectedContainer.on('click', '.remove-item', function () {
+                const $chip = $(this).parent();
+                const removedEmpId = String($chip.data('id'));
+                const isGuest = $chip.is('[data-guest="true"]');
+
+                // If Guest is being removed, reset children & infants immediately
+                if (isGuest) {
+                    $('#field_child').val(0);
+                    $('#field_infant').val(0);
+                    $('#count_child').text(0);
+                    $('#count_infant').text(0);
+                }
+
+                $chip.remove();
+                selectedEmpIdsCache.delete(removedEmpId);
+                $('#hdnempid').val([...selectedEmpIdsCache].join(','));
+
+                const remainingIds = [...selectedEmpIdsCache];
+                fetchBillingFor(remainingIds, false);
+                updateAdultCount($selectedContainer);
+            });
                         return false;
                     }
                 }).on('focus click', function () { $(this).autocomplete('search', ''); });

@@ -1468,7 +1468,19 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                             Designator Designatorobj = new Designator();
                             Designatorobj.origin = _getAvailabilityVer2Response.GetTripAvailabilityVer2Response.Schedules[0][0].DepartureStation;
                             Designatorobj.destination = _getAvailabilityVer2Response.GetTripAvailabilityVer2Response.Schedules[0][0].ArrivalStation;
+                            if (string.IsNullOrEmpty(Designatorobj.destination))
+                                Designatorobj.destination = _GetfligthModel.destination;
+                            if (string.IsNullOrEmpty(Designatorobj.origin))
+                                Designatorobj.origin = _GetfligthModel.origin;
                             string journeykey = _getAvailabilityVer2Response.GetTripAvailabilityVer2Response.Schedules[0][0].AvailableJourneys[i].JourneySellKey.ToString();
+                            if (journeykey.Contains("GOX") && Designatorobj.destination == "GOI")
+                            {
+                                Designatorobj.destination = "GOX";
+                            }
+                            if (journeykey.Contains("GOX") && Designatorobj.origin == "GOI")
+                            {
+                                Designatorobj.origin = "GOX";
+                            }
                             string departureTime = Regex.Match(journeykey, @Designatorobj.origin + @"[\s\S]*?~(?<STD>[\s\S]*?)~").Groups["STD"].Value.Trim();
                             string arrivalTime = Regex.Match(journeykey, @Designatorobj.destination + @"[\s\S]*?~(?<STA>[\s\S]*?)~").Groups["STA"].Value.Trim();
                             Designatorobj.Arrival = Regex.Match(journeykey, @Designatorobj.destination + @"[\s\S]*?~(?<STA>[\s\S]*?)~").Groups["STA"].Value.Trim();
@@ -1485,8 +1497,12 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                                 formatTime = $"{(int)timeSpan.TotalHours} h {(int)timeSpan.Minutes} m";
                             Designatorobj.formatTime = timeSpan;
                             string queryorigin = _getAvailabilityVer2Response.GetTripAvailabilityVer2Response.Schedules[0][0].DepartureStation;
+                            if (string.IsNullOrEmpty(queryorigin))
+                                queryorigin = _GetfligthModel.origin;
                             Designatorobj.origin = Citynamelist.GetAllCityData().Where(x => x.citycode == queryorigin).SingleOrDefault().cityname;
                             string querydestination = _getAvailabilityVer2Response.GetTripAvailabilityVer2Response.Schedules[0][0].ArrivalStation;
+                            if (string.IsNullOrEmpty(querydestination))
+                                querydestination = _GetfligthModel.destination;
                             Designatorobj.destination = Citynamelist.GetAllCityData().Where(x => x.citycode == querydestination).SingleOrDefault().cityname;
                             var segmentscount = _getAvailabilityVer2Response.GetTripAvailabilityVer2Response.Schedules[0][0].AvailableJourneys[i].AvailableSegment.Length;
                             List<DomainLayer.Model.Segment> Segmentobjlist = new List<DomainLayer.Model.Segment>();
@@ -2781,8 +2797,19 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                                 Designator Designatorobj = new Designator();
                                 Designatorobj.origin = _getAvailabilityVer2ReturnResponse.GetTripAvailabilityVer2Response.Schedules[0][0].DepartureStation;
                                 Designatorobj.destination = _getAvailabilityVer2ReturnResponse.GetTripAvailabilityVer2Response.Schedules[0][0].ArrivalStation;
-
+                                if (string.IsNullOrEmpty(Designatorobj.destination))
+                                    Designatorobj.destination = _GetfligthModel.destination;
+                                if (string.IsNullOrEmpty(Designatorobj.origin))
+                                    Designatorobj.origin = _GetfligthModel.origin;
                                 string journeykey = _getAvailabilityVer2ReturnResponse.GetTripAvailabilityVer2Response.Schedules[0][0].AvailableJourneys[i].JourneySellKey.ToString();
+                                if (journeykey.Contains("GOX") && Designatorobj.destination == "GOI")
+                                {
+                                    Designatorobj.destination = "GOX";
+                                }
+                                if (journeykey.Contains("GOX") && Designatorobj.origin == "GOI")
+                                {
+                                    Designatorobj.origin = "GOX";
+                                }
                                 string departureTime = Regex.Match(journeykey, @Designatorobj.origin + @"[\s\S]*?~(?<STD>[\s\S]*?)~").Groups["STD"].Value.Trim();
                                 string arrivalTime = Regex.Match(journeykey, @Designatorobj.destination + @"[\s\S]*?~(?<STA>[\s\S]*?)~").Groups["STA"].Value.Trim();
                                 //Designatorobj.departure = DateTime.ParseExact(departureTime, "MM/dd/yyyy HH:mm", CultureInfo.InvariantCulture);
@@ -2803,9 +2830,11 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                                 Designatorobj.formatTime = timeSpan;
                                 //-End--------------
                                 string queryorigin = _getAvailabilityVer2ReturnResponse.GetTripAvailabilityVer2Response.Schedules[0][0].DepartureStation;
-
+                                if (string.IsNullOrEmpty(queryorigin))
+                                    queryorigin = _GetfligthModel.origin;
                                 string querydestination = _getAvailabilityVer2ReturnResponse.GetTripAvailabilityVer2Response.Schedules[0][0].ArrivalStation;
-
+                                if (string.IsNullOrEmpty(querydestination))
+                                    querydestination = _GetfligthModel.destination;
                                 Designatorobj.destination = Citynamelist.GetAllCityData().Where(x => x.citycode == querydestination).SingleOrDefault().cityname;
                                 Designatorobj.origin = Citynamelist.GetAllCityData().Where(x => x.citycode == queryorigin).SingleOrDefault().cityname;
 

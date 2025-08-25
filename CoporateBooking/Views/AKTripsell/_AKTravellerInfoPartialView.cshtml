@@ -1,7 +1,8 @@
 ﻿@model DomainLayer.ViewModel.ViewModel
 @{
     Layout = null;
-
+    var gstData = ViewBag.GSTdata as List<CoporateBooking.Models.CompanyEmployeeGSTDetails>
+                        ?? new List<CoporateBooking.Models.CompanyEmployeeGSTDetails>();
 }
 <div class="py-15 px-20 rounded-4 text-15 bg-blue-1-05 mb-10">
 	
@@ -60,40 +61,40 @@
 		</div>
 		<div class="col-md-3">
 
-		    <div class="form-input">
-			@{
-			    if (Model.AkPassenger.passengers[i].passengerKey == "0")
-			    {
-				<input type="hidden" name="passengerdetails[@i].passengerkey" value="@Model.AkPassenger.passengers[i].passengerKey" required />
-			    }
-			    else
-			    {
-				<input type="hidden" name="passengerdetails[@i].passengerkey" value="@Model.AkPassenger.passengers[i].passengerKey" required />
-			    }
-			}
-			<input type="text" class="contactFname validate-field" data-validate="name" maxlength="32" oninput="validateInputT(event ,@i)" id="LeadPass1" placeholder="First & middle name" name="passengerdetails[@i].First" style='text-transform:uppercase' required />
+                    <div class="form-input">
+                        @{
+                            if (Model.AkPassenger.passengers[i].passengerKey == "0")
+                            {
+                                <input type="hidden" name="passengerdetails[@i].passengerkey" value="@Model.AkPassenger.passengers[i].passengerKey" required />
+                            }
+                            else
+                            {
+                                <input type="hidden" name="passengerdetails[@i].passengerkey" value="@Model.AkPassenger.passengers[i].passengerKey" required />
+                            }
+                        }
+                        <input type="text" class="contactFname validate-field" data-validate="name" maxlength="32" oninput="validateInputT(event ,@i)" value="@(gstData.ElementAtOrDefault(i)?.FirstName ?? "")" id="LeadPass1" placeholder="First & middle name" name="passengerdetails[@i].First" style='text-transform:uppercase' required />
 
-		    </div>
-		    <p id="error-Fname" class="error-message  error-CFname" style="display: none;"></p>
-		    <p class="error-message-val " style="display:none"></p>
-		</div>
-		<div class="col-md-2">
+                    </div>
+                    <p id="error-Fname" class="error-message  error-CFname" style="display: none;"></p>
+                    <p class="error-message-val " style="display:none"></p>
+                </div>
+                <div class="col-md-2">
 
-		    <div class="form-input">
-			<input type="text" class="contactLname validate-field" data-validate="last" oninput="validateInputT(event,@i)" maxlength="32" placeholder="Last name" name="passengerdetails[@i].Last" style='text-transform:uppercase' required />
+                    <div class="form-input">
+                        <input type="text" class="contactLname validate-field" data-validate="last" oninput="validateInputT(event,@i)" value="@(gstData.ElementAtOrDefault(i)?.LastName ?? "")" maxlength="32" placeholder="Last name" name="passengerdetails[@i].Last" style='text-transform:uppercase' required />
 
 		    </div>
 		    <p id="error-Lname" class="error-message error-CLname" style="display:none"></p>
 
-		</div>
-		@{
-		    if (Model.AkPassenger.passengers[i].passengerTypeCode == "ADT" || Model.AkPassenger.passengers[i].passengerTypeCode == "CHD")
-		    {
-			<div class="col-md-3">
-							<div class="form-input"><input type="text" data-validate="email" class="contactemail validate-field" maxlength="50" oninput="validateInputT(event,@i)" id="contactemailID" placeholder="email" name="passengerdetails[@i].Email" required /></div>
-			</div>
-			<p class="error-message error-emailname" style="display:none"></p>
-			<p class="error-message-val " style="display:none"></p>
+                </div>
+                @{
+                    if (Model.AkPassenger.passengers[i].passengerTypeCode == "ADT" || Model.AkPassenger.passengers[i].passengerTypeCode == "CHD")
+                    {
+                        <div class="col-md-3">
+                            <div class="form-input"><input type="text" data-validate="email" class="contactemail validate-field" maxlength="50" oninput="validateInputT(event,@i)" value="@(gstData.ElementAtOrDefault(i)?.BusinessEmail ?? "")" id="contactemailID" placeholder="email" name="passengerdetails[@i].Email" required /></div>
+                        </div>
+                        <p class="error-message error-emailname" style="display:none"></p>
+                        <p class="error-message-val " style="display:none"></p>
 
 			// <div class="col-md-2 ">
 			//     <div class="form-input"><input type="text" data-validate="phone" maxlength="10" id="contactphoneID" class="contactphone validate-field" oninput="validateInputT(event,@i)" placeholder="phone" name="passengerdetails[@i].mobile" required /></div>
@@ -110,16 +111,17 @@
 						</div>
 						<div class="col-md-2 ">
 
-							<div class="form-input">
+                            <div class="form-input">
 
-								<input type="text" data-validate="phone" id="contactphoneID"
-									   maxlength="10"
-									   class="contactphone validate-field"
-									   oninput="validateInputT(event,@i)"
-									   placeholder="phone"									  
-									   name="passengerdetails[@i].mobile"
-									   required />
-							</div>
+                                <input type="text" data-validate="phone" id="contactphoneID"
+                                       maxlength="10"
+                                       class="contactphone validate-field"
+                                       oninput="validateInputT(event,@i)"
+                                       value="@(gstData.ElementAtOrDefault(i)?.MobileNumber ?? "")"
+                                       placeholder="phone"
+                                       name="passengerdetails[@i].mobile"
+                                       required />
+                            </div>
 
 
 						</div>
@@ -128,19 +130,20 @@
 			<p class="error-message error-phoneN" style="display:none"></p>
 			<p class="error-message-val" style="display:none"></p>
 
-						<div class="col-md-3 mt-10 pl-2 frequent-bx">
-							<div class="form-input">
-								<div class="frequent-logo">
-									<img class="size-30" src="~/img/flight-logo-icon/akasa.png" alt="image">
-								</div>
-								<input type="text" data-validate="ff" id="FFID"
-									   maxlength="15"
-									   class=""
-									   oninput=""
-									   placeholder="Frequent Flyer Numbers"									  
-									   name="passengerdetails[@i].FrequentFlyer"
-									   required style="border-radius: 0 4px 4px 0;" />
-							</div>
+                        <div class="col-md-3 mt-10 pl-2 frequent-bx">
+                            <div class="form-input">
+                                <div class="frequent-logo">
+                                    <img class="size-30" src="~/img/flight-logo-icon/akasa.png" alt="image">
+                                </div>
+                                <input type="text" data-validate="ff" id="FFID"
+                                       maxlength="15"
+                                       class=""
+                                       oninput=""
+                                       placeholder="Frequent Flyer Numbers"
+                                       name="passengerdetails[@i].FrequentFlyer"
+                                       value="@(gstData.ElementAtOrDefault(i)?.FrequentFlyerNumbers ?? "")"
+                                       required style="border-radius: 0 4px 4px 0;" />
+                            </div>
 
 						</div>
 
