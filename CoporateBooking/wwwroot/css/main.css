@@ -13191,7 +13191,7 @@ check out section
     }
 
 .checkout .col-xl-4.col-lg-4 {
-    padding:0;
+    padding: 0;
 }
 /* ******************************
 Start Seat Map section
@@ -14205,94 +14205,94 @@ start addons
 End addons
 ****************************** */
 
-            /* Start technical error */
+/* Start technical error */
 
-            .technical-erro-bx {
-                box-shadow: 0 2px 15px rgba(255, 0, 30, 0.1);
-                border: #FCDFE3 1px solid;
-                padding: 25px 15px;
-                width: 50%;
-                margin: 35px auto;
-                border-radius: 10px;
-                text-align: center;
-            }
+.technical-erro-bx {
+    box-shadow: 0 2px 15px rgba(255, 0, 30, 0.1);
+    border: #FCDFE3 1px solid;
+    padding: 25px 15px;
+    width: 50%;
+    margin: 35px auto;
+    border-radius: 10px;
+    text-align: center;
+}
 
-                .technical-erro-bx h3 {
-                    padding: 12px 0 10px;
-                }
+    .technical-erro-bx h3 {
+        padding: 12px 0 10px;
+    }
 
-                .technical-erro-bx p {
-                    text-align: center;
-                    font-weight: 600;
-                }
+    .technical-erro-bx p {
+        text-align: center;
+        font-weight: 600;
+    }
 
-                .technical-erro-bx .btn {
-                    padding: 15px 47px;
-                    margin-top: 25px;
-                }
+    .technical-erro-bx .btn {
+        padding: 15px 47px;
+        margin-top: 25px;
+    }
 
-            /* End technical error */
+/* End technical error */
 
 
-            /* Start technical error */
+/* Start technical error */
 
-            .service-erro-bx {
-                box-shadow: 0 2px 15px rgba(255, 0, 30, 0.1);
-                border: #FCDFE3 1px solid;
-                padding: 25px 15px;
-                width: 40%;
-                margin: 35px auto;
-                border-radius: 10px;
-                text-align: center;
-            }
+.service-erro-bx {
+    box-shadow: 0 2px 15px rgba(255, 0, 30, 0.1);
+    border: #FCDFE3 1px solid;
+    padding: 25px 15px;
+    width: 40%;
+    margin: 35px auto;
+    border-radius: 10px;
+    text-align: center;
+}
 
-                .service-erro-bx h6 {
-                    padding: 12px 0 10px;
-                    font-weight: 500;
-                }
+    .service-erro-bx h6 {
+        padding: 12px 0 10px;
+        font-weight: 500;
+    }
 
-                .service-erro-bx p {
-                    text-align: center;
-                    font-weight: 600;
-                }
+    .service-erro-bx p {
+        text-align: center;
+        font-weight: 600;
+    }
 
-                .service-erro-bx .btn {
-                    padding: 15px 47px;
-                    margin-top: 25px;
-                    background: #f64a4a;
-                }
+    .service-erro-bx .btn {
+        padding: 15px 47px;
+        margin-top: 25px;
+        background: #f64a4a;
+    }
 
-            /* End technical error */
+/* End technical error */
 
-            .service-erro-bx {
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                padding: 25px 15px;
-                width: 40%;
-                margin: 35px auto;
-                border-radius: 10px;
-                text-align: center;
-                margin-top: 12%;
-                background: #fff;
-            }
+.service-erro-bx {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 25px 15px;
+    width: 40%;
+    margin: 35px auto;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 12%;
+    background: #fff;
+}
 
-                .service-erro-bx p.main {
-                    padding: 12px 0 10px;
-                    color: #333;
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                }
+    .service-erro-bx p.main {
+        padding: 12px 0 10px;
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
 
-                .service-erro-bx p {
-                    text-align: center;
-                    font-weight: 600;
-                    font-size: 1.1rem;
-                }
+    .service-erro-bx p {
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
 
-                .service-erro-bx .btn {
-                    padding: 15px 47px;
-                    margin-top: 25px;
-                    background: #085AC0 !important;
-                }
+    .service-erro-bx .btn {
+        padding: 15px 47px;
+        margin-top: 25px;
+        background: #085AC0 !important;
+    }
 
 /* Start fare detail */
 
@@ -14357,10 +14357,10 @@ Emulate section Start
         box-shadow: none !important;
     }
 
-  .ui-menu .ui-menu-item {
-        border-bottom: 1px solid #DDDDDD;
-        line-height: 32px;
-    }
+.ui-menu .ui-menu-item {
+    border-bottom: 1px solid #DDDDDD;
+    line-height: 32px;
+}
 
 .emulate-bx .toggle-arrow svg {
     position: relative;
@@ -14397,7 +14397,7 @@ Emulate section Start
     border: #DDDDDD 1px solid !important;
     height: 33px;
     padding-left: 10px;
-    padding-right:23px;
+    padding-right: 23px;
     border-radius: 3px;
     margin-top: 6px;
     width: 100%;
@@ -14422,8 +14422,8 @@ Emulate section Start
 
 .emulate-bx .remove-icon {
     position: absolute;
-    top: 72%;
-    right: 8px;
+    top: 58%;
+    right: 2px;
     transform: translateY(-50%);
     cursor: pointer;
     color: #fff;
@@ -14438,6 +14438,206 @@ Emulate section Start
     border-radius: 30px;
     text-align: center;
 }
+
+
+
+/*=======Select Employee multipal option start ========*/
+
+.emulate-bx .U-select .dropdown {
+    position: relative;
+    display: inherit;
+}
+
+    .emulate-bx .U-select .dropdown.btm-line {
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 1px;
+    }
+
+.emulate-bx .U-select .dropdown-input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 15px;
+}
+
+    .emulate-bx .U-select .dropdown-input:after {
+        content: "\f107";
+        font: normal normal normal 16px / 1 FontAwesome;
+        color: #495057;
+        height: 0;
+        position: absolute;
+        top: 40%;
+        right: 16px;
+        width: 0;
+        border-top-color: #999;
+        margin-top: -3px;
+        font-weight: 700;
+    }
+
+.emulate-bx .U-select .selected-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    position: relative;
+    left: 5px;
+    margin-top: 2px;
+}
+
+.emulate-bx .U-select .selected-item {
+    background-color: #e0e0e0;
+    padding: 1px 3px 1px 5px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+
+    .emulate-bx .U-select .selected-item span {
+        margin-left: 5px;
+        cursor: pointer;
+        background-color: #949494;
+        font-size: 11px;
+        color: #fff;
+        width: 15px;
+        height: 15px;
+        text-align: center;
+        border-radius: 20px;
+        line-height: 9px;
+        font-weight: 500;
+        padding: 2px;
+    }
+
+
+
+
+
+
+.emulate-bx .dropdown {
+    display: block;
+}
+
+.emulate-bx #billingSelectedItems {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    position: relative;
+    left: 5px;
+    margin-top: 2px;
+    width: 350px;
+}
+
+
+.emulate-bx .selected-items .billing-chip label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 121px;
+    font-size: 12px;
+}
+
+.emulate-bx .selected-items .billing-chip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.emulate-bx .selected-item.billing-chip {
+    background-color: #e0e0e0;
+    padding: 1px 3px 1px 0;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    margin-bottom: 3px;
+    margin-left: 2px;
+}
+
+    .emulate-bx .selected-item.billing-chip span {
+        margin-left: 5px;
+        cursor: pointer;
+        background-color: #949494;
+        font-size: 11px;
+        color: #fff;
+        width: 15px;
+        height: 15px;
+        text-align: center;
+        border-radius: 20px;
+        line-height: 9px;
+        font-weight: 500;
+        padding: 2px;
+    }
+
+
+
+.emulate-bx .U-select .dropdown-list {
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+    margin-top: 2px;
+}
+
+    .emulate-bx .U-select .dropdown-list.active {
+        display: block;
+    }
+
+.emulate-bx .U-select .dropdown-item {
+    padding: 0;
+    cursor: pointer;
+}
+
+    .emulate-bx .U-select .dropdown-item:hover {
+        background: none;
+    }
+
+.emulate-bx .U-select .inner-bx {
+    border-bottom: 1px solid #d6d4d4;
+    display: flex;
+    padding-bottom: 5px;
+}
+
+.emulate-bx .U-select .dropdown-list .inner-bx:hover {
+    background: #f7f7f7;
+}
+
+.emulate-bx .U-select .dropdown-list .inner-bx .dropdown-item:hover {
+    background: none;
+}
+
+.emulate-bx .U-select .inner-bx .dropdown-item {
+    border: none;
+}
+
+.emulate-bx .U-select .airline-code-circle {
+    width: 35px;
+    height: 32px;
+    color: #fff;
+    display: flex;
+    border-radius: 50%;
+    align-items: center;
+    font-size: .65rem;
+    justify-content: center;
+    background: #003559;
+    font-weight: 400;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.emulate-bx .U-select .dropdown-item input {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+
+
+
+/*=======Select Employee multipal option End ========*/
+
 
 /* ******************************
 Emulate section End

@@ -166,7 +166,7 @@
 	// bagage code end
 
 	$("#Continuebtn").click(function () {
-
+		//debugger;
 	var unitKey = JSON.parse(localStorage.getItem("selectedIds"));
 	// let mealcode1 = JSON.parse(localStorage.getItem("MealssrKeyCount"));
 	// let mealcode2 = JSON.parse(localStorage.getItem("MealssrKeyCount2"));
@@ -174,10 +174,19 @@
 	let mealcode1 = JSON.parse(localStorage.getItem("MealssrKeyCount"));
 	let mealcode2 = JSON.parse(localStorage.getItem("MealssrKeyCount2"));
 	var ssrKey;
-	if (mealcode2 && mealcode2.length > 0) {
-	ssrKey = mealcode1.concat(mealcode2);
+
+	if (mealcode1 && mealcode2) {
+		// both not null
+		ssrKey = mealcode1.concat(mealcode2);
+	} else if (mealcode1) {
+		// only mealcode1 not null
+		ssrKey = mealcode1;
+	} else if (mealcode2) {
+		// only mealcode2 not null
+		ssrKey = mealcode2;
 	} else {
-	ssrKey = mealcode1;
+		// both are null
+		ssrKey = null;
 	}
 
 	let BaggageSSrkey = JSON.parse(localStorage.getItem("BagssrKeyCount"));

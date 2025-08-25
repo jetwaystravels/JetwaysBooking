@@ -1245,7 +1245,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         }
                     }
 
-                    if (dataArray[i1].ToLower() != "airindia")
+                    if (dataArray[0].ToLower() != "airindia" && dataArray[1].ToLower() != "airindia")
                     {
                         if (!string.IsNullOrEmpty(passengerNamedetails))
                         {
@@ -3813,7 +3813,6 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                     }
                                     if (k1 == 0)
                                     {
-                                        mongoGDS.Guid = Guid;
                                         mongoGDS.Response = res;
                                         mongoGDS.LocatorCode = UniversalLocatorCode;
                                        // HttpContext.Session.SetString("PNRL", res + "@@" + UniversalLocatorCode);
@@ -3833,6 +3832,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         k1++;
                     }
                 }
+                mongoGDS.Guid = Guid;
                 _mongoDBHelper.SaveGDSLocatorCode(mongoGDS);
             }
 
@@ -3861,7 +3861,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                     _paxes.Adults_.Add(travellers_[i]);
                 else if (travellers_[i].passengertypecode == "CHD")
                     _paxes.Childs_.Add(travellers_[i]);
-                else if (travellers_[i].passengertypecode == "INFT")
+                else if (travellers_[i].passengertypecode == "INFT" || travellers_[i].passengertypecode == "INF")
                     _paxes.Infant_.Add(travellers_[i]);
 
             }

@@ -1978,7 +1978,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                         legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
 
                         string dealcode = string.Empty;
-                        if (legal != null)
+                        if (legal != null && legal.DealCode != null)
                         {
                             string indigoValue = legal.DealCode
                                                 .Split(',')

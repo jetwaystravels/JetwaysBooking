@@ -160,7 +160,7 @@
 
                                     var userName = claims.Where(c => c.Type == ClaimTypes.Name).ToList()[0].Value;
                                     var userEmail = claims.Where(c => c.Type == ClaimTypes.Email).ToList()[0].Value;
-                                    
+
                                     var initials = "";
                                     var parts = userName.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                                     if (parts.Length >= 2)
@@ -172,11 +172,11 @@
                                         initials = parts[0][0].ToString().ToUpper();
                                     }
 
-                                <div class="profile-initials">@initials</div>
+                                    <div class="profile-initials">@initials</div>
 
 
 
-                                   @*  <div class="profile-initials">@(userName.Split(' ')[0][0].ToString().ToUpper() + userName.Split(' ')[1][0].ToString().ToUpper())</div> *@
+                                    @*  <div class="profile-initials">@(userName.Split(' ')[0][0].ToString().ToUpper() + userName.Split(' ')[1][0].ToString().ToUpper())</div> *@
 
 
                                     <div class="profile-popup" style="display:none;">
@@ -393,27 +393,45 @@
                                                 <!-- Legal Entity Name -->
                                                 <div class="col-12 col-md-10 col-lg-3">
                                                     <label>Legal Entity Name</label>
-                                                    <div class="autocomplete-wrapper">
+                                                    <div class="autocomplete-wrapper" style="position:relative;">
                                                         <input type="text" name="legal_entity" id="legalEntitySelect" placeholder="Enter legal entity name" class="autocomplete-input legal-entity" required autocomplete="off">
                                                         <span class="remove-icon">×</span>
                                                     </div>
                                                 </div>
 
                                                 <!-- Employee -->
-                                                <div class="col-12 col-md-10 col-lg-3">
+                                                @*  <div class="col-12 col-md-10 col-lg-3">
                                                     <label>Employee</label>
                                                     <div class="autocomplete-wrapper">
                                                         <input type="text" name="employee" id="employeeSelect" placeholder="Enter Employee name" class="autocomplete-input employee" required autocomplete="off">
                                                         <span class="remove-icon">×</span>
                                                     </div>
+                                                </div> *@
+
+                                                <div class="col-12 col-md-10 col-lg-3 U-select">
+                                                    <div class="dropdown employee-dropdown">
+                                                        <label>Select Employee</label>
+                                                        <input type="text" name="employee" id="employeeSelect" placeholder="Select Employee name" class="autocomplete-input employee" required autocomplete="off">
+                                                        <input type="hidden" name="employee" id="employeeHidden" required>
+                                                        <div class="selected-items" id="employeeSelected"></div>
+                                                    </div>
                                                 </div>
 
                                                 <!-- Billing Entity Name -->
-                                                <div class="col-12 col-md-10 col-lg-3">
+                                                @* <div class="col-12 col-md-10 col-lg-3">
                                                     <label>Billing Entity Name</label>
                                                     <div class="autocomplete-wrapper">
                                                         <input type="text" id="billingSelect" placeholder="Enter Billing name" name="billing" class="autocomplete-input billing" required autocomplete="off" />
                                                         <span class="remove-icon">×</span>
+                                                    </div>
+                                                </div> *@
+
+                                                <div class="col-12 col-md-10 col-lg-3">
+                                                    <div class="dropdown billing-dropdown">
+                                                        <label>Select Billing Entity</label>
+                                                        <input type="text" id="billingSelect" placeholder="Enter Billing Entity name" autocomplete="off">
+                                                        <input type="hidden" name="billing" id="billingHidden" required>
+                                                        <div id="billingSelectedItems" class="selected-items"></div>
                                                     </div>
                                                 </div>
 
@@ -1143,7 +1161,7 @@
         </script>
 
         <!--Start Emulate section -->
-        <script>
+        @* <script>
             $(document).ready(function () {
                 // Append the tooltip box if not exists
                 if (!$('#customTooltip').length) {
@@ -1240,13 +1258,13 @@
                             bindFor(ui.item.value);
                             $(this).blur();
                             $(this).siblings('.remove-icon').show();
-                           
+
                             const result = legalEntitiesData.find(item => item.legalEntityName === ui.item.value);
 
                             if (result) {
                                 //console.log(result);
                                 $('#hdniata').val(result.assignIATAGroup);
-                                            
+
                             }
 
 
@@ -1464,7 +1482,7 @@
 
 
 
-        </script>
+        </script> *@
 
         <!--End Emulate section -->
         <!--Start show and hide box -->
@@ -1569,6 +1587,962 @@
             });
         </script>
 
+
+        <!--Start Emulate section -->
+
+        <script>
+
+            //     $(document).ready(function () {
+            //     if (!$('#customTooltip').length) {
+            //         $('body').append('<div id="customTooltip" class="custom-tooltip"></div>');
+            //     }
+            //     const tooltipBox = $('#customTooltip');
+
+            //     // ---- keep only newest ajax response ----
+            //     let lastFetchToken = 0;
+
+            //     // ---- cache currently selected emp ids ----
+            //     let selectedEmpIdsCache = new Set();
+
+            //     function bindCustomTooltip($input) {
+            //         $input.off('mouseenter mouseleave mousemove');
+            //         $input.on('mouseenter', function (e) {
+            //             const text = $(this).val();
+            //             if (text) tooltipBox.text(text).fadeIn(100);
+            //         });
+            //         $input.on('mousemove', function (e) {
+            //             tooltipBox.css({ top: e.pageY + 12 + 'px', left: e.pageX + 12 + 'px' });
+            //         });
+            //         $input.on('mouseleave', function () { tooltipBox.fadeOut(100); });
+            //     }
+            //     function updateTitle($input) { }
+
+            //     const legalEntities = legalEntitiesData.map(e => e.legalEntityName);
+
+            //     function bindFor(companyName) {
+            //         const item = legalEntitiesData.find(x => x.legalEntityName === companyName);
+
+            //         const $employeeInput = $('#employeeSelect');
+            //         $employeeInput.val('');
+            //         $employeeInput.siblings('.remove-icon').hide();
+            //         $employeeInput.siblings('.selected-items').empty();
+            //         selectedEmpIdsCache.clear();
+
+            //         const $billingInput = $('#billingSelect');
+            //         $billingInput.val('');
+            //         $billingInput.siblings('.remove-icon').hide();
+            //         $billingInput.siblings('.selected-items').empty();
+
+            //         $('.balance-input').val('₹ 0.00');
+            //         if (item?.presentBalance) $('.balance-input').val('₹ ' + item.presentBalance);
+
+            //         let employees = [];
+            //         if (item?.employeeNames) {
+            //             employees = item.employeeNames.split(',').map(e => {
+            //                 const [id, name, mobile] = e.trim().split('|');
+            //                 return { label: `${name} (${mobile})`, value: name, name, mobile, id };
+            //             });
+            //         }
+            //         if (!employees.some(emp => emp.name.toLowerCase() === 'guest user')) {
+            //             employees.push({ label: 'Guest User', value: 'Guest User', name: 'Guest User', mobile: '', id: '0' });
+            //         }
+
+            //         $('#employeeSelect').autocomplete('option', 'source', function (request, response) {
+            //             const term = request.term.toLowerCase();
+            //             const matches = employees.filter(emp =>
+            //                 emp.name.toLowerCase().includes(term) || (emp.mobile || '').includes(term)
+            //             );
+            //             response(matches);
+            //         });
+
+            //         $('#hdnempid').val('0');
+            //     }
+
+            //     $('#legalEntitySelect')
+            //         .val('')
+            //         .attr('placeholder', 'Enter Legal Entity name')
+            //         .autocomplete({
+            //             source: legalEntities,
+            //             minLength: 0,
+            //             select: function (event, ui) {
+            //                 $(this).val(ui.item.value);
+            //                 updateTitle($(this));
+            //                 bindFor(ui.item.value);
+            //                 $(this).blur();
+            //                 $(this).siblings('.remove-icon').show();
+
+            //                 const result = legalEntitiesData.find(item => item.legalEntityName === ui.item.value);
+            //                 if (result) $('#hdniata').val(result.assignIATAGroup);
+
+            //                 return false;
+            //             }
+            //         })
+            //         .on('focus click', function () { $(this).autocomplete('search', ''); })
+            //         .on('input', function () { $(this).siblings('.remove-icon').toggle(!!$(this).val()); updateTitle($(this)); });
+
+            //     $('#legalEntitySelect').siblings('.remove-icon').on('click', function () {
+            //         $('#legalEntitySelect').val('').focus();
+            //         $(this).hide();
+            //         updateTitle($('#legalEntitySelect'));
+
+            //         const $employeeInput = $('#employeeSelect');
+            //         $employeeInput.val('').siblings('.remove-icon').hide();
+            //         $employeeInput.siblings('.selected-items').empty();
+            //         selectedEmpIdsCache.clear();
+
+            //         const $billingInput = $('#billingSelect');
+            //         $billingInput.val('').siblings('.remove-icon').hide();
+            //         $billingInput.siblings('.selected-items').empty();
+
+            //         $('.balance-input').val('₹ 0.00');
+            //         $('#hdnempid').val('0');
+            //     });
+
+            //     // ---- Employee autocomplete (multi) ----
+            //     function initEmployeeAutocomplete() {
+            //         const $employeeInput = $('#employeeSelect');
+            //         const $selectedContainer = $employeeInput.siblings('.selected-items');
+
+            //         $employeeInput.autocomplete({
+            //             source: [], // set by bindFor
+            //             minLength: 0,
+            //             select: function (event, ui) {
+            //                 event.preventDefault();
+            //                 const empId = String(ui.item.id || '0');
+            //                 const empName = ui.item.value;
+
+            //                 // avoid duplicate chip by id
+            //                 if ($selectedContainer.find(`.selected-item[data-id="${empId}"]`).length === 0) {
+            //                     $selectedContainer.append(
+            //                         `<div class="selected-item" data-value="${empName}" data-id="${empId}">
+            //                             ${empName} <span class="remove-item">×</span>
+            //                         </div>`
+            //                     );
+            //                     selectedEmpIdsCache.add(empId);
+            //                      $('#hdnempid').val([...selectedEmpIdsCache].join(','));
+            //                     // ✅ APPEND billing only for the newly added employee
+            //                     fetchBillingFor([empId], true);
+            //                 // ✅ update adult count display
+            //                 updateAdultCount($selectedContainer);
+            //                 }
+
+            //                   $employeeInput.val(empName);
+            //                 updateTitle($employeeInput);
+            //                 return false;
+            //             }
+            //         }).on('focus click', function () { $(this).autocomplete('search', ''); });
+
+            //         // Remove selected employee → REBUILD billing for remaining employees
+            //         $selectedContainer.on('click', '.remove-item', function () {
+            //             const $chip = $(this).parent();
+            //             const removedEmpId = String($chip.data('id'));
+            //             $chip.remove();
+            //             selectedEmpIdsCache.delete(removedEmpId);
+            //              $('#hdnempid').val([...selectedEmpIdsCache].join(','));
+            //             const remainingIds = [...selectedEmpIdsCache];
+            //             fetchBillingFor(remainingIds, false); // rebuild
+            //         // ✅ update adult count display
+            //         updateAdultCount($selectedContainer);
+            //         });
+            //     }
+
+            // // ---- helper function to sync adult count ----
+            // function updateAdultCount($container) {
+            //     const count = $container.find('.selected-item').length || 1;
+
+            //     // Update display counter (already in your code)
+            //     $('#count_adult').text(count);
+
+            //     // ✅ Also sync with travel details input
+            //     $('#field_adult').val(count);
+            // }
+
+
+            // // ---- Billing autocomplete (optional manual add) ----
+            //                function initBillingAutocomplete(billingEntities) {
+            //     const $billingInput = $('#billingSelect');
+            //     const $selectedContainer = $billingInput.siblings('.selected-items');
+
+            //     $billingInput.val('');
+
+            //     // ✅ When user presses Enter, add manually
+            //     $billingInput.off('keydown').on('keydown', function (e) {
+            //         if (e.key === 'Enter' && $billingInput.val().trim() !== '') {
+            //             e.preventDefault();
+            //             const billName = $billingInput.val().trim();
+
+            //             $selectedContainer.append(
+            //                 `<div class="selected-item" data-value="${billName}-${Date.now()}">
+            //                     ${billName} <span class="remove-item">×</span>
+            //                 </div>`
+            //             );
+
+            //             $billingInput.val('');
+            //             updateTitle($billingInput);
+            //         }
+            //     });
+
+            //     // ✅ Remove item on click
+            //     $selectedContainer.off('click').on('click', '.remove-item', function () {
+            //         $(this).parent().remove();
+            //     });
+            // }
+
+            //     // ---- Single unified fetch that can APPEND or REBUILD ----
+            //     function fetchBillingFor(empIds, append) {
+            //         const legalEntityInput = $('#legalEntitySelect').val();
+            //         const $billingContainer = $('#billingSelect').siblings('.selected-items');
+
+            //         if (!legalEntityInput) return;
+            //         if (!empIds || empIds.length === 0) { $billingContainer.empty(); return; }
+
+            //         const legalEntityCode = legalEntityInput.split('-')[0].trim();
+            //         const employeeCode = empIds.join(',');
+
+            //         const myToken = ++lastFetchToken;
+
+            //         $.ajax({
+            //             type: 'GET',
+            //             url: `/Login/GetEmpId/?legalEntityCode=${encodeURIComponent(legalEntityCode)}&employeeCode=${encodeURIComponent(employeeCode)}`,
+            //             dataType: 'json',
+            //             success: function (data) {
+            //                 if (myToken !== lastFetchToken) return;
+
+            //                 const parsedData = Array.isArray(data) ? data : (data ? JSON.parse(data) : []);
+            //                 if (!Array.isArray(parsedData)) return alert('Unexpected data format received.');
+
+            //                 // Suggestions (unique)
+            //                 const billingEntitiesForSource = [...new Set(parsedData.map(x => x && x.billingEntityCode).filter(Boolean))];
+            //                 initBillingAutocomplete(billingEntitiesForSource);
+
+            //                 // ✅ REBUILD or APPEND mode
+            //                 if (!append) {
+            //                     // rebuild: clear all, then fetch again for ALL remaining (already passed in)
+            //                     $billingContainer.empty();
+            //                 }
+
+            //                 // When appending, remove prior chips for these empIds (if any), then add fresh
+            //                 if (append) {
+            //                     empIds.forEach(id => {
+            //                         $billingContainer.find(`.selected-item.billing-chip[data-emp="${id}"]`).remove();
+            //                     });
+            //                 }
+
+            //                 // Add chips; allow duplicates across employees (same name OK)
+            //                 // We tag each chip with the owning employee id
+            //                 parsedData.forEach((item) => {
+            //                     const billName = item && item.billingEntityCode;
+            //                     const empIdOfThisBill = String(item && (item.employeeId || item.empId || '')); // adjust if your API uses different key
+            //                     if (!billName) return;
+
+            //                     // If API doesn't return employeeId, fall back to the single id we asked for (append) or skip tag
+            //                     const ownerId = empIdOfThisBill || (empIds.length === 1 ? String(empIds[0]) : '');
+
+            //                     $billingContainer.append(
+            //                         `<div class="selected-item billing-chip" data-emp="${ownerId}" data-value="${billName}">
+            //                               <label>${billName}</label> <span class="remove-item">×</span>
+            //                         </div>`
+            //                     );
+            //                 });
+            //             },
+            //             error: function (xhr, status, error) {
+            //                 console.error('AJAX error:', status, error);
+            //                 alert('Failed to fetch billing entity data.');
+            //             }
+            //         });
+            //     }
+
+            //     // Helper (unused here but keeping from your code)
+            //     function getEmployeeIdByName(employeeName, dataset) {
+            //         for (const item of dataset) {
+            //             if (item.employeeNames) {
+            //                 const employees = item.employeeNames.split(',').map(e => e.trim());
+            //                 for (const entry of employees) {
+            //                     const [id, name] = entry.split('|');
+            //                     if (name && name.trim().toLowerCase() === employeeName.trim().toLowerCase()) return id;
+            //                 }
+            //             }
+            //         }
+            //         return null;
+            //     }
+
+            //     // Form validation
+            //     $('#myForm').on('submit', function (e) {
+            //         let isValid = true;
+            //         $('.autocomplete-input[required]').each(function () {
+            //             if (!$(this).val().trim()) { $(this).addClass('error'); isValid = false; }
+            //             else $(this).removeClass('error');
+            //         });
+            //         if (!isValid) { e.preventDefault(); alert('Please fill out all required fields.'); }
+            //     });
+
+            //     // Initialize
+            //     initEmployeeAutocomplete();
+            //     bindCustomTooltip($('#legalEntitySelect'));
+            //     bindCustomTooltip($('#employeeSelect'));
+            //     bindCustomTooltip($('#billingSelect'));
+            // });
+        </script>
+
+
+        <!--done code start -->
+
+
+        <script>
+
+
+            // $(document).ready(function () {
+            //     if (!$('#customTooltip').length) {
+            //         $('body').append('<div id="customTooltip" class="custom-tooltip"></div>');
+            //     }
+            //     const tooltipBox = $('#customTooltip');
+
+            //     // ---- keep only newest ajax response ----
+            //     let lastFetchToken = 0;
+
+            //     // ---- cache currently selected emp ids ----
+            //     let selectedEmpIdsCache = new Set();
+
+            //     function bindCustomTooltip($input) {
+            //         $input.off('mouseenter mouseleave mousemove');
+            //         $input.on('mouseenter', function (e) {
+            //             const text = $(this).val();
+            //             if (text) tooltipBox.text(text).fadeIn(100);
+            //         });
+            //         $input.on('mousemove', function (e) {
+            //             tooltipBox.css({ top: e.pageY + 12 + 'px', left: e.pageX + 12 + 'px' });
+            //         });
+            //         $input.on('mouseleave', function () { tooltipBox.fadeOut(100); });
+            //     }
+            //     function updateTitle($input) { }
+
+            //     const legalEntities = legalEntitiesData.map(e => e.legalEntityName);
+
+            //     function bindFor(companyName) {
+            //         const item = legalEntitiesData.find(x => x.legalEntityName === companyName);
+
+            //         const $employeeInput = $('#employeeSelect');
+            //         $employeeInput.val('');
+            //         $employeeInput.siblings('.remove-icon').hide();
+            //         $employeeInput.siblings('.selected-items').empty();
+            //         selectedEmpIdsCache.clear();
+
+            //         const $billingInput = $('#billingSelect');
+            //         $billingInput.val('');
+            //         $billingInput.siblings('.remove-icon').hide();
+            //         $billingInput.siblings('.selected-items').empty();
+
+            //         $('.balance-input').val('₹ 0.00');
+            //         if (item?.presentBalance) $('.balance-input').val('₹ ' + item.presentBalance);
+
+            //         let employees = [];
+            //         if (item?.employeeNames) {
+            //             employees = item.employeeNames.split(',').map(e => {
+            //                 const [id, name, mobile] = e.trim().split('|');
+            //                 return { label: `${name} (${mobile})`, value: name, name, mobile, id };
+            //             });
+            //         }
+            //         if (!employees.some(emp => emp.name.toLowerCase() === 'guest user')) {
+            //             employees.push({ label: 'Guest User', value: 'Guest User', name: 'Guest User', mobile: '', id: '0' });
+            //         }
+
+            //         $('#employeeSelect').autocomplete('option', 'source', function (request, response) {
+            //             const term = request.term.toLowerCase();
+            //             const matches = employees.filter(emp =>
+            //                 emp.name.toLowerCase().includes(term) || (emp.mobile || '').includes(term)
+            //             );
+            //             response(matches);
+            //         });
+
+            //         $('#hdnempid').val('0');
+            //     }
+
+            //     $('#legalEntitySelect')
+            //         .val('')
+            //         .attr('placeholder', 'Enter Legal Entity name')
+            //         .autocomplete({
+            //             source: legalEntities,
+            //             minLength: 0,
+            //             select: function (event, ui) {
+            //                 $(this).val(ui.item.value);
+            //                 updateTitle($(this));
+            //                 bindFor(ui.item.value);
+            //                 $(this).blur();
+            //                 $(this).siblings('.remove-icon').show();
+
+            //                 const result = legalEntitiesData.find(item => item.legalEntityName === ui.item.value);
+            //                 if (result) $('#hdniata').val(result.assignIATAGroup);
+
+            //                 return false;
+            //             }
+            //         })
+            //         .on('focus click', function () { $(this).autocomplete('search', ''); })
+            //         .on('input', function () { $(this).siblings('.remove-icon').toggle(!!$(this).val()); updateTitle($(this)); });
+
+            //     $('#legalEntitySelect').siblings('.remove-icon').on('click', function () {
+            //         $('#legalEntitySelect').val('').focus();
+            //         $(this).hide();
+            //         updateTitle($('#legalEntitySelect'));
+
+            //         const $employeeInput = $('#employeeSelect');
+            //         $employeeInput.val('').siblings('.remove-icon').hide();
+            //         $employeeInput.siblings('.selected-items').empty();
+            //         selectedEmpIdsCache.clear();
+
+            //         const $billingInput = $('#billingSelect');
+            //         $billingInput.val('').siblings('.remove-icon').hide();
+            //         $billingInput.siblings('.selected-items').empty();
+
+            //         $('.balance-input').val('₹ 0.00');
+            //         $('#hdnempid').val('0');
+            //     });
+
+            //     // ---- Employee autocomplete (multi) ----
+            //     function initEmployeeAutocomplete() {
+            //         const $employeeInput = $('#employeeSelect');
+            //         const $selectedContainer = $employeeInput.siblings('.selected-items');
+
+            //         $employeeInput.autocomplete({
+            //             source: [], // set by bindFor
+            //             minLength: 0,
+            //             select: function (event, ui) {
+            //                 event.preventDefault();
+            //                 const empId = String(ui.item.id || '0');
+            //                 const empName = ui.item.value;
+
+            //                 // avoid duplicate chip by id
+            //                 if ($selectedContainer.find(`.selected-item[data-id="${empId}"]`).length === 0) {
+            //                     $selectedContainer.append(
+            //                         `<div class="selected-item" data-value="${empName}" data-id="${empId}">
+            //                             ${empName} <span class="remove-item">×</span>
+            //                         </div>`
+            //                     );
+            //                     selectedEmpIdsCache.add(empId);
+            //                      $('#hdnempid').val([...selectedEmpIdsCache].join(','));
+            //                     // ✅ APPEND billing only for the newly added employee
+            //                     fetchBillingFor([empId], true);
+            //                 // ✅ update adult count display
+            //                 updateAdultCount($selectedContainer);
+            //                 }
+
+            //                   $employeeInput.val(empName);
+            //                 updateTitle($employeeInput);
+            //                 return false;
+            //             }
+            //         }).on('focus click', function () { $(this).autocomplete('search', ''); });
+
+            //         // Remove selected employee → REBUILD billing for remaining employees
+            //         $selectedContainer.on('click', '.remove-item', function () {
+            //             const $chip = $(this).parent();
+            //             const removedEmpId = String($chip.data('id'));
+            //             $chip.remove();
+            //             selectedEmpIdsCache.delete(removedEmpId);
+            //              $('#hdnempid').val([...selectedEmpIdsCache].join(','));
+            //             const remainingIds = [...selectedEmpIdsCache];
+            //             fetchBillingFor(remainingIds, false); // rebuild
+            //         // ✅ update adult count display
+            //         updateAdultCount($selectedContainer);
+            //         });
+            //     }
+
+            // // ---- helper function to sync adult count ----
+            // function updateAdultCount($container) {
+            //     const count = $container.find('.selected-item').length || 1;
+
+            //     // Update display counter (already in your code)
+            //     $('#count_adult').text(count);
+
+            //     // ✅ Also sync with travel details input
+            //     $('#field_adult').val(count);
+            // }
+
+
+            // // ---- Billing autocomplete (optional manual add) ----
+            //    function initBillingAutocomplete(billingEntities) {
+            //     const $billingInput = $('#billingSelect');
+            //     const $selectedContainer = $billingInput.siblings('.selected-items');
+
+            //     $billingInput.val('');
+
+            //     // ✅ When user presses Enter, add manually
+            //     $billingInput.off('keydown').on('keydown', function (e) {
+            //         if (e.key === 'Enter' && $billingInput.val().trim() !== '') {
+            //             e.preventDefault();
+            //             const billName = $billingInput.val().trim();
+
+            //             $selectedContainer.append(
+            //                 `<div class="selected-item" data-value="${billName}-${Date.now()}">
+            //                     ${billName} <span class="remove-item">×</span>
+            //                 </div>`
+            //             );
+
+            //             $billingInput.val('');
+            //             updateTitle($billingInput);
+            //         }
+            //     });
+
+            //     // ✅ Remove item on click
+            //     $selectedContainer.off('click').on('click', '.remove-item', function () {
+            //         $(this).parent().remove();
+            //     });
+            // }
+
+            //     // ---- Single unified fetch that can APPEND or REBUILD ----
+            //     function fetchBillingFor(empIds, append) {
+            //         const legalEntityInput = $('#legalEntitySelect').val();
+            //         const $billingContainer = $('#billingSelect').siblings('.selected-items');
+
+            //         if (!legalEntityInput) return;
+            //         if (!empIds || empIds.length === 0) { $billingContainer.empty(); return; }
+
+            //         const legalEntityCode = legalEntityInput.split('-')[0].trim();
+            //         const employeeCode = empIds.join(',');
+
+            //         const myToken = ++lastFetchToken;
+
+            //         $.ajax({
+            //             type: 'GET',
+            //             url: `/Login/GetEmpId/?legalEntityCode=${encodeURIComponent(legalEntityCode)}&employeeCode=${encodeURIComponent(employeeCode)}`,
+            //             dataType: 'json',
+            //             success: function (data) {
+            //                 if (myToken !== lastFetchToken) return;
+
+            //                 const parsedData = Array.isArray(data) ? data : (data ? JSON.parse(data) : []);
+            //                 if (!Array.isArray(parsedData)) return alert('Unexpected data format received.');
+
+            //                 // Suggestions (unique)
+            //                 const billingEntitiesForSource = [...new Set(parsedData.map(x => x && x.billingEntityCode).filter(Boolean))];
+            //                 initBillingAutocomplete(billingEntitiesForSource);
+
+            //                 // ✅ REBUILD or APPEND mode
+            //                 if (!append) {
+            //                     // rebuild: clear all, then fetch again for ALL remaining (already passed in)
+            //                     $billingContainer.empty();
+            //                 }
+
+            //                 // When appending, remove prior chips for these empIds (if any), then add fresh
+            //                 if (append) {
+            //                     empIds.forEach(id => {
+            //                         $billingContainer.find(`.selected-item.billing-chip[data-emp="${id}"]`).remove();
+            //                     });
+            //                 }
+
+            //             // Add billing chips, but prevent duplicates (unique by billingEntityCode)
+            //             parsedData.forEach((item) => {
+            //                 const billCode = item && item.billingEntityCode;
+            //                 if (!billCode) return;
+
+            //                 // check if already exists
+            //                 if ($billingContainer.find(`.billing-chip[data-value="${billCode}"]`).length === 0) {
+            //                     $billingContainer.append(
+            //                         `<div class="selected-item billing-chip" data-value="${billCode}">
+            //                              <label>${billCode}</label> <span class="remove-item">×</span>
+            //                         </div>`
+            //                     );
+            //                 }
+            //             });
+
+            //             },
+            //             error: function (xhr, status, error) {
+            //                 console.error('AJAX error:', status, error);
+            //                 alert('Failed to fetch billing entity data.');
+            //             }
+            //         });
+            //     }
+
+            //     // Helper (unused here but keeping from your code)
+            //     function getEmployeeIdByName(employeeName, dataset) {
+            //         for (const item of dataset) {
+            //             if (item.employeeNames) {
+            //                 const employees = item.employeeNames.split(',').map(e => e.trim());
+            //                 for (const entry of employees) {
+            //                     const [id, name] = entry.split('|');
+            //                     if (name && name.trim().toLowerCase() === employeeName.trim().toLowerCase()) return id;
+            //                 }
+            //             }
+            //         }
+            //         return null;
+            //     }
+
+            //     // Form validation
+            //     $('#myForm').on('submit', function (e) {
+            //         let isValid = true;
+            //         $('.autocomplete-input[required]').each(function () {
+            //             if (!$(this).val().trim()) { $(this).addClass('error'); isValid = false; }
+            //             else $(this).removeClass('error');
+            //         });
+            //         if (!isValid) { e.preventDefault(); alert('Please fill out all required fields.'); }
+            //     });
+
+            //     // Initialize
+            //     initEmployeeAutocomplete();
+            //     bindCustomTooltip($('#legalEntitySelect'));
+            //     bindCustomTooltip($('#employeeSelect'));
+            //     bindCustomTooltip($('#billingSelect'));
+            // });
+
+
+
+        </script>
+        <!--done code End -->
+
+
+        <script>
+            $(document).ready(function () {
+                    if (!$('#customTooltip').length) {
+                        $('body').append('<div id="customTooltip" class="custom-tooltip"></div>');
+                    }
+                    const tooltipBox = $('#customTooltip');
+
+                    // ---- keep only newest ajax response ----
+                    let lastFetchToken = 0;
+
+                    // ---- cache currently selected emp ids ----
+                    let selectedEmpIdsCache = new Set();
+
+                    function bindCustomTooltip($input) {
+                        $input.off('mouseenter mouseleave mousemove');
+                        $input.on('mouseenter', function (e) {
+                            const text = $(this).val();
+                            if (text) tooltipBox.text(text).fadeIn(100);
+                        });
+                        $input.on('mousemove', function (e) {
+                            tooltipBox.css({ top: e.pageY + 12 + 'px', left: e.pageX + 12 + 'px' });
+                        });
+                        $input.on('mouseleave', function () { tooltipBox.fadeOut(100); });
+                    }
+                    function updateTitle($input) { }
+
+                    const legalEntities = legalEntitiesData.map(e => e.legalEntityName);
+
+                    function bindFor(companyName) {
+                        const item = legalEntitiesData.find(x => x.legalEntityName === companyName);
+
+                        const $employeeInput = $('#employeeSelect');
+                        $employeeInput.val('');
+                        $employeeInput.siblings('.remove-icon').hide();
+                        $employeeInput.siblings('.selected-items').empty();
+                        selectedEmpIdsCache.clear();
+
+                        const $billingInput = $('#billingSelect');
+                        $billingInput.val('');
+                        $billingInput.siblings('.remove-icon').hide();
+                        $billingInput.siblings('.selected-items').empty();
+
+                        $('.balance-input').val('₹ 0.00');
+                        if (item?.presentBalance) $('.balance-input').val('₹ ' + item.presentBalance);
+
+                        let employees = [];
+                        if (item?.employeeNames) {
+                            employees = item.employeeNames.split(',').map(e => {
+                                const [id, name, mobile] = e.trim().split('|');
+                                return { label: `${name} (${mobile})`, value: name, name, mobile, id };
+                            });
+                        }
+                        if (!employees.some(emp => emp.id === '0')) {
+                            employees.push({ label: 'Guest User', value: 'Guest User', name: 'Guest User', mobile: '', id: '0' });
+                        }
+
+                        $('#employeeSelect').autocomplete('option', 'source', function (request, response) {
+                            const term = request.term.toLowerCase();
+                            const matches = employees.filter(emp =>
+                                emp.name.toLowerCase().includes(term) || (emp.mobile || '').includes(term)
+                            );
+                            response(matches);
+                        });
+
+                        $('#hdnempid').val('0');
+                    }
+
+                    $('#legalEntitySelect')
+                        .val('')
+                        .attr('placeholder', 'Enter Legal Entity name')
+                        .autocomplete({
+                            source: legalEntities,
+                            minLength: 0,
+                            select: function (event, ui) {
+                                $(this).val(ui.item.value);
+                                updateTitle($(this));
+                                bindFor(ui.item.value);
+                                $(this).blur();
+                                $(this).siblings('.remove-icon').show();
+
+                                const result = legalEntitiesData.find(item => item.legalEntityName === ui.item.value);
+                                if (result) $('#hdniata').val(result.assignIATAGroup);
+
+                                return false;
+                            }
+                        })
+                        .on('focus click', function () { $(this).autocomplete('search', ''); })
+                        .on('input', function () { $(this).siblings('.remove-icon').toggle(!!$(this).val()); updateTitle($(this)); });
+
+                    $('#legalEntitySelect').siblings('.remove-icon').on('click', function () {
+                        $('#legalEntitySelect').val('').focus();
+                        $(this).hide();
+                        updateTitle($('#legalEntitySelect'));
+
+                        const $employeeInput = $('#employeeSelect');
+                        $employeeInput.val('').siblings('.remove-icon').hide();
+                        $employeeInput.siblings('.selected-items').empty();
+                        selectedEmpIdsCache.clear();
+
+                        const $billingInput = $('#billingSelect');
+                        $billingInput.val('').siblings('.remove-icon').hide();
+                        $billingInput.siblings('.selected-items').empty();
+
+                        $('.balance-input').val('₹ 0.00');
+                        $('#hdnempid').val('0');
+                    });
+
+                    // ---- Employee autocomplete (multi) ----
+                function initEmployeeAutocomplete() {
+                const $employeeInput = $('#employeeSelect');
+                const $selectedContainer = $employeeInput.siblings('.selected-items');
+
+                $employeeInput.autocomplete({
+                    source: [], // set by bindFor
+                    minLength: 0,
+                    select: function (event, ui) {
+                        event.preventDefault();
+                        const empId = ui.item.id ? String(ui.item.id) : "GUEST"; // ✅ Use "GUEST" instead of "0"
+                        const empName = ui.item.value;
+
+                        const isGuest = empName.toLowerCase() === "guest user";
+                        const alreadyGuest = $selectedContainer.find(`.selected-item[data-guest="true"]`).length > 0;
+                        const hasEmployees = $selectedContainer.find(`.selected-item[data-guest!="true"]`).length > 0;
+
+                         // ❌ Prevent adding Guest when employees exist
+                        if (isGuest && hasEmployees) {
+                            alert("You cannot select Guest User when employees are already added.");
+                            $employeeInput.val("");                 // clear input
+                            setTimeout(() => {
+                                $employeeInput.autocomplete("close");  // close autocomplete menu
+                                $(".ui-autocomplete").hide();          // extra force hide
+                            }, 0);
+                            return false;
+                        }
+
+                        // ❌ Prevent adding employee when Guest exists
+                        if (!isGuest && alreadyGuest) {
+                            alert("You cannot add employees when Guest User is already selected.");
+                            $employeeInput.val("");                 // clear input
+                            setTimeout(() => {
+                                $employeeInput.autocomplete("close");  // close autocomplete menu
+                                $(".ui-autocomplete").hide();          // extra force hide
+                            }, 0);
+                            return false;
+                        }
+
+                        // avoid duplicate chip by id
+                        if ($selectedContainer.find(`.selected-item[data-id="${empId}"]`).length === 0) {
+                            $selectedContainer.append(
+                                `<div class="selected-item" data-value="${empName}" data-id="${empId}" ${isGuest ? 'data-guest="true"' : ''}>
+                                    ${empName} <span class="remove-item">×</span>
+                                </div>`
+                            );
+                            selectedEmpIdsCache.add(empId);
+                            $('#hdnempid').val([...selectedEmpIdsCache].join(','));
+
+                            // ✅ Always fetch billing entity (including Guest User)
+                            fetchBillingFor([empId], true);
+
+                            // ✅ update adult count display
+                            updateAdultCount($selectedContainer);
+                        }
+
+                        $employeeInput.val(empName);
+                        updateTitle($employeeInput);
+                           // ✅ helper to enable/disable travellers section
+                            function toggleTravellers(isDisabled) {
+                                const $travellers = $(".travellers");
+
+                                // disable/enable all inputs inside travellers
+                                   // $travellers.find('.btn_sub, #field_adult, #field_child, #field_infant')
+                                   // .css("pointer-events", "none");
+                                   $('#rbEconomy').prop('checked', true);
+                               // dim everything
+                                $travellers.css("opacity", "1");
+
+                                // optionally dim UI if disabled
+                                if (isDisabled) {
+                                        $travellers.css({"pointer-events": "none"   // visual dim
+                                        });
+                                            // re-enable radios explicitly (so value posts)
+                                       $travellers.find('input[name="flightclass"]').css("pointer-events", "auto");
+                                } else {
+                                        $travellers.css({"pointer-events": "auto", "opacity": "1" });
+                                }
+                            }
+
+                            // inside your autocomplete select:
+                            if (empId !== "GUEST" && empId !== "0") {
+                                toggleTravellers(true);   // disable when employee selected
+                            } else {
+                                toggleTravellers(false);  // enable when Guest selected
+                            }
+                        return false;
+                    }
+                }).on('focus click', function () { $(this).autocomplete('search', ''); });
+
+                // Remove selected employee → REBUILD billing for remaining employees
+                $selectedContainer.on('click', '.remove-item', function () {
+                    const $chip = $(this).parent();
+                    const removedEmpId = String($chip.data('id'));
+                    const isGuest = $chip.is('[data-guest="true"]');
+
+                    $chip.remove();
+                    selectedEmpIdsCache.delete(removedEmpId);
+                    $('#hdnempid').val([...selectedEmpIdsCache].join(','));
+
+                    // ✅ Rebuild billing for remaining employees (including guest if still present)
+                    const remainingIds = [...selectedEmpIdsCache];
+                    fetchBillingFor(remainingIds, false);
+
+                    // ✅ update adult count display
+                    updateAdultCount($selectedContainer);
+                });
+            }
+
+                // ---- helper function to sync adult count ----
+                function updateAdultCount($container) {
+                    const count = $container.find('.selected-item').length || 1;
+
+                    // Update display counter (already in your code)
+                    $('#count_adult').text(count);
+
+                    // ✅ Also sync with travel details input
+                    $('#field_adult').val(count);
+                }
+
+
+                // ---- Billing autocomplete (optional manual add) ----
+                   function initBillingAutocomplete(billingEntities) {
+                    const $billingInput = $('#billingSelect');
+                    const $selectedContainer = $billingInput.siblings('.selected-items');
+
+                    $billingInput.val('');
+
+                    // ✅ When user presses Enter, add manually
+                    $billingInput.off('keydown').on('keydown', function (e) {
+                        if (e.key === 'Enter' && $billingInput.val().trim() !== '') {
+                            e.preventDefault();
+                            const billName = $billingInput.val().trim();
+
+                            $selectedContainer.append(
+                                `<div class="selected-item" data-value="${billName}-${Date.now()}">
+                                    ${billName} <span class="remove-item">×</span>
+                                </div>`
+                            );
+
+                            $billingInput.val('');
+                            updateTitle($billingInput);
+                        }
+                    });
+
+                    // ✅ Remove item on click
+                    $selectedContainer.off('click').on('click', '.remove-item', function () {
+                        $(this).parent().remove();
+                    });
+                }
+
+                    // ---- Single unified fetch that can APPEND or REBUILD ----
+                    function fetchBillingFor(empIds, append) {
+                        const legalEntityInput = $('#legalEntitySelect').val();
+                        const $billingContainer = $('#billingSelect').siblings('.selected-items');
+
+                        if (!legalEntityInput) return;
+                        if (!empIds || empIds.length === 0) { $billingContainer.empty(); return; }
+
+                        const legalEntityCode = legalEntityInput.split('-')[0].trim();
+                        const employeeCode = empIds.join(',');
+
+                        const myToken = ++lastFetchToken;
+
+                        $.ajax({
+                            type: 'GET',
+                            url: `/Login/GetEmpId/?legalEntityCode=${encodeURIComponent(legalEntityCode)}&employeeCode=${encodeURIComponent(employeeCode)}`,
+                            dataType: 'json',
+                            success: function (data) {
+                                if (myToken !== lastFetchToken) return;
+
+                                const parsedData = Array.isArray(data) ? data : (data ? JSON.parse(data) : []);
+                                if (!Array.isArray(parsedData)) return alert('Unexpected data format received.');
+
+                                // Suggestions (unique)
+                                const billingEntitiesForSource = [...new Set(parsedData.map(x => x && x.billingEntityCode).filter(Boolean))];
+                                initBillingAutocomplete(billingEntitiesForSource);
+
+                                // ✅ REBUILD or APPEND mode
+                                if (!append) {
+                                    // rebuild: clear all, then fetch again for ALL remaining (already passed in)
+                                    $billingContainer.empty();
+                                }
+
+                                // When appending, remove prior chips for these empIds (if any), then add fresh
+                                if (append) {
+                                    empIds.forEach(id => {
+                                        $billingContainer.find(`.selected-item.billing-chip[data-emp="${id}"]`).remove();
+                                    });
+                                }
+
+                            // Add billing chips, but prevent duplicates (unique by billingEntityCode)
+                            parsedData.forEach((item) => {
+                                const billCode = item && item.billingEntityCode;
+                                if (!billCode) return;
+
+                                // check if already exists
+                                if ($billingContainer.find(`.billing-chip[data-value="${billCode}"]`).length === 0) {
+                                    $billingContainer.append(
+                                        `<div class="selected-item billing-chip" data-value="${billCode}">
+                                             <label>${billCode}</label> <span class="remove-item">×</span>
+                                        </div>`
+                                    );
+                                }
+                            });
+
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('AJAX error:', status, error);
+                                alert('Failed to fetch billing entity data.');
+                            }
+                        });
+                    }
+
+                    // Helper (unused here but keeping from your code)
+                    function getEmployeeIdByName(employeeName, dataset) {
+                        for (const item of dataset) {
+                            if (item.employeeNames) {
+                                const employees = item.employeeNames.split(',').map(e => e.trim());
+                                for (const entry of employees) {
+                                    const [id, name] = entry.split('|');
+                                    if (name && name.trim().toLowerCase() === employeeName.trim().toLowerCase()) return id;
+                                }
+                            }
+                        }
+                        return null;
+                    }
+                    // Form validation
+                    $('#myForm').on('submit', function (e) {
+                        let isValid = true;
+                        $('.autocomplete-input[required]').each(function () {
+                            if (!$(this).val().trim()) { $(this).addClass('error'); isValid = false; }
+                            else $(this).removeClass('error');
+                        });
+                        if (!isValid) { e.preventDefault(); alert('Please fill out all required fields.'); }
+                    });
+
+                    // Initialize
+                    initEmployeeAutocomplete();
+                    bindCustomTooltip($('#legalEntitySelect'));
+                    bindCustomTooltip($('#employeeSelect'));
+                    bindCustomTooltip($('#billingSelect'));
+                });
+        </script>
+
+
+
+
+        <!--End Emulate section -->
     }
 
 </body>

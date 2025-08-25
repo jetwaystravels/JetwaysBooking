@@ -3430,6 +3430,11 @@ namespace OnionArchitectureAPI.Services.Travelport
                             //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
                             createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"AI" + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
                         }
+                        if (!string.IsNullOrEmpty(passengerdetails[i].ReturnFrequentFlyer))
+                        {
+                            //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"AI" + passengerdetails[i].ReturnFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                        }
                         //else
                         //{
                         //    //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].ReturnFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
@@ -3463,6 +3468,11 @@ namespace OnionArchitectureAPI.Services.Travelport
                         {
                             //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
                             createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"AI" + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                        }
+                        if (!string.IsNullOrEmpty(passengerdetails[i].ReturnFrequentFlyer))
+                        {
+                            //createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + passengerdetails[i].DepartFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
+                            createPNRReq.Append("<SSR Type=\"FQTV\" Status=\"HK\" FreeText=\"AI" + passengerdetails[i].ReturnFrequentFlyer + "-" + passengerdetails[i].last.ToUpper() + "/" + passengerdetails[i].first.ToUpper() + "\" Carrier=\"" + Getdetails.journeys[0].segments[0].identifier.carrierCode + "\"/>");
                         }
                         //else
                         //{

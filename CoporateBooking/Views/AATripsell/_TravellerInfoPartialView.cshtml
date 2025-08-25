@@ -1,9 +1,8 @@
 ﻿@model DomainLayer.ViewModel.ViewModel
 
 @{
-	var gstData = ViewBag.GSTdata as List<CoporateBooking.Models.CompanyEmployeeGSTDetails>;
-	var gst = (gstData != null && gstData.Count > 0) ? gstData[0] : new CoporateBooking.Models.CompanyEmployeeGSTDetails();
-	Layout = null;
+	var gstData = ViewBag.GSTdata as List<CoporateBooking.Models.CompanyEmployeeGSTDetails>
+						?? new List<CoporateBooking.Models.CompanyEmployeeGSTDetails>();
 }
 <style>
 
@@ -150,7 +149,7 @@
 
 						<input type="text" class="contactFname validate-field" data-validate="name"
 							   maxlength="16" oninput="validateInputT(event ,@i)"
-							   value="@gst.FirstName"
+							   value="@(gstData.ElementAtOrDefault(i)?.FirstName ?? "")"
 							   placeholder="First & middle name"
 							   name="passengerdetails[@i].First"
 							   style="text-transform:uppercase"
@@ -165,7 +164,7 @@
 					<div class="form-input">
 						<input type="text" class="contactLname validate-field" data-validate="last"
 							   maxlength="16" oninput="validateInputT(event,@i)"
-							   value="@gst.LastName"
+							   value="@(gstData.ElementAtOrDefault(i)?.LastName ?? "")"
 							   placeholder="Last name"
 							   name="passengerdetails[@i].Last"
 							   style="text-transform:uppercase"
@@ -182,7 +181,7 @@
 							<div class="form-input">
 								<input type="text" data-validate="email" class="contactemail validate-field"
 									   maxlength="50" oninput="validateInputT(event,@i)"
-									   value="@gst.BusinessEmail"
+									   value="@(gstData.ElementAtOrDefault(i)?.BusinessEmail ?? "")"
 									   id="contactemailID"
 									   placeholder="email"
 									   name="passengerdetails[@i].Email"
@@ -209,7 +208,7 @@
 									   class="contactphone validate-field"
 									   oninput="validateInputT(event,@i)"
 									   placeholder="phone"
-									   value="@gst.MobileNumber"
+									   value="@(gstData.ElementAtOrDefault(i)?.MobileNumber ?? "")"
 									   name="passengerdetails[@i].mobile"
 									   required />
 							</div>
@@ -228,7 +227,7 @@
 									   class=""
 									   oninput=""
 									   placeholder="Frequent Flyer Numbers"
-									   value="@gst.FrequentFlyerNumbers"
+									   value="@(gstData.ElementAtOrDefault(i)?.FrequentFlyerNumbers ?? "")"
 									   name="passengerdetails[@i].FrequentFlyer"
 									   required style="border-radius: 0 4px 4px 0;" />
 						</div>

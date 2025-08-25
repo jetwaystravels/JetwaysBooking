@@ -726,7 +726,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             returnTicketBooking.htpax = htpax;
                             _AirLinePNRTicket.AirlinePNR.Add(returnTicketBooking);
 
-                            airLineFlightTicketBooking.BookingID = JsonObjPNRBooking.data.bookingKey;
+                            airLineFlightTicketBooking.BookingID = JsonObjPNRBooking.data.bookingKey +k1;
                             #region DB Save
                             tb_Booking = new tb_Booking();
                             tb_Booking.AirLineID = 1;
@@ -750,7 +750,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             {
                                 tb_Booking.TripType = "ReturnTrip";
                             }
-                            tb_Booking.BookingID = JsonObjPNRBooking.data.bookingKey;
+                            tb_Booking.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                             tb_Booking.RecordLocator = JsonObjPNRBooking.data.recordLocator;
                             if (JsonObjPNRBooking.data.recordLocator == null)
                             {
@@ -826,7 +826,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             tb_AirCraft.Modifyby = JsonObjPNRBooking.data.info.modifiedAgentId;// "Online";
                             tb_AirCraft.Status = JsonObjPNRBooking.data.info.status; //"0";
                             contactDetail = new ContactDetail();
-                            contactDetail.BookingID = JsonObjPNRBooking.data.bookingKey;
+                            contactDetail.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                             contactDetail.FirstName = JsonObjPNRBooking.data.contacts.P.name.first;
                             contactDetail.LastName = JsonObjPNRBooking.data.contacts.P.name.last;
                             contactDetail.EmailID = JsonObjPNRBooking.data.contacts.P.emailAddress;
@@ -852,7 +852,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             }
                             tb_PassengerTotalobj = new tb_PassengerTotal();
                             bookingKey = JsonObjPNRBooking.data.bookingKey;
-                            tb_PassengerTotalobj.BookingID = JsonObjPNRBooking.data.bookingKey;
+                            tb_PassengerTotalobj.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                             if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices != null)
                             {
                                 if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.total != null)
@@ -948,7 +948,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 foreach (var items in JsonObjPNRBooking.data.passengers)
                                 {
                                     tb_PassengerDetails tb_Passengerobj = new tb_PassengerDetails();
-                                    tb_Passengerobj.BookingID = bookingKey;
+                                    tb_Passengerobj.BookingID = bookingKey + k1;
                                     tb_Passengerobj.SegmentsKey = JsonObjPNRBooking.data.journeys[0].segments[isegment].segmentKey;
                                     tb_Passengerobj.PassengerKey = items.Value.passengerKey;
                                     tb_Passengerobj.TypeCode = items.Value.passengerTypeCode;
@@ -1180,7 +1180,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             for (int i = 0; i < JourneysCount; i++)
                             {
                                 tb_journeys tb_JourneysObj = new tb_journeys();
-                                tb_JourneysObj.BookingID = JsonObjPNRBooking.data.bookingKey;
+                                tb_JourneysObj.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                                 tb_JourneysObj.JourneyKey = JsonObjPNRBooking.data.journeys[i].journeyKey;
                                 tb_JourneysObj.Stops = JsonObjPNRBooking.data.journeys[i].stops;
                                 tb_JourneysObj.JourneyKeyCount = i;
@@ -1201,7 +1201,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 for (int j = 0; j < SegmentReturnCountt; j++)
                                 {
                                     tb_Segments segmentReturnobj = new tb_Segments();
-                                    segmentReturnobj.BookingID = JsonObjPNRBooking.data.bookingKey;
+                                    segmentReturnobj.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                                     segmentReturnobj.journeyKey = JsonObjPNRBooking.data.journeys[0].journeyKey;
                                     segmentReturnobj.SegmentKey = JsonObjPNRBooking.data.journeys[0].segments[j].segmentKey;
                                     segmentReturnobj.SegmentCount = j;
@@ -1873,7 +1873,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             #endregion
                             _AirLinePNRTicket.AirlinePNR.Add(returnTicketBooking);
 
-                            airLineFlightTicketBooking.BookingID = JsonObjPNRBooking.data.bookingKey;
+                            airLineFlightTicketBooking.BookingID = JsonObjPNRBooking.data.bookingKey+k1;
                             #region DB Save
                             tb_Booking = new tb_Booking();
                             tb_Booking.AirLineID = 2;
@@ -1899,7 +1899,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 tb_Booking.TripType = "ReturnTrip";
                             }
                             tb_Booking.BookingRelationId = Guid;
-                            tb_Booking.BookingID = JsonObjPNRBooking.data.bookingKey;
+                            tb_Booking.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                             tb_Booking.RecordLocator = JsonObjPNRBooking.data.recordLocator;
                             tb_Booking.CurrencyCode = JsonObjPNRBooking.data.currencyCode;
                             tb_Booking.Origin = JsonObjPNRBooking.data.journeys[0].designator.origin;
@@ -1975,7 +1975,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             tb_AirCraft.Status = JsonObjPNRBooking.data.info.status; //"0";
 
                             contactDetail = new ContactDetail();
-                            contactDetail.BookingID = JsonObjPNRBooking.data.bookingKey;
+                            contactDetail.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                             contactDetail.FirstName = JsonObjPNRBooking.data.contacts.P.name.first;
                             contactDetail.LastName = JsonObjPNRBooking.data.contacts.P.name.last;
                             contactDetail.EmailID = JsonObjPNRBooking.data.contacts.P.emailAddress;
@@ -2002,7 +2002,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                             tb_PassengerTotalobj = new tb_PassengerTotal();
                             bookingKey = JsonObjPNRBooking.data.bookingKey;
-                            tb_PassengerTotalobj.BookingID = JsonObjPNRBooking.data.bookingKey;
+                            tb_PassengerTotalobj.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                             if (JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices != null)
                             {
                                 tb_PassengerTotalobj.SpecialServicesAmount = JsonObjPNRBooking.data.breakdown.passengerTotals.specialServices.total;
@@ -2102,7 +2102,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 foreach (var items in JsonObjPNRBooking.data.passengers)
                                 {
                                     tb_PassengerDetails tb_Passengerobj = new tb_PassengerDetails();
-                                    tb_Passengerobj.BookingID = bookingKey;
+                                    tb_Passengerobj.BookingID = bookingKey + k1;
                                     tb_Passengerobj.SegmentsKey = JsonObjPNRBooking.data.journeys[0].segments[isegment].segmentKey;
                                     tb_Passengerobj.PassengerKey = items.Value.passengerKey;
                                     tb_Passengerobj.TypeCode = items.Value.passengerTypeCode;
@@ -2152,7 +2152,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         tb_Passengerobj.ModifiedDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.modifiedDate); //DateTime.Now;
                                     tb_Passengerobj.ModifyBy = JsonObjPNRBooking.data.info.modifiedAgentId; //"Online";
                                     tb_Passengerobj.Status = JsonObjPNRBooking.data.info.status; //"0";
-                                    if (items.Value.infant != null & isegment==0)
+                                    if (items.Value.infant != null & isegment == 0)
                                     {
                                         tb_Passengerobj.Inf_TypeCode = "INFT";
                                         tb_Passengerobj.Inf_Firstname = items.Value.infant.name.first;
@@ -2261,7 +2261,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                             TotalAmount_Seat = amount;
                                                             //TicketSeat[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Seat;
                                                         }
-                                                        else if (serviceCharge.type == "3")
+                                                        else if (serviceCharge.type == "3" || serviceCharge.type == "5")
                                                         {
                                                             TotalAmount_Seat_tax += Convert.ToDecimal(amount);
                                                         }
@@ -2317,7 +2317,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                         TotalAmount_Baggage = amount;
                                                         //TicketCarryBagAMount[tb_Passengerobj.PassengerKey.ToString()] = TotalAmount_Baggage;
                                                     }
-                                                    else if (serviceCharge.type == "3")
+                                                    else if (serviceCharge.type == "3" || serviceCharge.type == "5")
                                                     {
                                                         TotalAmount_Baggage_tax += Convert.ToDecimal(amount);
                                                     }
@@ -2366,7 +2366,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             for (int i = 0; i < JourneysCount; i++)
                             {
                                 tb_journeys tb_JourneysObj = new tb_journeys();
-                                tb_JourneysObj.BookingID = JsonObjPNRBooking.data.bookingKey;
+                                tb_JourneysObj.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                                 tb_JourneysObj.JourneyKey = JsonObjPNRBooking.data.journeys[i].journeyKey;
                                 tb_JourneysObj.Stops = JsonObjPNRBooking.data.journeys[i].stops;
                                 tb_JourneysObj.JourneyKeyCount = i;
@@ -2387,7 +2387,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 for (int j = 0; j < SegmentReturnCountt; j++)
                                 {
                                     tb_Segments segmentReturnobj = new tb_Segments();
-                                    segmentReturnobj.BookingID = JsonObjPNRBooking.data.bookingKey;
+                                    segmentReturnobj.BookingID = JsonObjPNRBooking.data.bookingKey + k1;
                                     segmentReturnobj.journeyKey = JsonObjPNRBooking.data.journeys[0].journeyKey;
                                     segmentReturnobj.SegmentKey = JsonObjPNRBooking.data.journeys[0].segments[j].segmentKey;
                                     segmentReturnobj.SegmentCount = j;
@@ -2610,7 +2610,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         string _responceGetBooking1 = JsonConvert.SerializeObject(_getBookingResponse);
                                         ReturnTicketBooking returnTicketBooking = new ReturnTicketBooking();
                                         var totalAmount = _getBookingResponse.Booking.BookingSum.TotalCost;
-                                        returnTicketBooking.bookingKey = _getBookingResponse.Booking.BookingID.ToString();
+                                        returnTicketBooking.bookingKey = _getBookingResponse.Booking.BookingID.ToString()+k1;
                                         ReturnPaxSeats _unitdesinator = new ReturnPaxSeats();
                                         if (_getBookingResponse.Booking.Journeys[0].Segments[0].PaxSeats.Length > 0)
                                             _unitdesinator.unitDesignatorPax = _getBookingResponse.Booking.Journeys[0].Segments[0].PaxSeats[0].UnitDesignator;
@@ -3136,7 +3136,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                         #region DB Save
 
-                                        airLineFlightTicketBooking.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                        airLineFlightTicketBooking.BookingID = _getBookingResponse.Booking.BookingID.ToString()+k1;
                                         tb_Booking = new tb_Booking();
                                         tb_Booking.AirLineID = 3;
                                         string productcode = _getBookingResponse.Booking.Journeys[0].Segments[0].Fares[0].ProductClass;
@@ -3160,7 +3160,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         {
                                             tb_Booking.TripType = "ReturnTrip";
                                         }
-                                        tb_Booking.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                        tb_Booking.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                         tb_Booking.RecordLocator = _getBookingResponse.Booking.RecordLocator;
                                         tb_Booking.CurrencyCode = _getBookingResponse.Booking.CurrencyCode;
                                         tb_Booking.Origin = _getBookingResponse.Booking.Journeys[0].Segments[0].Legs[0].DepartureStation;
@@ -3218,7 +3218,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         tb_AirCraft.Status = _getBookingResponse.Booking.BookingInfo.BookingStatus.ToString();
 
                                         contactDetail = new ContactDetail();
-                                        contactDetail.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                        contactDetail.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                         contactDetail.FirstName = _getBookingResponse.Booking.BookingContacts[0].Names[0].FirstName;
                                         contactDetail.LastName = _getBookingResponse.Booking.BookingContacts[0].Names[0].LastName;
                                         contactDetail.EmailID = _getBookingResponse.Booking.BookingContacts[0].EmailAddress;
@@ -3233,7 +3233,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         gSTDetails = new GSTDetails();
                                         if (_getBookingResponse.Booking.BookingContacts[0].CustomerNumber != null)
                                         {
-                                            gSTDetails.bookingReferenceNumber = _getBookingResponse.Booking.BookingID.ToString();
+                                            gSTDetails.bookingReferenceNumber = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                             gSTDetails.GSTEmail = _getBookingResponse.Booking.BookingContacts[0].EmailAddress;
                                             gSTDetails.GSTNumber = _getBookingResponse.Booking.BookingContacts[0].CustomerNumber;
                                             gSTDetails.GSTName = _getBookingResponse.Booking.BookingContacts[0].CompanyName;
@@ -3243,7 +3243,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                         tb_PassengerTotalobj = new tb_PassengerTotal();
                                         bookingKey = _getBookingResponse.Booking.BookingID.ToString();
-                                        tb_PassengerTotalobj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                        tb_PassengerTotalobj.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                         if (_getBookingResponse.Booking.Passengers.Length > 0 && _getBookingResponse.Booking.Passengers[0].PassengerFees.Length > 0)
                                         {
                                             tb_PassengerTotalobj.SpecialServicesAmount = (double)Totatamountmb; // FFWD + MEAL + BAGGAGE
@@ -3276,7 +3276,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             foreach (var items in _getBookingResponse.Booking.Passengers)
                                             {
                                                 tb_PassengerDetails tb_Passengerobj = new tb_PassengerDetails();
-                                                tb_Passengerobj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                                tb_Passengerobj.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                                 tb_Passengerobj.PassengerKey = items.PassengerID.ToString();
                                                 tb_Passengerobj.TypeCode = items.PassengerTypeInfo.PaxType;
                                                 tb_Passengerobj.FirstName = items.Names[0].FirstName;
@@ -3362,7 +3362,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 tb_Passengerobj.ModifiedDate = Convert.ToDateTime(_getBookingResponse.Booking.BookingInfo.ModifiedDate);
                                                 tb_Passengerobj.ModifyBy = _getBookingResponse.Booking.BookingInfo.ModifiedAgentID.ToString();
                                                 tb_Passengerobj.Status = _getBookingResponse.Booking.BookingInfo.BookingStatus.ToString();
-                                                if (items.Infant != null && isegment==0)
+                                                if (items.Infant != null && isegment == 0)
                                                 {
                                                     tb_Passengerobj.Inf_TypeCode = "INFT";
                                                     tb_Passengerobj.Inf_Firstname = items.Infant.Names[0].FirstName;
@@ -3579,7 +3579,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         for (int i = 0; i < JourneysCount; i++)
                                         {
                                             tb_journeys tb_JourneysObj = new tb_journeys();
-                                            tb_JourneysObj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                            tb_JourneysObj.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                             tb_JourneysObj.JourneyKey = _getBookingResponse.Booking.Journeys[i].JourneySellKey;
                                             tb_JourneysObj.Stops = _getBookingResponse.Booking.Journeys[i].Segments.Length;
                                             tb_JourneysObj.JourneyKeyCount = i;
@@ -3601,7 +3601,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         for (int j = 0; j < SegmentReturnCountt; j++)
                                         {
                                             tb_Segments segmentReturnobj = new tb_Segments();
-                                            segmentReturnobj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                            segmentReturnobj.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                             segmentReturnobj.journeyKey = _getBookingResponse.Booking.Journeys[0].JourneySellKey;
                                             segmentReturnobj.SegmentKey = _getBookingResponse.Booking.Journeys[0].Segments[j].SegmentSellKey;
                                             segmentReturnobj.SegmentCount = j;
@@ -4193,7 +4193,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         #region DB Save
 
                                         airLineFlightTicketBooking = new AirLineFlightTicketBooking();
-                                        airLineFlightTicketBooking.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                        airLineFlightTicketBooking.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                         tb_Booking = new tb_Booking();
                                         tb_Booking.AirLineID = 4;
                                         string productcode = _getBookingResponse.Booking.Journeys[0].Segments[0].Fares[0].ProductClass;
@@ -4218,7 +4218,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         {
                                             tb_Booking.TripType = "ReturnTrip";
                                         }
-                                        tb_Booking.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                        tb_Booking.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                         tb_Booking.RecordLocator = _getBookingResponse.Booking.RecordLocator;
                                         tb_Booking.CurrencyCode = _getBookingResponse.Booking.CurrencyCode;
                                         tb_Booking.Origin = _getBookingResponse.Booking.Journeys[0].Segments[0].Legs[0].DepartureStation;
@@ -4276,7 +4276,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         tb_AirCraft.Status = _getBookingResponse.Booking.BookingInfo.BookingStatus.ToString();
 
                                         contactDetail = new ContactDetail();
-                                        contactDetail.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                        contactDetail.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                         contactDetail.FirstName = _getBookingResponse.Booking.BookingContacts[0].Names[0].FirstName;
                                         contactDetail.LastName = _getBookingResponse.Booking.BookingContacts[0].Names[0].LastName;
                                         contactDetail.EmailID = _getBookingResponse.Booking.BookingContacts[0].EmailAddress;
@@ -4291,7 +4291,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         gSTDetails = new GSTDetails();
                                         if (_getBookingResponse.Booking.BookingContacts[0].CustomerNumber != null)
                                         {
-                                            gSTDetails.bookingReferenceNumber = _getBookingResponse.Booking.BookingID.ToString();
+                                            gSTDetails.bookingReferenceNumber = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                             gSTDetails.GSTEmail = _getBookingResponse.Booking.BookingContacts[0].EmailAddress;
                                             gSTDetails.GSTNumber = _getBookingResponse.Booking.BookingContacts[0].CustomerNumber;
                                             gSTDetails.GSTName = _getBookingResponse.Booking.BookingContacts[0].CompanyName;
@@ -4301,7 +4301,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
                                         tb_PassengerTotalobj = new tb_PassengerTotal();
                                         bookingKey = _getBookingResponse.Booking.BookingID.ToString();
-                                        tb_PassengerTotalobj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                        tb_PassengerTotalobj.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                         if (_getBookingResponse.Booking.Passengers.Length > 0 && _getBookingResponse.Booking.Passengers[0].PassengerFees.Length > 0)
                                         {
                                             tb_PassengerTotalobj.SpecialServicesAmount = (double)Totatamountmb; // FFWD + MEAL + BAGGAGE
@@ -4334,7 +4334,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             foreach (var items in _getBookingResponse.Booking.Passengers)
                                             {
                                                 tb_PassengerDetails tb_Passengerobj = new tb_PassengerDetails();
-                                                tb_Passengerobj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                                tb_Passengerobj.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                                 tb_Passengerobj.PassengerKey = items.PassengerID.ToString();
                                                 tb_Passengerobj.TypeCode = items.PassengerTypeInfo.PaxType;
                                                 tb_Passengerobj.FirstName = items.Names[0].FirstName;
@@ -4631,7 +4631,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         for (int i = 0; i < JourneysCount; i++)
                                         {
                                             tb_journeys tb_JourneysObj = new tb_journeys();
-                                            tb_JourneysObj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                            tb_JourneysObj.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                             tb_JourneysObj.JourneyKey = _getBookingResponse.Booking.Journeys[i].JourneySellKey;
                                             tb_JourneysObj.Stops = _getBookingResponse.Booking.Journeys[i].Segments.Length;
                                             tb_JourneysObj.JourneyKeyCount = i;
@@ -4653,7 +4653,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         for (int j = 0; j < SegmentReturnCountt; j++)
                                         {
                                             tb_Segments segmentReturnobj = new tb_Segments();
-                                            segmentReturnobj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
+                                            segmentReturnobj.BookingID = _getBookingResponse.Booking.BookingID.ToString() + k1;
                                             segmentReturnobj.journeyKey = _getBookingResponse.Booking.Journeys[0].JourneySellKey;
                                             segmentReturnobj.SegmentKey = _getBookingResponse.Booking.Journeys[0].Segments[j].SegmentSellKey;
                                             segmentReturnobj.SegmentCount = j;
@@ -4834,12 +4834,12 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                 //res = "";// _objAvail.CreatePNRRoundTrip(_testURL, createPNRReq, newGuid.ToString(), _targetBranch, _userName, _password, AdultTraveller, _data, _Total, Logfolder, k1, _unitkey, _SSRkey, _pricesolution);
 
                                 //RecordLocator = Regex.Match(res, @"universal:UniversalRecord\s*LocatorCode=""(?<LocatorCode>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline).Groups["LocatorCode"].Value.Trim();
-                                if (k1 == 0 && gDSPNRResponse!=null)
+                                if (k1 == 0 && gDSPNRResponse != null)
                                 {
                                     strResponse = gDSPNRResponse.Response; // HttpContext.Session.GetString("PNRL").Split("@@")[0];
                                     RecordLocator = gDSPNRResponse.LocatorCode; // HttpContext.Session.GetString("PNRL").Split("@@")[1];
                                 }
-                                else if(k1 == 1 && gDSPNRResponse != null)
+                                else if (k1 == 1 && gDSPNRResponse != null)
                                 {
                                     strResponse = gDSPNRResponse.RResponse;  //HttpContext.Session.GetString("PNRR").Split("@@")[0];
                                     RecordLocator = gDSPNRResponse.RLocatorCode; // HttpContext.Session.GetString("PNRR").Split("@@")[1];
@@ -5393,7 +5393,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             #region DB Save
                                             airLineFlightTicketBooking = new AirLineFlightTicketBooking();
                                             string Bookingid = Regex.Match(strResponseretriv, "TransactionId=\"(?<Tid>[\\s\\S]*?)\"").Groups["Tid"].Value.Trim();
-                                            airLineFlightTicketBooking.BookingID = Bookingid;
+                                            airLineFlightTicketBooking.BookingID = Bookingid +k1;
                                             tb_Booking = new tb_Booking();
                                             tb_Booking.AirLineID = 5;
                                             tb_Booking.BookingType = "Corporate-" + Regex.Match(strResponseretriv, "BrandID=\"[\\s\\S]*?Name=\"(?<fareName>[\\s\\S]*?)\"").Groups["fareName"].Value.Trim();
@@ -5409,7 +5409,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             {
                                                 tb_Booking.TripType = "ReturnTrip";
                                             }
-                                            tb_Booking.BookingID = Bookingid;
+                                            tb_Booking.BookingID = Bookingid + k1;
                                             tb_Booking.RecordLocator = returnTicketBooking.recordLocator;
                                             tb_Booking.CurrencyCode = "INR";
                                             segmentscount = pnrResDetail.Bonds.Legs.Count;
@@ -5524,7 +5524,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
 
                                             contactDetail = new ContactDetail();
-                                            contactDetail.BookingID = Bookingid;
+                                            contactDetail.BookingID = Bookingid + k1;
                                             contactDetail.FirstName = contactList.first;
                                             contactDetail.LastName = contactList.last;
                                             contactDetail.EmailID = contactList.emailAddress;
@@ -5550,7 +5550,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
 
 
                                             tb_PassengerTotalobj = new tb_PassengerTotal();
-                                            tb_PassengerTotalobj.BookingID = Bookingid;
+                                            tb_PassengerTotalobj.BookingID = Bookingid + k1;
                                             if (breakdown.passengerTotals.specialServices != null)
                                             {
                                                 if (breakdown.passengerTotals.specialServices.total != null)
@@ -5596,13 +5596,15 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             //string passenger = objMongoHelper.UnZip(tokenData.PassengerRequest);
 
                                             List<passkeytype> paxList = (List<passkeytype>)JsonConvert.DeserializeObject(passenger, typeof(List<passkeytype>));
-                                            List<passkeytype> infantList = paxList.Where(p => p.passengertypecode == "INF").ToList();
+                                            List<passkeytype> infantList = paxList.Where(p => p.passengertypecode == "INFT").ToList();
+                                            if (infantList.Count == 0)
+                                                infantList = paxList.Where(p => p.passengertypecode == "INF").ToList();
 
                                             //for frequentFlyer info
                                             Hashtable htpaxFQTVdetails = new Hashtable();
                                             foreach (Match item in Regex.Matches(strResponseretriv, @"FQTV""\s*FreeText=""/AI(?<FQTV>[\s\S]*?)-(?<LastName>[\s\S]*?)/(?<FirstName>[\s\S]*?)""", RegexOptions.IgnoreCase | RegexOptions.Multiline))
                                             {
-                                                if (!htpaxFQTVdetails.Contains(item.Groups["FQTV"].Value.ToUpper().Trim()))
+                                                if (!htpaxFQTVdetails.Contains(item.Groups["FirstName"].Value.ToUpper().Trim() + "_" + item.Groups["LastName"].Value.ToUpper().Trim()))
                                                 {
                                                     htpaxFQTVdetails.Add(item.Groups["FirstName"].Value.ToUpper().Trim() + "_" + item.Groups["LastName"].Value.ToUpper().Trim(), item.Groups["FQTV"].Value);
                                                 }
@@ -5646,7 +5648,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 for (int k = 0; k < paxList.Count; k++)
                                                 {
                                                     tb_PassengerDetails tb_Passengerobj = new tb_PassengerDetails();
-                                                    tb_Passengerobj.BookingID = Bookingid;
+                                                    tb_Passengerobj.BookingID = Bookingid + k1;
                                                     tb_Passengerobj.SegmentsKey = "";
                                                     tb_Passengerobj.PassengerKey = paxList[k].passengerkey;
                                                     tb_Passengerobj.TypeCode = paxList[k].passengertypecode;
@@ -5717,7 +5719,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                                 //}
                                                                 //}
                                                                 string combinedkey = (infantList[inf].first + "_" + infantList[inf].last).ToUpper() + "_" + pnrResDetail.Bonds.Legs[isegment].AircraftCode;
-                                                                if (htpassenegerdata.Contains(combinedName))
+                                                                if (htpassenegerdata.Contains(combinedkey))
                                                                 {
                                                                     data5 = htpassenegerdata[combinedkey].ToString();
                                                                     tb_Passengerobj.InftAmount = Convert.ToDouble(data5.Split('/')[0]);
@@ -5852,7 +5854,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                             for (int i1 = 0; i1 < JourneysCount; i1++)
                                             {
                                                 tb_journeys tb_JourneysObj = new tb_journeys();
-                                                tb_JourneysObj.BookingID = Bookingid;
+                                                tb_JourneysObj.BookingID = Bookingid + k1;
                                                 tb_JourneysObj.JourneyKey = "";
                                                 tb_JourneysObj.Stops = segmentscount;
                                                 tb_JourneysObj.JourneyKeyCount = i1;
@@ -5873,7 +5875,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 for (int j = 0; j < SegmentReturnCountt; j++)
                                                 {
                                                     tb_Segments segmentReturnobj = new tb_Segments();
-                                                    segmentReturnobj.BookingID = Bookingid;
+                                                    segmentReturnobj.BookingID = Bookingid + k1;
                                                     segmentReturnobj.journeyKey = "";
                                                     segmentReturnobj.SegmentKey = "";
                                                     segmentReturnobj.SegmentCount = j;
