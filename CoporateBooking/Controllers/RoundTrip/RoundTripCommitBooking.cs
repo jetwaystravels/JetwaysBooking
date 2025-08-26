@@ -843,7 +843,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             gSTDetails = new GSTDetails();
                             if (JsonObjPNRBooking.data.contacts.G != null)
                             {
-                                gSTDetails.bookingReferenceNumber = JsonObjPNRBooking.data.bookingKey;
+                                gSTDetails.bookingReferenceNumber = JsonObjPNRBooking.data.bookingKey +k1;
                                 gSTDetails.GSTEmail = JsonObjPNRBooking.data.contacts.G.emailAddress;
                                 gSTDetails.GSTNumber = JsonObjPNRBooking.data.contacts.G.customerNumber;
                                 gSTDetails.GSTName = JsonObjPNRBooking.data.contacts.G.companyName;
@@ -1992,7 +1992,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             gSTDetails = new GSTDetails();
                             if (JsonObjPNRBooking.data.contacts.G != null)
                             {
-                                gSTDetails.bookingReferenceNumber = JsonObjPNRBooking.data.bookingKey;
+                                gSTDetails.bookingReferenceNumber = JsonObjPNRBooking.data.bookingKey +k1;
                                 gSTDetails.GSTEmail = JsonObjPNRBooking.data.contacts.G.emailAddress;
                                 gSTDetails.GSTNumber = JsonObjPNRBooking.data.contacts.G.customerNumber;
                                 gSTDetails.GSTName = JsonObjPNRBooking.data.contacts.G.companyName;
