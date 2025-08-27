@@ -29,7 +29,7 @@ namespace ServiceLayer.Service.Implementation
                 var jetid = _dbContext.tb_DailyNumber.FromSqlRaw<tb_DailyNumber>("EXECUTE sp_jetwaysIdGenerate @OutputParameter OUTPUT", outputParameter).ToList();
                 var jetwaysId = jetid[0].Autogenratednumber;
                 tb_Booking tbobj = new tb_Booking();
-                tbobj.BookingID = ticketObject.BookingID;
+                tbobj.BookingID = ticketObject.tb_Booking.BookingID;
                 tbobj.BookingType = ticketObject.tb_Booking.BookingType;
                 tbobj.BookingRelationId = ticketObject.tb_Booking.BookingRelationId;
                 tbobj.TripType = ticketObject.tb_Booking.TripType;
