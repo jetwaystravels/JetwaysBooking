@@ -2087,7 +2087,7 @@
 
 			var maxField = 6;
 			var maxField_adult = 9;
-			var count_adult = parseInt(localStorage.getItem("adultcount")) || 1;
+			var count_adult = parseInt(new URLSearchParams(window.location.search).get('AdultCount')) || 1; //parseInt(localStorage.getItem("adultcount")) || 1;
 			var count_child = 0;
 			var count_infant = 0;
 
