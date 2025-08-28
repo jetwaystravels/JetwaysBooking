@@ -777,8 +777,19 @@ namespace OnionConsumeWebAPI.Controllers
                     contactDetail.LastName = JsonObjPNRBooking.data.contacts.P.name.last;
                     contactDetail.EmailID = JsonObjPNRBooking.data.contacts.P.emailAddress;
                     //contactDetail.MobileNumber = Convert.ToInt32(Regex.Replace(JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString(), @"^\+91", "")); // todo
-                    contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
-                    contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
+                    if (JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-').Length > 1)
+                    {
+                        contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
+                        contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
+                    }
+                    else
+                    {
+                        contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString();
+                        contactDetail.CountryCode = "+91";
+                    }
+
+                    //contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
+                    //contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
                     if (JsonObjPNRBooking.data.info.createdDate != null)
                         contactDetail.CreateDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.createdDate); //DateTime.Now;
                     contactDetail.CreateBy = JsonObjPNRBooking.data.info.createdAgentId; //"Admin";

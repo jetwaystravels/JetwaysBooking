@@ -831,8 +831,20 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             contactDetail.LastName = JsonObjPNRBooking.data.contacts.P.name.last;
                             contactDetail.EmailID = JsonObjPNRBooking.data.contacts.P.emailAddress;
                             //contactDetail.MobileNumber = Convert.ToInt32(Regex.Replace(JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString(), @"^\+91", "")); // todo
-                            contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
-                            contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
+
+                            if (JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-').Length > 1)
+                            {
+                                contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
+                                contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
+                            }
+                            else
+                            {
+                                contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString();
+                                contactDetail.CountryCode = "+91";
+                            }
+
+                            //contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
+                            //contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
                             if (JsonObjPNRBooking.data.info.createdDate != null)
                                 contactDetail.CreateDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.createdDate); //DateTime.Now;
                             contactDetail.CreateBy = JsonObjPNRBooking.data.info.createdAgentId; //"Admin";
@@ -1980,8 +1992,18 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                             contactDetail.LastName = JsonObjPNRBooking.data.contacts.P.name.last;
                             contactDetail.EmailID = JsonObjPNRBooking.data.contacts.P.emailAddress;
                             //contactDetail.MobileNumber = Convert.ToInt32(Regex.Replace(JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString(), @"^\+91", "")); // todo
-                            contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
-                            contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
+                            if (JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-').Length > 1)
+                            {
+                                contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
+                                contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
+                            }
+                            else
+                            {
+                                contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString();
+                                contactDetail.CountryCode = "+91";
+                            }
+                            //contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
+                            //contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
                             if (JsonObjPNRBooking.data.info.createdDate != null)
                                 contactDetail.CreateDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.createdDate); //DateTime.Now;
                             contactDetail.CreateBy = JsonObjPNRBooking.data.info.createdAgentId; //"Admin";
@@ -3222,8 +3244,18 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         contactDetail.FirstName = _getBookingResponse.Booking.BookingContacts[0].Names[0].FirstName;
                                         contactDetail.LastName = _getBookingResponse.Booking.BookingContacts[0].Names[0].LastName;
                                         contactDetail.EmailID = _getBookingResponse.Booking.BookingContacts[0].EmailAddress;
-                                        contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
-                                        contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
+                                        if (_getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-').Length > 1)
+                                        {
+                                            contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
+                                            contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
+                                        }
+                                        else
+                                        {
+                                            contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone;
+                                            contactDetail.CountryCode = "+91";
+                                        }
+                                        //contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
+                                        //contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
                                         contactDetail.CreateDate = _getBookingResponse.Booking.BookingInfo.CreatedDate;
                                         contactDetail.CreateBy = _getBookingResponse.Booking.BookingInfo.CreatedAgentID.ToString();
                                         contactDetail.ModifyDate = _getBookingResponse.Booking.BookingInfo.ModifiedDate;
@@ -4280,8 +4312,18 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                         contactDetail.FirstName = _getBookingResponse.Booking.BookingContacts[0].Names[0].FirstName;
                                         contactDetail.LastName = _getBookingResponse.Booking.BookingContacts[0].Names[0].LastName;
                                         contactDetail.EmailID = _getBookingResponse.Booking.BookingContacts[0].EmailAddress;
-                                        contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
-                                        contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
+                                        if (_getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-').Length > 1)
+                                        {
+                                            contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
+                                            contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
+                                        }
+                                        else
+                                        {
+                                            contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone;
+                                            contactDetail.CountryCode = "+91";
+                                        }
+                                        //contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
+                                        //contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
                                         contactDetail.CreateDate = _getBookingResponse.Booking.BookingInfo.CreatedDate;
                                         contactDetail.CreateBy = _getBookingResponse.Booking.BookingInfo.CreatedAgentID.ToString();
                                         contactDetail.ModifyDate = _getBookingResponse.Booking.BookingInfo.ModifiedDate;

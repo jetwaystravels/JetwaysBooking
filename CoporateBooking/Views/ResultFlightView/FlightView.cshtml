@@ -3041,6 +3041,28 @@
 
 
 	</script>
+	<!--Start traveller section show and hide -->
+
+	<script>
+		$(document).ready(function () {
+			const $employeeInput = $('#employeeSelect');
+			const $selectedContainer = $employeeInput.siblings('.selected-items');
+			const $travellers = $("[data-dropdown-btn='guests-dropdown']");
+
+			// ---------- Toggle travellers ----------
+			function toggleTravellers() {
+				const hasGuest = parseInt(new URLSearchParams(window.location.search).get('Employeeid'));
+				// alert("hi"+hasGuest);
+				if (hasGuest === 0) {
+				$(".searchMenu-guests__field").css("display", "block");
+			} else {
+				$(".searchMenu-guests__field").css("display", "none");
+			}
+			}
+			toggleTravellers();
+		});
+	</script>
+	<!--End traveller section show and hide -->
 
 
 

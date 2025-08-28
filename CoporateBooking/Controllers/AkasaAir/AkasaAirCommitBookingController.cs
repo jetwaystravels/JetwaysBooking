@@ -792,31 +792,42 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
                     tb_AirCraft.Modifyby = JsonObjPNRBooking.data.info.modifiedAgentId;// "Online";
                     tb_AirCraft.Status = JsonObjPNRBooking.data.info.status; //"0";
 
-                    ContactDetail contactDetail = new ContactDetail();
-                    contactDetail.BookingID = JsonObjPNRBooking.data.bookingKey;
-                    contactDetail.FirstName = JsonObjPNRBooking.data.contacts.P.name.first;
-                    contactDetail.LastName = JsonObjPNRBooking.data.contacts.P.name.last;
-                    contactDetail.EmailID = JsonObjPNRBooking.data.contacts.P.emailAddress;
-                    //contactDetail.MobileNumber = Convert.ToInt32(Regex.Replace(JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString(), @"^\+91", "")); // todo
-                    contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
-                    contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
-                    if (JsonObjPNRBooking.data.info.createdDate != null)
-                        contactDetail.CreateDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.createdDate); //DateTime.Now;
-                    contactDetail.CreateBy = JsonObjPNRBooking.data.info.createdAgentId; //"Admin";
-                    if (JsonObjPNRBooking.data.info.modifiedDate != null)
-                        contactDetail.ModifyDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.modifiedDate); //DateTime.Now;
-                    contactDetail.ModifyBy = JsonObjPNRBooking.data.info.modifiedAgentId; //"Admin";
-                    contactDetail.Status = JsonObjPNRBooking.data.info.status;// 0;
-                    GSTDetails gSTDetails = new GSTDetails();
-                    if (JsonObjPNRBooking.data.contacts.G != null)
-                    {
-                        gSTDetails.bookingReferenceNumber = JsonObjPNRBooking.data.bookingKey;
-                        gSTDetails.GSTEmail = JsonObjPNRBooking.data.contacts.G.emailAddress;
-                        gSTDetails.GSTNumber = JsonObjPNRBooking.data.contacts.G.customerNumber;
-                        gSTDetails.GSTName = JsonObjPNRBooking.data.contacts.G.companyName;
-                        gSTDetails.airLinePNR = JsonObjPNRBooking.data.recordLocator;
-                        gSTDetails.status = JsonObjPNRBooking.data.info.status; //0;
-                    }
+                        ContactDetail contactDetail = new ContactDetail();
+                        contactDetail.BookingID = JsonObjPNRBooking.data.bookingKey;
+                        contactDetail.FirstName = JsonObjPNRBooking.data.contacts.P.name.first;
+                        contactDetail.LastName = JsonObjPNRBooking.data.contacts.P.name.last;
+                        contactDetail.EmailID = JsonObjPNRBooking.data.contacts.P.emailAddress;
+                        //contactDetail.MobileNumber = Convert.ToInt32(Regex.Replace(JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString(), @"^\+91", "")); // todo
+
+                        if (JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-').Length > 1)
+                        {
+                            contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
+                            contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
+                        }
+                        else
+                        {
+                            contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString();
+                            contactDetail.CountryCode = "+91";
+                        }
+                        //contactDetail.MobileNumber = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[1];
+                        //contactDetail.CountryCode = JsonObjPNRBooking.data.contacts.P.phoneNumbers[0].number.ToString().Split('-')[0];
+                        if (JsonObjPNRBooking.data.info.createdDate != null)
+                            contactDetail.CreateDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.createdDate); //DateTime.Now;
+                        contactDetail.CreateBy = JsonObjPNRBooking.data.info.createdAgentId; //"Admin";
+                        if (JsonObjPNRBooking.data.info.modifiedDate != null)
+                            contactDetail.ModifyDate = Convert.ToDateTime(JsonObjPNRBooking.data.info.modifiedDate); //DateTime.Now;
+                        contactDetail.ModifyBy = JsonObjPNRBooking.data.info.modifiedAgentId; //"Admin";
+                        contactDetail.Status = JsonObjPNRBooking.data.info.status;// 0;
+                        GSTDetails gSTDetails = new GSTDetails();
+                        if (JsonObjPNRBooking.data.contacts.G != null)
+                        {
+                            gSTDetails.bookingReferenceNumber = JsonObjPNRBooking.data.bookingKey;
+                            gSTDetails.GSTEmail = JsonObjPNRBooking.data.contacts.G.emailAddress;
+                            gSTDetails.GSTNumber = JsonObjPNRBooking.data.contacts.G.customerNumber;
+                            gSTDetails.GSTName = JsonObjPNRBooking.data.contacts.G.companyName;
+                            gSTDetails.airLinePNR = JsonObjPNRBooking.data.recordLocator;
+                            gSTDetails.status = JsonObjPNRBooking.data.info.status; //0;
+                        }
 
                     tb_PassengerTotal tb_PassengerTotalobj = new tb_PassengerTotal();
                     bookingKey = JsonObjPNRBooking.data.bookingKey;

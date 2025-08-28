@@ -763,8 +763,18 @@ namespace OnionConsumeWebAPI.Controllers.Indigo
                                 contactDetail.FirstName = _getBookingResponse.Booking.BookingContacts[0].Names[0].FirstName;
                                 contactDetail.LastName = _getBookingResponse.Booking.BookingContacts[0].Names[0].LastName;
                                 contactDetail.EmailID = _getBookingResponse.Booking.BookingContacts[0].EmailAddress;
-                                contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
-                                contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
+                                if (_getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-').Length > 1)
+                                {
+                                    contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
+                                    contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
+                                }
+                                else
+                                {
+                                    contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone;
+                                    contactDetail.CountryCode = "+91";
+                                }
+                                //contactDetail.MobileNumber = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[1];
+                                //contactDetail.CountryCode = _getBookingResponse.Booking.BookingContacts[0].HomePhone.Split('-')[0];
                                 contactDetail.CreateDate = _getBookingResponse.Booking.BookingInfo.CreatedDate;
                                 contactDetail.CreateBy = _getBookingResponse.Booking.BookingInfo.CreatedAgentID.ToString();
                                 contactDetail.ModifyDate = _getBookingResponse.Booking.BookingInfo.ModifiedDate;

@@ -150,6 +150,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             //string emaillogin = "kanpur.ashok@gmail.com";
             string emaillogin = userEmail;
             string Iata = string.Empty;
+            string empid = string.Empty;
 
             MongoHelper objMongoHelper = new MongoHelper();
             MongoDBHelper _mongoDBHelper = new MongoDBHelper(_configuration);
@@ -215,6 +216,11 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 Iata = Convert.ToString(formCollection["hdniata"]);
             }
 
+            if (!string.IsNullOrEmpty(formCollection["hdnempid"]))
+            {
+                empid = Convert.ToString(formCollection["hdnempid"]);
+            }
+
 
             string custentity = string.Empty;
 
@@ -227,15 +233,15 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             {
                 legalEntity = _mongoDBHelper.GetlegalEntityByGUID(Convert.ToString(formCollection["hdnlegal"])).Result;
 
-                if(legalEntity != null)
+                if (legalEntity != null)
                 {
                     custentity = legalEntity.LegalName;
                 }
-               
+
             }
 
 
-            List<CustomerDealCodes> lstcustomerDealCodes = new List<CustomerDealCodes>();  
+            List<CustomerDealCodes> lstcustomerDealCodes = new List<CustomerDealCodes>();
             string apiUrl = $"{AppUrlConstant.GetCustomerDealCode}?legalEntityCode={custentity}&Iata={Iata}";
 
             try
@@ -256,7 +262,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
             }
             catch (Exception ex)
             {
-               
+
                 // Ideally log the exception
                 // You could use ViewBag.Error = "Something went wrong." or TempData["Error"]
             }
@@ -356,7 +362,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 var url = $"{AppUrlConstant.Getsuppliercred}?flightclass={Uri.EscapeDataString(flightclass)}";
                 HttpResponseMessage response = await client.GetAsync(url);
                 // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.AirlineLogin);
-               // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
+                // HttpResponseMessage response = await client.GetAsync(AppUrlConstant.Getsuppliercred);
                 //Air Asia login
                 //Air Asia login
                 if (response.IsSuccessStatusCode)
@@ -377,18 +383,18 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                              _credentialsAirasia = new _credentials();
                          }
 
-                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
- 
-                                 if(lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
-                                 {
-                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 1);
-                                     if (dealCode != null)
-                                     {
-                                         _credentialsAirasia.dealCodeName = dealCode.dealCodeName;
-                                     }
-                                 }
-                           
-                        
+                         // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+
+                         if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                         {
+                             var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 1);
+                             if (dealCode != null)
+                             {
+                                 _credentialsAirasia.dealCodeName = dealCode.dealCodeName;
+                             }
+                         }
+
+
                      },  // close first Action
 
                      () =>
@@ -400,16 +406,16 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                          {
                              _CredentialsAkasha = new _credentials();
                          }
-                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+                         // Customer deal Code, If supplier deal code is not available then we will check customer deal code
 
-                                 if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
-                                 {
-                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 2);
-                                     if (dealCode != null)
-                                     {
-                                         _CredentialsAkasha.dealCodeName = dealCode.dealCodeName;
-                                     }
-                                 }
+                         if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                         {
+                             var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 2);
+                             if (dealCode != null)
+                             {
+                                 _CredentialsAkasha.dealCodeName = dealCode.dealCodeName;
+                             }
+                         }
 
                      },
                      () =>
@@ -422,16 +428,16 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                              _CredentialsGDS = new _credentials();
                          }
 
-                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+                         // Customer deal Code, If supplier deal code is not available then we will check customer deal code
 
-                                 if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
-                                 {
-                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 5);
-                                     if (dealCode != null)
-                                     {
-                                         _CredentialsGDS.dealCodeName = dealCode.dealCodeName;
-                                     }
-                                 }
+                         if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                         {
+                             var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 5);
+                             if (dealCode != null)
+                             {
+                                 _CredentialsGDS.dealCodeName = dealCode.dealCodeName;
+                             }
+                         }
 
                      },
                      () =>
@@ -449,16 +455,16 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                              _CredentialsSpiceJet = new _credentials();
                          }
 
-                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+                         // Customer deal Code, If supplier deal code is not available then we will check customer deal code
 
-                                 if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
-                                 {
-                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 3);
-                                     if (dealCode != null)
-                                     {
-                                         _CredentialsSpiceJet.dealCodeName = dealCode.dealCodeName;
-                                     }
-                                 }
+                         if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                         {
+                             var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 3);
+                             if (dealCode != null)
+                             {
+                                 _CredentialsSpiceJet.dealCodeName = dealCode.dealCodeName;
+                             }
+                         }
                      },
                      () =>
                      {
@@ -475,16 +481,16 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                              _CredentialsIndigo = new _credentials();
                          }
 
-                             // Customer deal Code, If supplier deal code is not available then we will check customer deal code
+                         // Customer deal Code, If supplier deal code is not available then we will check customer deal code
 
-                                 if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
-                                 {
-                                     var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 4);
-                                     if (dealCode != null)
-                                     {
-                                         _CredentialsIndigo.dealCodeName = dealCode.dealCodeName;
-                                     }
-                                 }
+                         if (lstcustomerDealCodes != null && lstcustomerDealCodes.Count > 0)
+                         {
+                             var dealCode = lstcustomerDealCodes.FirstOrDefault(x => x.supplierId == 4);
+                             if (dealCode != null)
+                             {
+                                 _CredentialsIndigo.dealCodeName = dealCode.dealCodeName;
+                             }
+                         }
 
                      }
 
@@ -851,7 +857,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
 
                     if (string.IsNullOrEmpty(searchLog.ArrivalDateTime))
                     {
-                        return RedirectToAction("FlightView", "ResultFlightView", new { Guid = ResponseGuid, TripType = SameAirlineRT, Origin = searchLog.Origin, OriginCode = searchLog.OrgCode, Destination = searchLog.Destination, DestinationCode = searchLog.DestCode, BeginDate = _GetfligthModel.beginDate, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount });
+                        return RedirectToAction("FlightView", "ResultFlightView", new { Guid = ResponseGuid, TripType = SameAirlineRT, Origin = searchLog.Origin, OriginCode = searchLog.OrgCode, Destination = searchLog.Destination, DestinationCode = searchLog.DestCode, BeginDate = _GetfligthModel.beginDate, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount, Employeeid = empid });
                     }
                     else
                     {
@@ -1723,7 +1729,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                 int count2 = 0;
                 if (_IndigologonResponseobj != null)
                 {
-                    _IndigoAvailabilityResponseobj = await objgetAvail_.GetTripAvailability(_GetfligthModel, _IndigologonResponseobj, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, "IndigoOneWay",_CredentialsIndigo.dealCodeName);
+                    _IndigoAvailabilityResponseobj = await objgetAvail_.GetTripAvailability(_GetfligthModel, _IndigologonResponseobj, TotalCount, searchLog.Adults, searchLog.Children, searchLog.Infants, flightclass, SameAirlineRT, "IndigoOneWay", _CredentialsIndigo.dealCodeName);
                     count2 = 0;
                     if (_IndigoAvailabilityResponseobj != null && _IndigoAvailabilityResponseobj.GetTripAvailabilityVer2Response.Schedules[0].Length > 0)
                     {
@@ -3340,7 +3346,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     _GetfligthModel.endDate = searchLog.ArrivalDateTime;
                     if (!string.IsNullOrEmpty(_CredentialsGDS.username))
                     {
-                        res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuidR.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "",_CredentialsGDS.dealCodeName);
+                        res = _objAvail.GetAvailabiltyCorporate(_testURL, sbReq, _objAvail, _GetfligthModel, newGuidR.ToString(), _CredentialsGDS.domain, _CredentialsGDS.username, _CredentialsGDS.password, flightclass, SameAirlineRT, "", _CredentialsGDS.dealCodeName);
                     }
                     TempData["originR"] = _GetfligthModel.origin;
                     TempData["destinationR"] = _GetfligthModel.destination;
@@ -3727,7 +3733,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                         _mongoDBHelper.SaveMongoFlightToken(mongoIndigoToken);
                     }
                     _mongoDBHelper.SaveMongoFlightToken(mongoGDSToken);
-                    return RedirectToAction("FlightView", "ResultFlightView", new { Guid = SearchGuid, TripType = SameAirlineRT, Origin = searchLog.Origin.Trim(), OriginCode = searchLog.OrgCode.Trim(), Destination = searchLog.Destination.Trim(), DestinationCode = searchLog.DestCode.Trim(), BeginDate = _GetfligthModel.beginDate, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount, FlightClass = flightclass });
+                    return RedirectToAction("FlightView", "ResultFlightView", new { Guid = SearchGuid, TripType = SameAirlineRT, Origin = searchLog.Origin.Trim(), OriginCode = searchLog.OrgCode.Trim(), Destination = searchLog.Destination.Trim(), DestinationCode = searchLog.DestCode.Trim(), BeginDate = _GetfligthModel.beginDate, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount, FlightClass = flightclass, Employeeid = empid });
 
                 }
 
