@@ -6009,7 +6009,7 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                     airLineFlightTicketBooking.ContactDetail = contactDetail;
                     //airLineFlightTicketBooking.tb_Trips = tb_Trips;
                     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.BaseURL + "api/AirLineTicketBooking/PostairlineTicketData", airLineFlightTicketBooking);
+                    HttpResponseMessage responsePassengers = await client.PostAsJsonAsync(AppUrlConstant.SaveAirlineBooking, airLineFlightTicketBooking);
                     if (responsePassengers.IsSuccessStatusCode)
                     {
                         var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;

@@ -128,10 +128,18 @@ namespace OnionConsumeWebAPI.Controllers.AkasaAir
             //         var AkItanary = HttpContext.Session.GetString("AkasaAirItanary");
             if (seatMealdetail.Infant != null)
             {
-
+                SSRAvailabiltyResponceModel AkMealslist = new SSRAvailabiltyResponceModel();
+                SSRAvailabiltyResponceModel AkBaggageDetails = new SSRAvailabiltyResponceModel();
                 AirAsiaTripResponceModel AkPassenger = (AirAsiaTripResponceModel)JsonConvert.DeserializeObject(objMongoHelper.UnZip(seatMealdetail.ResultRequest), typeof(AirAsiaTripResponceModel));
-                SSRAvailabiltyResponceModel AkMealslist = (SSRAvailabiltyResponceModel)JsonConvert.DeserializeObject(objMongoHelper.UnZip(seatMealdetail.Meals), typeof(SSRAvailabiltyResponceModel));
-                SSRAvailabiltyResponceModel AkBaggageDetails = (SSRAvailabiltyResponceModel)JsonConvert.DeserializeObject(objMongoHelper.UnZip(seatMealdetail.Baggage), typeof(SSRAvailabiltyResponceModel));
+                if (seatMealdetail.Meals != null)
+                {
+                     AkMealslist = (SSRAvailabiltyResponceModel)JsonConvert.DeserializeObject(objMongoHelper.UnZip(seatMealdetail.Meals), typeof(SSRAvailabiltyResponceModel));
+
+                }
+                if (seatMealdetail.Baggage != null)
+                {
+                     AkBaggageDetails = (SSRAvailabiltyResponceModel)JsonConvert.DeserializeObject(objMongoHelper.UnZip(seatMealdetail.Baggage), typeof(SSRAvailabiltyResponceModel));
+                }
                 SeatMapResponceModel AkSeatmaplist = (SeatMapResponceModel)JsonConvert.DeserializeObject(objMongoHelper.UnZip(seatMealdetail.SeatMap), typeof(SeatMapResponceModel));
                 AirAsiaTripResponceModel AkpasseengerItanary = (AirAsiaTripResponceModel)JsonConvert.DeserializeObject(objMongoHelper.UnZip(seatMealdetail.Infant), typeof(AirAsiaTripResponceModel));
                 vm.AkPassenger = AkPassenger;
