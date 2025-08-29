@@ -1209,7 +1209,7 @@ namespace OnionConsumeWebAPI.Controllers.Indigo
                                 //airLineFlightTicketBooking.tb_Trips = tb_Trips;
 
                                 client1.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                                HttpResponseMessage responsePassengers = await client1.PostAsJsonAsync(AppUrlConstant.BaseURL + "api/AirLineTicketBooking/PostairlineTicketData", airLineFlightTicketBooking);
+                                HttpResponseMessage responsePassengers = await client1.PostAsJsonAsync(AppUrlConstant.SaveAirlineBooking, airLineFlightTicketBooking);
                                 if (responsePassengers.IsSuccessStatusCode)
                                 {
                                     var _responsePassengers = responsePassengers.Content.ReadAsStringAsync().Result;

@@ -126,11 +126,11 @@
             <div class="col-auto">
                 @{
                     <div class="text-14">Adult ( @adtcount X &#8377;@peradtamount)</div>
-                    if (@chdtamount >= 0)
+                        if (@chdcount > 0)
                     {
                         <div class="text-14">Child ( @chdcount X &#8377;@perchdtamount)</div>
                     }
-                    if (inftbasefare >= 0)
+                        if (@infcount > 0)
                     {
                         <div class="text-14">Infant ( @infcount X &#8377;@inftbasefare) </div>
                     }
@@ -149,11 +149,11 @@
             <div class="col-auto">
                 <div class="text-15">&#8377; @adtamount </div>
                 @{
-                    if (@chdtamount >= 0)
+                    if (@chdcount > 0 && @chdtamount >= 0)
                     {
                         <div class="text-15">&#8377; @chdtamount </div>
                     }
-                    if (toatlinftbasefare >= 0)
+                    if (@infcount > 0 && toatlinftbasefare >= 0)
                     {
                         <div class="text-15">&#8377; @toatlinftbasefare </div>
                     }
