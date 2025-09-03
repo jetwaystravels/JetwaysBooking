@@ -3311,10 +3311,10 @@ namespace OnionConsumeWebAPI.Controllers.RoundTrip
                                                 tb_Passengerobj.BookingID = _getBookingResponse.Booking.BookingID.ToString();
                                                 tb_Passengerobj.PassengerKey = items.PassengerID.ToString();
                                                 tb_Passengerobj.TypeCode = items.PassengerTypeInfo.PaxType;
-                                                tb_Passengerobj.FirstName = items.Names[0].FirstName;
+                                                tb_Passengerobj.FirstName = items.Names[0].FirstName.Trim();
                                                 tb_Passengerobj.Title = items.Names[0].Title;
                                                 tb_Passengerobj.Dob = DateTime.Now;
-                                                tb_Passengerobj.LastName = items.Names[0].LastName;
+                                                tb_Passengerobj.LastName = items.Names[0].LastName.Trim();
                                                 tb_Passengerobj.contact_Emailid = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).Email;
                                                 tb_Passengerobj.contact_Mobileno = passeengerlist.FirstOrDefault(x => x.first.ToUpper() == tb_Passengerobj.FirstName && x.last.ToUpper() == tb_Passengerobj.LastName).mobile;
                                                 tb_Passengerobj.FastForwardService = 'N';

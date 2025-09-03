@@ -3,12 +3,14 @@ using Sessionmanager;
 using Bookingmanager_;
 using Newtonsoft.Json;
 using Utility;
+using Spicejet;
 using IndigoBookingManager_;
 
 namespace OnionConsumeWebAPI.Controllers
 {
     public class SpiceJetApiController : Controller
     {
+        _getapi _obj = new _getapi();
         #region Signature
         public async Task<LogonResponse> Signature(LogonRequest _logonRequestobj)
         {
@@ -316,6 +318,55 @@ namespace OnionConsumeWebAPI.Controllers
             return getBookiongResponse;
         }
         #endregion
+
+        #region cancel
+        public async Task<CancelResponse> CancelJourney(string Signature, CancelRequest getCancelRequest, string _Airlineway = "")
+        {
+            getCancelRequest = new CancelRequest();
+            CancelResponse _getCancelResponse = new CancelResponse();
+            getCancelRequest.Signature = Signature;
+            getCancelRequest.ContractVersion = 420;
+            getCancelRequest.CancelRequestData = new CancelRequestData();
+            getCancelRequest.CancelRequestData.CancelBy = CancelBy.All;
+            getCancelRequest.CancelRequestData.CancelBySpecified = true;
+            IBookingManager bookingManager = null;
+            bookingManager = new BookingManagerClient();
+            try
+            {
+                _getCancelResponse = await bookingManager.CancelAsync(getCancelRequest);
+                //return _getCancelResponse;
+            }
+            catch (Exception ex)
+            {
+                //return Ok(session);
+            }
+            //return _getCancelResponse;
+            string _responceGetBooking = JsonConvert.SerializeObject(_getCancelResponse);
+            //if (_Airlineway.ToLower() == "oneway")
+            //{
+            //    logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_getBookingResponse) + "\n\n Response: " + JsonConvert.SerializeObject(_getBookingResponse), "GetBookingDetails", "IndigoOneWay", "oneway");
+            //}
+            //else
+            //{
+            //    logs.WriteLogsR("Request: " + JsonConvert.SerializeObject(_getBookingResponse) + "\n\n Response: " + JsonConvert.SerializeObject(_getBookingResponse), "GetBookingDetails", "IndigoRT");
+
+            //}
+            if (_Airlineway.ToLower() == "oneway")
+            {
+                //logs.WriteLogs(JsonConvert.SerializeObject(getBookingRequest), "14-GetBookingPNRDetailsReq", "IndigoOneWay", "oneway");
+                //logs.WriteLogs(JsonConvert.SerializeObject(_getBookingResponse), "14-GetBookingPNRDetailsRes", "IndigoOneWay", "oneway");
+            }
+            else
+            {
+                //logs.WriteLogsR(JsonConvert.SerializeObject(getBookingRequest), "14-GetBookingPNRDetailsReq", "IndigoRT");
+                //logs.WriteLogsR(JsonConvert.SerializeObject(_getBookingResponse), "14-GetBookingPNRDetailsRes", "IndigoRT");
+
+            }
+            return (CancelResponse)_getCancelResponse;
+
+        }
+        #endregion
+
 
         #region Sessionlogout
         public async Task<LogoutResponse> Logout(LogoutRequest _logoutRequestobj)

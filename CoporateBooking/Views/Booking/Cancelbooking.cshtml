@@ -287,7 +287,7 @@
             <div class="booking-card">
                 <div class="flight-header">
                     <h3>
-                        Air India Express - @string.Join(", ", segments.Select(s => s.CarrierCode + " " + s.Identifier))<br />
+                        @mdl.Booking.airlineId Air India Express - @string.Join(", ", segments.Select(s => s.CarrierCode + " " + s.Identifier))<br />
                         <small>Class: Economy | Type: @booking.BookingType</small>
                     </h3>
                     <p class="mt-2">Airline PNR : <span>@booking.RecordLocator</span></p>
@@ -319,7 +319,7 @@
                 </div>
 
                 <form asp-controller="CancelBooking" asp-action="CancelAction" asp-route-pnr="@booking.RecordLocator"
-                      asp-route-airline="@ViewBag.AirlineId" method="post" id="cancelForm">
+                      asp-route-airline="@mdl.Booking.airlineId"  method="post" id="cancelForm">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="cancellationType" id="cancellationType" value="complete" />
 
@@ -344,6 +344,7 @@
                                 {
                                     Name = g.Key,
                                     Seat = g.FirstOrDefault()?.SeatNumber ?? "—",
+                                    PassengerKey = g.FirstOrDefault()?.passengerkey, // <-- Add this
                                     Total = g.Sum(p => p.TotalAmount + p.TotalAmount_Tax),
                                     IsCancelled = g.All(p => p.TotalAmount == 0)
                                 })
@@ -354,10 +355,12 @@
                             {
                                 var pax = groupedPassengers[i];
                                 <tr>
-                                    <td><input type="checkbox" class="passenger-checkbox" name="passengerIndexes" value="@i" /></td>
+                                    <td><input type="checkbox" class="passenger-checkbox" name="passengerKeys" value="@pax.PassengerKey" /></td>
                                     <td>@pax.Name</td>
                                     <td>INR @pax.Total.ToString("N0")</td>
                                     <td>@pax.Seat</td>
+                                    <td>@pax.PassengerKey</td>
+                                    
                                     <td>
                                         <span class="status-cancelled">
                                             @(pax.IsCancelled ? "Cancelled" : "Confirmed")

@@ -112,7 +112,7 @@ namespace OnionConsumeWebAPI.Controllers
                 legal = _mongoDBHelper.GetlegalEntityByGUID(Guid).Result;
 
                 string dealcode = string.Empty;
-                if (legal != null)
+                if (legal.DealCode != null)
                 {
                     string indigoValue = legal.DealCode
                                         .Split(',')

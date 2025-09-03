@@ -679,6 +679,7 @@ img {
     overflow: hidden;
     -webkit-transition: all 0.3s ease 0s;
     transition: all 0.3s ease 0s;
+    text-align:center;
 }
 
     .social-icons > a:hover svg:first-child {
@@ -1026,6 +1027,7 @@ HEADER AREA CSS
     font-weight: 600;
     padding-right: 10px;
     padding-left: 10px;
+    border-top: 2px transparent solid;
 }
 
 @media (min-width: 992px) {
@@ -4889,6 +4891,7 @@ header.navbar.sticky-active {
         border-radius: 0 0 8px 8px;
         border: 1px solid rgba(156, 170, 179, .28);
         padding: 15px 15px;
+        margin-left: -15px;
     }
 
     #popularFilters.hidden {

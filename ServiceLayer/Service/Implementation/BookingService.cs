@@ -99,6 +99,7 @@ namespace ServiceLayer.Service.Implementation
                 result.Booking = new BookingResultDto
                 {
                     BookingID = reader["BookingID"].ToString(),
+                    airlineId = reader["AirLineID"].ToString(),
                     RecordLocator = reader["RecordLocator"].ToString(),
                     BookedDate = Convert.ToDateTime(reader["BookedDate"]),
                     Origin = reader["Origin"].ToString(),
@@ -139,6 +140,7 @@ namespace ServiceLayer.Service.Implementation
                 result.Passengers.Add(new PassengerResultDto
                 {
                     BookingID = reader["BookingID"].ToString(),
+                    passengerkey = reader["passengerkey"].ToString(),
                     Title = reader["Title"].ToString(),
                     FirstName = reader["FirstName"].ToString(),
                     LastName = reader["LastName"].ToString(),

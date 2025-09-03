@@ -42,7 +42,7 @@
         public static string AirasiaBookingdivide = URLAirasia + "/api/nsk/v2/booking/divide";
         public static string AirasiaPayment = URLAirasia + "/api/nsk/v4/booking/payments";
         public static string DeleteBooking = URLAirasia + "/api/nsk/v1/booking/journeys";
-        
+
         #endregion
 
         #region AkasaAir URLs
@@ -71,8 +71,9 @@
         public static string AkasaAirCommitBooking = URLAkasaAir + "/api/nsk/v3/booking";
         public static string AkasaAirGetBooking = URLAkasaAir + "/api/nsk/v1/booking";
         public static string AkasaAirPayment = URLAkasaAir + "/api/nsk/v2/booking/payments";
-
+        public static string AkasaDeleteBooking = URLAkasaAir + "/api/nsk/v1/booking/journeys";
         public static string AkasaAirPNRBooking = URLAkasaAir + "/api/nsk/v1/booking/retrieve/byRecordLocator/";
+        public static string AkasaAirBookingdivide = URLAkasaAir + "/api/nsk/v2/booking/divide";
         #endregion
 
         #region GST URLs

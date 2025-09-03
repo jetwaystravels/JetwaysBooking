@@ -618,6 +618,9 @@
 		}
 		var dobDate = new Date(dob);
 		var currentDate = new Date();
+		var departuredate= '@Model.passeengerlist.journeys[0].designator.departure.ToString()';
+	   //alert(departuredate);
+	    departuredate=new Date(departuredate.replace(/(\d{2})-(\d{2})-(\d{4})/, '$3-$2-$1'));
 		var timeDiff = currentDate.getTime() - dobDate.getTime();
 		var yearsDiff = timeDiff / (1000 * 3600 * 24 * 365.25);
 		// Check if the age is less than 2 years (24 months)
@@ -625,7 +628,19 @@
 		    alert("Date of birth cannot be in the future. Please select a valid date.");
 		    return false;
 		}
-
+		// Calculate the difference in milliseconds
+		var timeDifference = departuredate.getTime() - dobDate.getTime();
+		// Convert milliseconds to years (approximately)
+		var yearsDifference = timeDifference / (1000 * 60 * 60 * 24 * 365.25);
+		// Check if difference is greater than 2 years
+		if (yearsDifference > 2) {
+			alert("The time period between departure date and date of birth is greater than 2 years!");
+			return false;
+		}
+		else
+		{
+			//alert("year: " + yearsDifference);
+		}
 		if (yearsDiff < 2) {
 		    return true; // Infant is valid
 		} else {

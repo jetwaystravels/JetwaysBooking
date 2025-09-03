@@ -311,6 +311,24 @@ namespace Indigo
         }
         #endregion
 
+        #region CancelPNR
+        public async Task<CancelResponse> cancelpnrbyAll(CancelRequest _cancelRequest)
+        {
+            IBookingManager bookingManager = null;
+            CancelResponse _gecancelRes = null;
+            bookingManager = new BookingManagerClient();
+            try
+            {
+                _gecancelRes = await bookingManager.CancelAsync(_cancelRequest);
+                return _gecancelRes;
+            }
+            catch (Exception ex)
+            {
+                //return Ok(session);
+            }
+            return _gecancelRes;
+        }
+        #endregion
         #region Sessionlogout
         public async Task<LogoutResponse> Logout(LogoutRequest _logoutRequestobj)
         {

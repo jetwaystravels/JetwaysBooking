@@ -9,7 +9,7 @@ namespace DomainLayer.Model
     public class Booking
     {
         public string ?FlightID { get; set; } = null!;
-        public int AirLineID { get; set; }  
+        public int ?AirLineID { get; set; }  
         public string? RecordLocator { get; set; }
         public string? TripType { get; set; }
         public DateTime? DepartureDate { get; set; }
@@ -21,7 +21,7 @@ namespace DomainLayer.Model
 
         public string? BookingStatus { get; set; }
 
-        public int cancelstatus { get; set; }
+        public int? cancelstatus { get; set; }
 
         public string? BookingRelationId { get; set; }
 

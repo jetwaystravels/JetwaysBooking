@@ -2435,6 +2435,25 @@
                     $('#field_adult').val(count);
                 }
 
+             $(document).ready(function () {
+                const $employeeInput = $('#employeeSelect');
+
+                $employeeInput.on('autocompleteselect change', function () {
+                    // ✅ Reset children
+                    $('#count_child').text(0);
+                    $('#field_child').val(0);
+
+                    // ✅ Reset infants
+                    $('#count_infant').text(0);
+                    $('#field_infant').val(0);
+
+                    // (optional) if you also want to reset adults to default 1
+                    // $('#count_adult').text(1);
+                    // $('#field_adult').val(1);
+                });
+            });
+
+
 
                 // ---- Billing autocomplete (optional manual add) ----
                    function initBillingAutocomplete(billingEntities) {

@@ -72,6 +72,68 @@ namespace OnionArchitectureAPI.Services.Indigo
             return (BookingCommitResponse)_BookingCommitResponse;
 
         }
+        public async Task<BookingCommitResponse> commitOnCancel(string Signature,string pnr, UpdateContactsRequest contactList, List<passkeytype> passeengerlist,string _Airlineway="")
+        {
+            BookingCommitRequest _bookingCommitRequest = new BookingCommitRequest();
+            BookingCommitResponse _BookingCommitResponse = new BookingCommitResponse();
+            _bookingCommitRequest.Signature = Signature;
+            _bookingCommitRequest.ContractVersion = 452;
+            _bookingCommitRequest.BookingCommitRequestData = new BookingCommitRequestData();
+            _bookingCommitRequest.BookingCommitRequestData.SourcePOS = GetPointOfSale();
+            _bookingCommitRequest.BookingCommitRequestData.RecordLocator = pnr;
+            _bookingCommitRequest.BookingCommitRequestData.CurrencyCode = "INR";
+            _bookingCommitRequest.BookingCommitRequestData.PaxCount = Convert.ToInt16(passeengerlist.Count);
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts = new BookingContact[1];
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0] = new BookingContact();
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].TypeCode = "P";
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].Names = new BookingName[1];
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].Names[0] = new BookingName();
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].Names[0].State = MessageState.New;
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].Names[0].FirstName = passeengerlist[0].first;
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].Names[0].MiddleName = passeengerlist[0].middle;
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].Names[0].LastName = passeengerlist[0].last;
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].Names[0].Title = passeengerlist[0].title;
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].EmailAddress = contactList.updateContactsRequestData.BookingContactList[0].EmailAddress; //"vinay.ks@gmail.com"; //passeengerlist.Email;
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].HomePhone = contactList.updateContactsRequestData.BookingContactList[0].HomePhone; //"9457000000"; //passeengerlist.mobile;
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].AddressLine1 = "A";
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].AddressLine2 = "B";
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].City = "Delhi";
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].ProvinceState = "DL";
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].CountryCode = "IN";
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].CultureCode = "en-GB";
+            _bookingCommitRequest.BookingCommitRequestData.ChangeHoldDateTimeSpecified = true;
+            _bookingCommitRequest.BookingCommitRequestData.ChangeHoldDateTime = false;
+            _bookingCommitRequest.BookingCommitRequestData.RestrictionOverrideSpecified = true;
+            _bookingCommitRequest.BookingCommitRequestData.RestrictionOverride = false;
+            _bookingCommitRequest.BookingCommitRequestData.BookingContacts[0].DistributionOption = DistributionOption.Email;
+            _bookingCommitRequest.BookingCommitRequestData.DistributeToContactsSpecified = true;
+            _bookingCommitRequest.BookingCommitRequestData.DistributeToContacts = true;
+
+
+            _BookingCommitResponse = await _obj.BookingCommit(_bookingCommitRequest);
+
+            string Str3 = JsonConvert.SerializeObject(_BookingCommitResponse);
+            //if (_Airlineway.ToLower() == "oneway")
+            //{
+            //    logs.WriteLogsR("Request: " + JsonConvert.SerializeObject(_bookingCommitRequest) + "\n\n Response: " + JsonConvert.SerializeObject(_BookingCommitResponse), "BookingCommit", "IndigoOneWay");
+            //}
+            //else
+            //{
+            //    logs.WriteLogsR("Request: " + JsonConvert.SerializeObject(_bookingCommitRequest) + "\n\n Response: " + JsonConvert.SerializeObject(_BookingCommitResponse), "BookingCommit", "IndigoRT");
+            //}
+            if (_Airlineway.ToLower() == "oneway")
+            {
+                logs.WriteLogs(JsonConvert.SerializeObject(_bookingCommitRequest), "13-BookingCommitReq", "IndigoOneWay", "oneway");
+                logs.WriteLogs(JsonConvert.SerializeObject(_BookingCommitResponse), "13-BookingCommitRes", "IndigoOneWay", "oneway");
+            }
+            else
+            {
+                logs.WriteLogsR(JsonConvert.SerializeObject(_bookingCommitRequest), "13-BookingCommitReq", "IndigoRT");
+                logs.WriteLogsR(JsonConvert.SerializeObject(_BookingCommitResponse), "13-BookingCommitRes", "IndigoRT");
+            }
+            return (BookingCommitResponse)_BookingCommitResponse;
+
+        }
 
         public async Task<AddPaymentToBookingResponse> AddpaymenttoBook(string Signature, decimal Amount, string _Airlineway = "")
         {
@@ -157,6 +219,41 @@ namespace OnionArchitectureAPI.Services.Indigo
 
             }
             return (GetBookingResponse)_getBookingResponse;
+
+        }
+
+        public async Task<CancelResponse> CancelJourney(string Signature, CancelRequest getCancelRequest, string _Airlineway = "")
+        {
+            getCancelRequest = new CancelRequest();
+            CancelResponse _getCancelResponse = new CancelResponse();
+            getCancelRequest.Signature = Signature;
+            getCancelRequest.ContractVersion = 456;
+            getCancelRequest.CancelRequestData  = new CancelRequestData();
+            getCancelRequest.CancelRequestData.CancelBy = CancelBy.All;
+            getCancelRequest.CancelRequestData.CancelBySpecified = true;
+            _getCancelResponse = await _obj.cancelpnrbyAll(getCancelRequest);
+            string _responceGetBooking = JsonConvert.SerializeObject(_getCancelResponse);
+            //if (_Airlineway.ToLower() == "oneway")
+            //{
+            //    logs.WriteLogs("Request: " + JsonConvert.SerializeObject(_getBookingResponse) + "\n\n Response: " + JsonConvert.SerializeObject(_getBookingResponse), "GetBookingDetails", "IndigoOneWay", "oneway");
+            //}
+            //else
+            //{
+            //    logs.WriteLogsR("Request: " + JsonConvert.SerializeObject(_getBookingResponse) + "\n\n Response: " + JsonConvert.SerializeObject(_getBookingResponse), "GetBookingDetails", "IndigoRT");
+
+            //}
+            if (_Airlineway.ToLower() == "oneway")
+            {
+                //logs.WriteLogs(JsonConvert.SerializeObject(getBookingRequest), "14-GetBookingPNRDetailsReq", "IndigoOneWay", "oneway");
+                //logs.WriteLogs(JsonConvert.SerializeObject(_getBookingResponse), "14-GetBookingPNRDetailsRes", "IndigoOneWay", "oneway");
+            }
+            else
+            {
+                //logs.WriteLogsR(JsonConvert.SerializeObject(getBookingRequest), "14-GetBookingPNRDetailsReq", "IndigoRT");
+                //logs.WriteLogsR(JsonConvert.SerializeObject(_getBookingResponse), "14-GetBookingPNRDetailsRes", "IndigoRT");
+
+            }
+            return (CancelResponse)_getCancelResponse;
 
         }
         public PointOfSale GetPointOfSale()

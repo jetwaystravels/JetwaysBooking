@@ -10,6 +10,7 @@ namespace DomainLayer.Model
     public class BookingResultDto
     {
         public string BookingID { get; set; }
+        public string airlineId { get; set; }
         public string RecordLocator { get; set; }
         public DateTime BookedDate { get; set; }
         public string Origin { get; set; }
@@ -36,6 +37,7 @@ namespace DomainLayer.Model
     public class PassengerResultDto
     {
         public string BookingID { get; set; }
+        public string passengerkey { get; set; }
         public string Title { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

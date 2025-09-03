@@ -861,7 +861,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     }
                     else
                     {
-                        return RedirectToAction("RTFlightView", "RoundTrip", new { Guid = ResponseGuid, TripType = SameAirlineRT, Origin = searchLog.Origin, OriginCode = searchLog.OrgCode, Destination = searchLog.Destination, DestinationCode = searchLog.DestCode, BeginDate = _GetfligthModel.beginDate, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount });
+                        return RedirectToAction("RTFlightView", "RoundTrip", new { Guid = ResponseGuid, TripType = SameAirlineRT, Origin = searchLog.Origin, OriginCode = searchLog.OrgCode, Destination = searchLog.Destination, DestinationCode = searchLog.DestCode, BeginDate = _GetfligthModel.beginDate, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount, Employeeid = empid });
                     }
 
                 }
@@ -3689,7 +3689,7 @@ namespace OnionConsumeWebAPI.Controllers.AirAsia
                     mongoGDSToken.RToken = newGuidR.ToString();
 
                     _mongoDBHelper.SaveMongoFlightToken(mongoGDSToken);
-                    return RedirectToAction("RTFlightView", "RoundTrip", new { Guid = SearchGuid, TripType = SameAirlineRT, Origin = searchLog.Origin, OriginCode = searchLog.OrgCode, Destination = searchLog.Destination, DestinationCode = searchLog.DestCode, BeginDate = searchLog.DepartDateTime, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount });
+                    return RedirectToAction("RTFlightView", "RoundTrip", new { Guid = SearchGuid, TripType = SameAirlineRT, Origin = searchLog.Origin, OriginCode = searchLog.OrgCode, Destination = searchLog.Destination, DestinationCode = searchLog.DestCode, BeginDate = searchLog.DepartDateTime, EndDate = _GetfligthModel.endDate, AdultCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.adultcount : _GetfligthModel.adultcount, ChildCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.childcount : _GetfligthModel.childcount, InfantCount = _GetfligthModel.passengercount != null ? _GetfligthModel.passengercount.infantcount : _GetfligthModel.infantcount, Employeeid = empid });
                 }
                 else
                 {

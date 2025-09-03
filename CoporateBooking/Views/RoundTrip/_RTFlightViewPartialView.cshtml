@@ -1,6 +1,6 @@
 ﻿<div class="row y-gap-40">
 
-    <div class="sidebar__item">
+    <div class="sidebar__item" id="popularFilters">
         <h5 class="text-18 fw-600 mb-10">Popular Filters</h5>
         <div class="sidebar-checkbox">
 
@@ -38,7 +38,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">₹14,997</div>
                 </div> *@
             </div>
@@ -57,7 +57,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">₹12,997</div>
                 </div> *@
             </div>
@@ -176,7 +176,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">$92</div>
                 </div> *@
             </div>
@@ -198,7 +198,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">$92</div>
                 </div> *@
             </div>
@@ -295,7 +295,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">$92</div>
                 </div> *@
             </div>
@@ -317,7 +317,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">$92</div>
                 </div> *@
             </div>
@@ -365,7 +365,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">$92</div>
                 </div> *@
             </div>
@@ -388,7 +388,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">$45</div>
                 </div> *@
             </div>
@@ -410,7 +410,7 @@
 
                 </div>
 
-               @*  <div class="col-auto">
+                @*  <div class="col-auto">
                     <div class="text-15 text-light-1">$21</div>
                 </div> *@
             </div>
@@ -428,12 +428,12 @@
                         <div class="text-15 ml-10">Akasa Air</div>
                     </div>
                 </div>
-@* 
+                @* 
                 <div class="col-auto">
                     <div class="text-15 text-light-1">$21</div>
                 </div> *@
             </div>
-           @*  <div class="row y-gap-10 items-center justify-between">
+            @*  <div class="row y-gap-10 items-center justify-between">
                 <div class="col-auto">
 
                     <div class="d-flex items-center">
@@ -451,7 +451,7 @@
 
                 </div>
 
-              
+
             </div> *@
             <div class="row y-gap-10 items-center justify-between">
                 <div class="col-auto">
@@ -470,12 +470,12 @@
                     </div>
 
                 </div>
-@* 
+                @* 
                 <div class="col-auto">
                     <div class="text-15 text-light-1">$21</div>
                 </div> *@
             </div>
-         @*    <div class="row y-gap-10 items-center justify-between">
+            @*    <div class="row y-gap-10 items-center justify-between">
                 <div class="col-auto">
 
                     <div class="d-flex items-center">
@@ -499,6 +499,7 @@
             </div> *@
         </div>
     </div>
+    <div class="sidebar__item col-12 px-0" id="lastSidebarItem" style="visibility: hidden; height: 1px;"></div>
 </div>
 <style>
     .flt-Tm-slt.active {
@@ -508,10 +509,27 @@
 </style>
 
 
+<script>
+    const popularFilters = document.getElementById('popularFilters');
+    const lastSidebarItem = document.getElementById('lastSidebarItem');
 
+    let hasBeenFixed = false;
 
+    window.addEventListener('scroll', () => {
+        const lastItemRect = lastSidebarItem.getBoundingClientRect();
 
+        if (lastItemRect.bottom < 0 && !hasBeenFixed) {
+            // Scrolled past the last item - show fixed
+            hasBeenFixed = true;
+            popularFilters.classList.add('fixed');
+        } else if (lastItemRect.bottom >= 0 && hasBeenFixed) {
+            // Scrolled back up - hide fixed
+            hasBeenFixed = false;
+            popularFilters.classList.remove('fixed');
+        }
+    });
 
+</script>
 
 
 
